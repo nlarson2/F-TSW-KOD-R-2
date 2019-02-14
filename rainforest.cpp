@@ -24,6 +24,7 @@
 #include "log.h"
 //#include "ppm.h"
 #include "fonts.h"
+#include "nickolasL.h"
 
 //defined types
 typedef double Flt;
@@ -116,11 +117,12 @@ public:
 			unlink(ppmname);
 	}
 };
-Image img[4] = {
+Image img[] = {
 "./images/bigfoot.png",
 "./images/forest.png",
 "./images/forestTrans.png",
-"./images/umbrella.png" };
+"./images/umbrella.png",
+"./images/nickLCreditPic.jpg"};
 
 class Global {
 public:
@@ -131,6 +133,7 @@ public:
 	GLuint forestTexture;
 	GLuint forestTransTexture;
 	GLuint umbrellaTexture;
+	GLuint nickLCreditTexture;
 	int showBigfoot;
 	int forest;
 	int silhouette;
@@ -138,6 +141,7 @@ public:
 	int showRain;
 	int showUmbrella;
 	int deflection;
+	GameState gS;
 	Global() {
 		logOpen();
 		done=0;
@@ -475,6 +479,19 @@ void initOpengl(void)
 	//glTexImage2D(GL_TEXTURE_2D, 0, 3, w, h, 0,
 	//GL_RGB, GL_UNSIGNED_BYTE, bigfootImage->data);
 	//-------------------------------------------------------------------------
+	
+
+	w = img[4].width;
+        h = img[4].height;
+        //
+        glBindTexture(GL_TEXTURE_2D, g.nickLCreditTexture);
+        //
+        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+        glTexImage2D(GL_TEXTURE_2D, 0, 3, w, h, 0,
+                GL_RGB, GL_UNSIGNED_BYTE, img[4].data);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
 }
 
 void initSounds()
@@ -541,6 +558,9 @@ int checkKeys(XEvent *e)
 			if (g.showBigfoot) {
 				bigfoot.pos[0] = -250.0;
 			}
+			break;
+		case XK_c:
+			g.gS.CREDITS = !g.gS.CREDITS;
 			break;
 		case XK_d:
 			g.deflection ^= 1;
@@ -892,13 +912,14 @@ void drawRaindrops()
 }
 
 void render()
-{
+{	
 	Rect r;
 
 	//Clear the screen
 	glClearColor(1.0, 1.0, 1.0, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT);
 	//
+	if(!g.gS.CREDITS){
 	//draw a quad with texture
 	float wid = 120.0f;
 	glColor3f(1.0, 1.0, 1.0);
@@ -982,5 +1003,14 @@ void render()
 	ggprint8b(&r, 16, c, "R - Rain");
 	ggprint8b(&r, 16, c, "D - Deflection");
 	ggprint8b(&r, 16, c, "N - Sounds");
+
+	
+	} else {
+
+
+	draw_nickLCredit(100,100,g.nickLCreditTexture);
+
+	}
+	
 }
 
