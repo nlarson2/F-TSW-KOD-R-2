@@ -10,10 +10,10 @@
 void showMarbienPicture(int x, int y, GLuint textid) {
     
     Rect r; 
-    r.bot = 205; 
+    r.bot = 225; 
     r.left = 270; 
     r.center = 0;
-    ggprint8b(&r, 16, 0x00ffffff, "Marbien Jimeno");
+    ggprint8b(&r, 16, 0xcc66ff, "Marbien Jimeno");
   
     static int wid = 30;
 
