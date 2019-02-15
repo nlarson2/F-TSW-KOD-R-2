@@ -24,7 +24,11 @@
 #include "log.h"
 //#include "ppm.h"
 #include "fonts.h"
+<<<<<<< HEAD
 #include "marbienJ.h"
+=======
+#include "nickolasL.h"
+>>>>>>> 8cb83e52e7646bc21bd3cff5de8acbf76478b0b0
 
 //defined types
 typedef double Flt;
@@ -117,12 +121,20 @@ public:
 			unlink(ppmname);
 	}
 };
+<<<<<<< HEAD
 Image img[5] = {
+=======
+Image img[] = {
+>>>>>>> 8cb83e52e7646bc21bd3cff5de8acbf76478b0b0
 "./images/bigfoot.png",
 "./images/forest.png",
 "./images/forestTrans.png",
 "./images/umbrella.png",
+<<<<<<< HEAD
 "./images/bizarre-animals.png"};
+=======
+"./images/nickLCreditPic.jpg"};
+>>>>>>> 8cb83e52e7646bc21bd3cff5de8acbf76478b0b0
 
 class Global {
 public:
@@ -133,7 +145,11 @@ public:
 	GLuint forestTexture;
 	GLuint forestTransTexture;
 	GLuint umbrellaTexture;
+<<<<<<< HEAD
     GLuint marbienJTexture;
+=======
+	GLuint nickLCreditTexture;
+>>>>>>> 8cb83e52e7646bc21bd3cff5de8acbf76478b0b0
 	int showBigfoot;
 	int forest;
 	int silhouette;
@@ -141,7 +157,11 @@ public:
 	int showRain;
 	int showUmbrella;
 	int deflection;
+<<<<<<< HEAD
     int showCredits;
+=======
+	GameState gS;
+>>>>>>> 8cb83e52e7646bc21bd3cff5de8acbf76478b0b0
 	Global() {
 		logOpen();
 		done=0;
@@ -480,6 +500,7 @@ void initOpengl(void)
 	//glTexImage2D(GL_TEXTURE_2D, 0, 3, w, h, 0,
 	//GL_RGB, GL_UNSIGNED_BYTE, bigfootImage->data);
 	//-------------------------------------------------------------------------
+<<<<<<< HEAD
 
     w = img[4].width;
     h = img[4].height; 
@@ -491,6 +512,21 @@ void initOpengl(void)
     glTexImage2D(GL_TEXTURE_2D, 0, 3, w, h, 0,
             GL_RGB, GL_UNSIGNED_BYTE, img[4].data);
     glBindTexture(GL_TEXTURE_2D, 0);
+=======
+	
+
+	w = img[4].width;
+        h = img[4].height;
+        //
+        glBindTexture(GL_TEXTURE_2D, g.nickLCreditTexture);
+        //
+        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+        glTexImage2D(GL_TEXTURE_2D, 0, 3, w, h, 0,
+                GL_RGB, GL_UNSIGNED_BYTE, img[4].data);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+>>>>>>> 8cb83e52e7646bc21bd3cff5de8acbf76478b0b0
 }
 
 void initSounds()
@@ -558,9 +594,15 @@ int checkKeys(XEvent *e)
 				bigfoot.pos[0] = -250.0;
 			}
 			break;
+<<<<<<< HEAD
         case XK_c:
             g.showCredits ^= 1;
             break;
+=======
+		case XK_c:
+			g.gS.CREDITS = !g.gS.CREDITS;
+			break;
+>>>>>>> 8cb83e52e7646bc21bd3cff5de8acbf76478b0b0
 		case XK_d:
 			g.deflection ^= 1;
 			break;
@@ -911,13 +953,18 @@ void drawRaindrops()
 }
 
 void render()
-{
+{	
 	Rect r;
 
 	//Clear the screen
 	glClearColor(1.0, 1.0, 1.0, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT);
+<<<<<<< HEAD
 	
+=======
+	//
+	if(!g.gS.CREDITS){
+>>>>>>> 8cb83e52e7646bc21bd3cff5de8acbf76478b0b0
 	//draw a quad with texture
 	float wid = 120.0f;
 	glColor3f(1.0, 1.0, 1.0);
@@ -1003,5 +1050,18 @@ void render()
 	ggprint8b(&r, 16, c, "R - Rain");
 	ggprint8b(&r, 16, c, "D - Deflection");
 	ggprint8b(&r, 16, c, "N - Sounds");
+<<<<<<< HEAD
+=======
+
+	
+	} else {
+
+
+	draw_nickLCredit(100,100,g.nickLCreditTexture);
+
+	}
+	
+}
+>>>>>>> 8cb83e52e7646bc21bd3cff5de8acbf76478b0b0
 
 } 
