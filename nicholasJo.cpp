@@ -24,7 +24,7 @@
 void Display_NicholasJordan(int x, int y, GLuint textid) {
     glColor3ub(255, 255, 255);
     //static float angle = 0.0f;
-    static int wid = 30;
+    static int wid = 50;
     //wid += sin(angle) * 10;
     //float fx = (float)x;
     //float fy = (float)y;
@@ -43,11 +43,13 @@ void Display_NicholasJordan(int x, int y, GLuint textid) {
         glTexCoord2f(1.0f, 0.0f); glVertex2i(wid, wid);
         glTexCoord2f(1.0f, 1.0f); glVertex2i(wid, -wid);
     glEnd();
-    glPopMatrix();
+
     
     Rect r;
-    r.bot = 200;
-    r.left = 200;
+    glTranslatef(wid,0,0);
+    r.bot = 0;
+    r.left = 10;
     r.center = 0;
     ggprint8b(&r, 16, 0x00000000, "Nicholas Jordan");
+    glPopMatrix();
 }

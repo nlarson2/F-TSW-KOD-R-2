@@ -1069,10 +1069,10 @@ void render()
 
 
         draw_nickLCredit(100,100,g.nickLCreditTexture);
-        brandonH(150, 150, g.brandonHTexture);
-        showMarbienPicture(315, 270, g.marbienJTexture);
-        Display_NicholasJordan(200, 200, g.nicholasJoTexture);
-        showAdamPicture(420, 350, g.adamOTexture);
+        brandonH(100, 200, g.brandonHTexture);
+        showMarbienPicture(100, 300, g.marbienJTexture);
+        Display_NicholasJordan(100, 400, g.nicholasJoTexture);
+        showAdamPicture(100, 500, g.adamOTexture);
     }
 
 }

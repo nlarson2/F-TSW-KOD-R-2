@@ -9,13 +9,9 @@
 #include "marbienJ.h" 
 void showMarbienPicture(int x, int y, GLuint textid) {
     
-    Rect r; 
-    r.bot = 225; 
-    r.left = 270; 
-    r.center = 0;
-    ggprint8b(&r, 16, 0xcc66ff, "Marbien Jimeno");
+
   
-    static int wid = 30;
+    static int wid = 50;
 
     glPushMatrix();
 
@@ -28,7 +24,12 @@ void showMarbienPicture(int x, int y, GLuint textid) {
         glTexCoord2f(1.0f, 0.0f); glVertex2i(wid, wid);
         glTexCoord2f(1.0f, 1.0f); glVertex2i(wid, -wid); 
     glEnd();
-
+    glTranslatef(wid,0,0);
+    Rect r; 
+    r.bot = 0; 
+    r.left = 10; 
+    r.center = 0;
+    ggprint8b(&r, 16, 0x00000000, "Marbien Jimeno");
     glPopMatrix();
 
 }
