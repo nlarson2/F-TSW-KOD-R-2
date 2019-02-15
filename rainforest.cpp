@@ -143,6 +143,7 @@ class Global {
         GLuint marbienJTexture;
         GLuint nickLCreditTexture;
         GLuint brandonHTexture;
+        GLuint nicholasJoTexture;
         int showBigfoot;
         int forest;
         int silhouette;
@@ -417,9 +418,8 @@ void initOpengl(void)
     glGenTextures(1, &g.brandonHTexture);
     glGenTextures(1, &g.nickLCreditTexture);
     glGenTextures(1, &g.marbienJTexture);
+    glGenTextures(1, &g.nicholasJoTexture);
     //Adam
-    //glGenTextures(1, &g.nickolasLTexture);
-    //Nich J :)
     //glGenTextures(1, &g.nickolasLTexture);
     //-------------------------------------------------------------------------
     //bigfoot
@@ -527,6 +527,15 @@ void initOpengl(void)
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
     glTexImage2D(GL_TEXTURE_2D, 0, 3, w, h, 0,
             GL_RGB, GL_UNSIGNED_BYTE, img[6].data); 
+    //-------------------------------------------------------------------------
+    w = img[7].width;
+    h = img[7].height;
+
+    glBindTexture(GL_TEXTURE_2D, g.nicholasJoTexture);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+    glTexImage2D(GL_TEXTURE_2D, 0, 3, w, h, 0,
+            GL_RGB, GL_UNSIGNED_BYTE, img[7].data); 
 }
 
 void initSounds()
@@ -946,6 +955,8 @@ void drawRaindrops()
     glLineWidth(1);
 }
 
+void Display_NicholasJordan(int x, int y, GLuint textid);
+
 void render()
 {	
     Rect r;
@@ -1047,6 +1058,7 @@ void render()
         draw_nickLCredit(100,100,g.nickLCreditTexture);
         brandonH(150, 150, g.brandonHTexture);
         showMarbienPicture(315, 270, g.marbienJTexture);
+        Display_NicholasJordan(200, 200, g.nicholasJoTexture);
 
     }
 
