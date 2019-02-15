@@ -24,6 +24,7 @@
 #include "log.h"
 //#include "ppm.h"
 #include "fonts.h"
+#include "marbienJ.h"
 
 //defined types
 typedef double Flt;
@@ -116,11 +117,12 @@ public:
 			unlink(ppmname);
 	}
 };
-Image img[4] = {
+Image img[5] = {
 "./images/bigfoot.png",
 "./images/forest.png",
 "./images/forestTrans.png",
-"./images/umbrella.png" };
+"./images/umbrella.png",
+"./images/bizarre-animals.png"};
 
 class Global {
 public:
@@ -131,6 +133,7 @@ public:
 	GLuint forestTexture;
 	GLuint forestTransTexture;
 	GLuint umbrellaTexture;
+    GLuint marbienJTexture;
 	int showBigfoot;
 	int forest;
 	int silhouette;
@@ -138,18 +141,20 @@ public:
 	int showRain;
 	int showUmbrella;
 	int deflection;
+    int showCredits;
 	Global() {
 		logOpen();
 		done=0;
 		xres=800;
 		yres=600;
-		showBigfoot=0;
+        showBigfoot=0;
 		forest=1;
 		silhouette=1;
 		trees=1;
 		showRain=0;
 		showUmbrella=0;
 		deflection=0;
+        showCredits=0;
 	}
 	~Global() {
 		logClose();
@@ -475,6 +480,17 @@ void initOpengl(void)
 	//glTexImage2D(GL_TEXTURE_2D, 0, 3, w, h, 0,
 	//GL_RGB, GL_UNSIGNED_BYTE, bigfootImage->data);
 	//-------------------------------------------------------------------------
+
+    w = img[4].width;
+    h = img[4].height; 
+
+    glBindTexture(GL_TEXTURE_2D, g.marbienJTexture);
+
+   	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+    glTexImage2D(GL_TEXTURE_2D, 0, 3, w, h, 0,
+            GL_RGB, GL_UNSIGNED_BYTE, img[4].data);
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void initSounds()
@@ -537,11 +553,14 @@ int checkKeys(XEvent *e)
 	}
 	switch (key) {
 		case XK_b:
-			g.showBigfoot ^= 1;
+			g.bigfootTexture ^= 1;
 			if (g.showBigfoot) {
 				bigfoot.pos[0] = -250.0;
 			}
 			break;
+        case XK_c:
+            g.showCredits ^= 1;
+            break;
 		case XK_d:
 			g.deflection ^= 1;
 			break;
@@ -898,7 +917,7 @@ void render()
 	//Clear the screen
 	glClearColor(1.0, 1.0, 1.0, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT);
-	//
+	
 	//draw a quad with texture
 	float wid = 120.0f;
 	glColor3f(1.0, 1.0, 1.0);
@@ -970,6 +989,8 @@ void render()
 	glBindTexture(GL_TEXTURE_2D, 0);
 	//
 	//
+    if(g.showCredits)
+    showMarbienPicture(315, 270, g.marbienJTexture);
 	unsigned int c = 0x00ffff44;
 	r.bot = g.yres - 20;
 	r.left = 10;
@@ -982,5 +1003,5 @@ void render()
 	ggprint8b(&r, 16, c, "R - Rain");
 	ggprint8b(&r, 16, c, "D - Deflection");
 	ggprint8b(&r, 16, c, "N - Sounds");
-}
 
+} 

@@ -4,8 +4,8 @@ LFLAGS = -lrt -lX11 -lGLU -lGL -lm #-lXrandr
 
 all: rainforest
 
-rainforest: rainforest.cpp log.cpp
-	g++ $(CFLAGS) rainforest.cpp log.cpp libggfonts.a -Wall -Wextra $(LFLAGS) -o rainforest
+rainforest: rainforest.cpp log.cpp marbienJ.cpp
+	g++ $(CFLAGS) rainforest.cpp marbienJ.cpp log.cpp libggfonts.a -Wall -Wextra $(LFLAGS) -o rainforest
 
 clean:
 	rm -f rainforest
