@@ -27,6 +27,7 @@
 #include "marbienJ.h"
 #include "brandonH.h"
 #include "nickolasL.h"
+#include "adamO.h"
 
 //defined types
 typedef double Flt;
@@ -144,6 +145,7 @@ class Global {
         GLuint nickLCreditTexture;
         GLuint brandonHTexture;
         GLuint nicholasJoTexture;
+        GLuint adamOTexture;
         int showBigfoot;
         int forest;
         int silhouette;
@@ -419,7 +421,7 @@ void initOpengl(void)
     glGenTextures(1, &g.nickLCreditTexture);
     glGenTextures(1, &g.marbienJTexture);
     glGenTextures(1, &g.nicholasJoTexture);
-    //Adam
+    glGenTextures(1, &g.adamOTexture);
     //glGenTextures(1, &g.nickolasLTexture);
     //-------------------------------------------------------------------------
     //bigfoot
@@ -536,6 +538,17 @@ void initOpengl(void)
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
     glTexImage2D(GL_TEXTURE_2D, 0, 3, w, h, 0,
             GL_RGB, GL_UNSIGNED_BYTE, img[7].data); 
+    //-------------------------------------------------------------------------
+    w = img[8].width;
+    h = img[8].height;
+
+    glBindTexture(GL_TEXTURE_2D, g.adamOTexture);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+    glTexImage2D(GL_TEXTURE_2D, 0, 3, w, h, 0,
+            GL_RGB, GL_UNSIGNED_BYTE, img[8].data);
+
+    
 }
 
 void initSounds()
@@ -1059,7 +1072,7 @@ void render()
         brandonH(150, 150, g.brandonHTexture);
         showMarbienPicture(315, 270, g.marbienJTexture);
         Display_NicholasJordan(200, 200, g.nicholasJoTexture);
-
+        showAdamPicture(420, 350, g.adamOTexture);
     }
 
 }
