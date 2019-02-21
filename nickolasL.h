@@ -13,9 +13,7 @@
 
 struct GameState
 {
-
 	bool CREDITS;
-
 	GameState();
 
 };

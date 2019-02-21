@@ -11,7 +11,6 @@ GameState::GameState(){ CREDITS = false;}
 
 void draw_nickLCredit(int x, int y, GLuint texture)
 {
-	
 	Rect r;
 	float wid = 50;
 	glPushMatrix();
@@ -25,12 +24,14 @@ void draw_nickLCredit(int x, int y, GLuint texture)
 	glTexCoord2f(1.0f, 1.0f); glVertex2i( wid,-wid);
 	glEnd();
 	glBindTexture(GL_TEXTURE_2D, 0);
+
+
 	glTranslatef(wid,0,0);
 	//unsigned int c = 0x00000000;
-        r.bot = 0;
-        r.left = 10;
-        r.center = 0;
-        ggprint8b(&r, 16, 0x00000000, "Nickolas Larson");
+	r.bot = 0;
+	r.left = 10;
+	r.center = 0;
+	ggprint8b(&r, 16, 0x00000000, "Nickolas Larson");
 
 
 	glPopMatrix();
