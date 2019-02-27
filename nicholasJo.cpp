@@ -115,16 +115,16 @@ void Enemy::setEnemyCombatType() {
 //==========================[PLAYER CLASS]===============================
 //Inherits from Entity
 
-Player::Player() {
-	setPlayerCombatType();
+Player::Player(string c) {
+	setPlayerCombatType(c);
 }
 
 //Null because instance will be initialized on demand
 Player* Player::instance = 0;
 
-Player* Player::getInstance() {
+Player* Player::getInstance(string c) {
 	if (instance == 0) {
-		instance = new Player();
+		instance = new Player(c);
 	}
 	return instance;
 }
@@ -133,16 +133,15 @@ Player::~Player() {
 	delete []instance;
 }
 
-void Player::setPlayerCombatType() {
-	//need to make a menu function so the player can choose combat type
-	
-	if (combatType == "archer") {
+void Player::setPlayerCombatType(string c) {
+	//need to make a menu function so the player can choose combat type	
+	if (c == "archer") {
 		setMaxHealth(75.0);
 		setDefense(0.60);
-	} else if (combatType == "soldier") {
+	} else if (c == "soldier") {
 		setMaxHealth(100.0);
 		setDefense(0.70);
-	} else if (combatType == "tank") {
+	} else if (c == "tank") {
 		setMaxHealth(125.0);
 		setDefense(0.80);
 	}

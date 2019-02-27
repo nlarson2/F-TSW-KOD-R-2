@@ -3,6 +3,7 @@
 
 #include <GL/glx.h>
 #include "fonts.h"
+#include <string>
 
 using namespace std;
 
@@ -50,13 +51,14 @@ class Enemy : public Entity
 class Player : public Entity
 {
 	public:
-		static Player* getInstance();
+		static Player* getInstance(string);
 		//void PlayerMovement(XEvent *e);
-		void setPlayerCombatType();
+		void setPlayerCombatType(string);
 	private:
 		static Player* instance;
-		Player();
+		Player(string);
 		~Player();
 };
 
+#include <string>
 #endif
