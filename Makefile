@@ -1,11 +1,11 @@
 FFLAGS = main.cpp nicholasJo.cpp MainMenu.cpp GameState.cpp
-all: MainMenu
+all: game
 
-MainMenu: $(FFLAGS)
-	g++ $(FFLAGS) libggfonts.a -Wall -o MainMenu -lX11 -lGL -lGLU -lm
+game: $(FFLAGS)
+	g++ $(FFLAGS) libggfonts.a -Wall -o game -lX11 -lGL -lGLU -lm
 
 
 clean:
-	rm -f MainMenu
+	rm -f game
 	rm -f *.o
 
