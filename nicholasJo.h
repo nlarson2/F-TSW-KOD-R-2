@@ -26,10 +26,13 @@ class Entity
 		float getDefense();
 		void setDefense(float);
 		void setAlly(bool);
-		bool getAlly();		
+		bool getAlly();
+		void displayImage();
 
 		string combatType;
 		float current_health;
+		float damage;
+		GLuint image;
 };
 
 class Ally : public Entity
@@ -51,14 +54,14 @@ class Enemy : public Entity
 class Player : public Entity
 {
 	public:
-		static Player* getInstance(string);
-		//void PlayerMovement(XEvent *e);
+		static int count;
+		static Player* getInstance(string, GLuint);
 		void setPlayerCombatType(string);
+		void setPlayerImage(GLuint);
 	private:
 		static Player* instance;
-		Player(string);
+		Player(string, GLuint);
 		~Player();
 };
 
-#include <string>
 #endif

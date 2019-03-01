@@ -50,6 +50,22 @@ void Entity::setDefense(float d) {
 	defense = d;
 }
 
+void Entity::displayImage() {
+	float wid = 50;
+	glPushMatrix();
+	glTranslatef(100, 100, 0);
+	glColor3f(1.0f, 1.0f, 1.0f);
+	glBindTexture(GL_TEXTURE_2D, image);
+	glBegin(GL_QUADS);
+        glTexCoord2f(0.0f, 1.0f); glVertex2i(-wid,-wid);
+        glTexCoord2f(0.0f, 0.0f); glVertex2i(-wid, wid);
+        glTexCoord2f(1.0f, 0.0f); glVertex2i( wid, wid);
+        glTexCoord2f(1.0f, 1.0f); glVertex2i( wid,-wid);
+        glEnd();
+        glBindTexture(GL_TEXTURE_2D, 0);
+	glPopMatrix();
+}
+
 //==========================[ALLY CLASS]===============================
 //Inherits from Entity
 
@@ -66,16 +82,19 @@ void Ally::setAllyCombatType() {
 			combatType = "archer";
 			setMaxHealth(50.0);
 			setDefense(0.3);
+			damage = 10;
 			break;
 		case 1:
 			combatType = "soldier";
 			setMaxHealth(75.0);
 			setDefense(0.5);
+			damage = 15;
 			break;
 		case 2:
 			combatType = "tank";
 			setMaxHealth(100);
 			setDefense(0.7);
+			damage = 12;
 			break;
 	}
 	return;
@@ -91,22 +110,26 @@ Enemy::Enemy() {
 
 void Enemy::setEnemyCombatType() {
 	//randomly generate a number from 0 to 2 to choose combat type
+	srand(time(NULL));
 	int random = rand() % 3;
 	switch (random) {
 		case 0 :
 			combatType = "archer";
 			setMaxHealth(50.0);
 			setDefense(0.3);
+			damage = 10;
 			break;
 		case 1:
 			combatType = "soldier";
 			setMaxHealth(75.0);
 			setDefense(0.5);
+			damage = 15;
 			break;
 		case 2:
 			combatType = "tank";
 			setMaxHealth(100);
 			setDefense(0.7);
+			damage = 12;
 			break;
 	}
 	return;
@@ -115,16 +138,20 @@ void Enemy::setEnemyCombatType() {
 //==========================[PLAYER CLASS]===============================
 //Inherits from Entity
 
-Player::Player(string c) {
+int Player::count = 0;
+
+Player::Player(string c, GLuint i) {
 	setPlayerCombatType(c);
+	setPlayerImage(i);
+	count++;
 }
 
 //Null because instance will be initialized on demand
 Player* Player::instance = 0;
 
-Player* Player::getInstance(string c) {
+Player* Player::getInstance(string c, GLuint i) {
 	if (instance == 0) {
-		instance = new Player(c);
+		instance = new Player(c, i);
 	}
 	return instance;
 }
@@ -134,18 +161,24 @@ Player::~Player() {
 }
 
 void Player::setPlayerCombatType(string c) {
-	//need to make a menu function so the player can choose combat type	
 	if (c == "archer") {
 		setMaxHealth(75.0);
 		setDefense(0.60);
+		damage = 15;
 	} else if (c == "soldier") {
 		setMaxHealth(100.0);
 		setDefense(0.70);
+		damage = 20;
 	} else if (c == "tank") {
 		setMaxHealth(125.0);
 		setDefense(0.80);
+		damage = 22;
 	}
 	return;
+}
+
+void Player::setPlayerImage(GLuint i) {
+	image = i;
 }
 
 //============================================================================

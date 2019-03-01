@@ -8,6 +8,7 @@
 #include <X11/keysym.h>
 #include <GL/glx.h>
 #include "fonts.h"
+#include <unistd.h>
 #include "MainMenu.h"
 #include "GameState.h"
 #include "nicholasJo.h"
@@ -25,19 +26,83 @@ Menu ng(5,btn1);
 
 GameState gs;
 
+class Image {
+    public:
+        int width, height;
+        unsigned char *data;
+        ~Image() { delete [] data; }
+        Image(const char *fname) {
+            if (fname[0] == '\0')
+                return;
+            //printf("fname **%s**\n", fname);
+            int ppmFlag = 0;
+            char name[40];
+            strcpy(name, fname);
+            int slen = strlen(name);
+            char ppmname[80];
+            if (strncmp(name+(slen-4), ".ppm", 4) == 0)
+                ppmFlag = 1;
+            if (ppmFlag) {
+                strcpy(ppmname, name);
+            } else {
+                name[slen-4] = '\0';
+                //printf("name **%s**\n", name);
+                sprintf(ppmname,"%s.ppm", name);
+                //printf("ppmname **%s**\n", ppmname);
+                char ts[100];
+                //system("convert eball.jpg eball.ppm");
+                sprintf(ts, "convert %s %s", fname, ppmname);
+                system(ts);
+            }
+            //sprintf(ts, "%s", name);
+            FILE *fpi = fopen(ppmname, "r");
+            if (fpi) {
+                char line[200];
+                fgets(line, 200, fpi);
+                fgets(line, 200, fpi);
+                //skip comments and blank lines
+                while (line[0] == '#' || strlen(line) < 2)
+                    fgets(line, 200, fpi);
+                sscanf(line, "%i %i", &width, &height);
+                fgets(line, 200, fpi);
+                //get pixel data
+                int n = width * height * 3;
+                data = new unsigned char[n];
+                for (int i=0; i<n; i++)
+                    data[i] = fgetc(fpi);
+                fclose(fpi);
+            } else {
+                printf("ERROR opening image: %s\n",ppmname);
+                exit(0);
+            }
+            if (!ppmFlag)
+                unlink(ppmname);
+        }
+};
+
+Image img[3] = {
+    "./images/nickLCreditPic.jpg",
+    "./images/nicholasJo.png",
+    "./images/brandonH.png"
+};
+
+
 class Global
 {
     public:
         int xres, yres;
         int n;
         int count;
+	GLuint archerImage;
+	GLuint soldierImage;
+	GLuint tankImage;
         Global() {
             xres = 800;
             yres = 600;
             n = 0;
             count = 0;
         }
-} g;
+}g;
 
 class X11_wrapper {
     private:
@@ -80,7 +145,7 @@ class X11_wrapper {
         void set_title() {
             //Set the window title bar.
             XMapWindow(dpy, win);
-            XStoreName(dpy, win, "3350 Lab1");
+            XStoreName(dpy, win, "Fate: The Shadow Kingdom of Darkness: Two: The Second One");
         }
         bool getXPending() {
             //See if there are pending events.
@@ -139,6 +204,34 @@ void init_opengl(void)
     //Insert Fonts
     glEnable(GL_TEXTURE_2D);
     initialize_fonts();
+
+    glGenTextures(1, &g.archerImage);
+    glGenTextures(1, &g.soldierImage);
+    glGenTextures(1, &g.tankImage);
+
+    int w = img[0].width;
+    int h = img[0].height;
+    glBindTexture(GL_TEXTURE_2D, g.archerImage);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexImage2D(GL_TEXTURE_2D, 0, 3, w, h, 0,
+	    GL_RGB, GL_UNSIGNED_BYTE, img[0].data);
+    
+    w = img[1].width;
+    h = img[1].height;
+    glBindTexture(GL_TEXTURE_2D, g.soldierImage);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexImage2D(GL_TEXTURE_2D, 0, 3, w, h, 0,
+	    GL_RGB, GL_UNSIGNED_BYTE, img[1].data);
+
+    w = img[2].width;
+    h = img[2].height;
+    glBindTexture(GL_TEXTURE_2D, g.tankImage);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexImage2D(GL_TEXTURE_2D, 0, 3, w, h, 0,
+	    GL_RGB, GL_UNSIGNED_BYTE, img[2].data);
 }
 
 void check_mouse(XEvent *e)
@@ -176,8 +269,8 @@ void check_mouse(XEvent *e)
                     gs.set_ng();
                     g.count++;
                     } else {
-                       Player * player = Player::getInstance("archer");
-                       cout << player->getDefense(); 
+                       Player * player = Player::getInstance("archer", g.archerImage);
+                       cout << player->getDefense() << endl; 
                     }
                     break;
                 case 1:
@@ -185,8 +278,8 @@ void check_mouse(XEvent *e)
                     //gameState = loadGame || Char2
                     if(g.count == 0) {
                     } else {
-                        Player * player = Player::getInstance("soldier");
-                        cout << player->getDefense();
+                        Player * player = Player::getInstance("soldier", g.soldierImage);
+                        cout << player->getDefense() << endl;
                     }
 
                     break;
@@ -195,8 +288,8 @@ void check_mouse(XEvent *e)
                     //gameState = highScores || Char3
                     if(g.count == 0) {
                     } else {
-                        Player * player = Player::getInstance("tank");
-                        cout << player->getDefense();
+                        Player * player = Player::getInstance("tank", g.tankImage);
+                        cout << player->getDefense() << endl;
                     }
                     break;
                 case 3:
@@ -250,10 +343,11 @@ void render()
 {
     glClear(GL_COLOR_BUFFER_BIT);
     int g = gs.set_gameState();
-    if(g == 1)
+    if (g == 1) {
         mm.drawButtons();
-    else if(g == 2)
-        ng.drawButtons();
+    } else if (g == 2) {
+	ng.drawButtons();
+    }
     //else if(g == 3)
     //else if(g == 4)
     //else if(g == 5)
