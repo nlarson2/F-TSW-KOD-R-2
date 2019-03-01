@@ -149,6 +149,13 @@ Player::Player(string c, GLuint i) {
 //Null because instance will be initialized on demand
 Player* Player::instance = 0;
 
+Player* Player::getInstance() {
+	if (instance != 0) {
+		return instance;
+	}
+	return 0;
+}
+
 Player* Player::getInstance(string c, GLuint i) {
 	if (instance == 0) {
 		instance = new Player(c, i);

@@ -236,7 +236,6 @@ void init_opengl(void)
 
 void check_mouse(XEvent *e)
 {
-
     static int savex;
     static int savey;
     int flag;
@@ -341,11 +340,15 @@ int check_keys(XEvent *e)
 
 void render()
 {
+    Player *player = Player::getInstance();
     glClear(GL_COLOR_BUFFER_BIT);
     int g = gs.set_gameState();
     if (g == 1) {
         mm.drawButtons();
     } else if (g == 2) {
+	if (player != 0) {
+	    player->displayImage();
+	}
 	ng.drawButtons();
     }
     //else if(g == 3)

@@ -55,6 +55,7 @@ class Player : public Entity
 {
 	public:
 		static int count;
+		static Player* getInstance();
 		static Player* getInstance(string, GLuint);
 		void setPlayerCombatType(string);
 		void setPlayerImage(GLuint);
