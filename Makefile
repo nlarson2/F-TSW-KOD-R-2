@@ -1,4 +1,4 @@
-FFLAGS = main.cpp nicholasJo.cpp MainMenu.cpp GameState.cpp nickolasL.cpp
+FFLAGS = main.cpp nicholasJo.cpp brandonH.cpp nickolasL.cpp
 all: game
 
 game: $(FFLAGS)
