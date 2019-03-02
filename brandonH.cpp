@@ -2,6 +2,10 @@
 //Lab 04
 //Display name/picture in credits menu
 
+//=======================================
+// Gordon please read my brandonH.h file
+//=======================================
+
 #include "brandonH.h"
 
 void brandonH(int x, int y,GLuint textid) 

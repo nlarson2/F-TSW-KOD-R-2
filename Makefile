@@ -1,14 +1,11 @@
-CFLAGS = -I ./include
-##LIB    = ./lib/fmod/libfmodex64.so
-LFLAGS = -lrt -lX11 -lGLU -lGL -lm #-lXrandr
-GFLAGS = marbienJ.cpp nickolasL.cpp brandonH.cpp nicholasJo.cpp adamO.cpp
+FFLAGS = main.cpp nicholasJo.cpp MainMenu.cpp GameState.cpp
+all: game
 
-all: rainforest
+game: $(FFLAGS)
+	g++ $(FFLAGS) libggfonts.a -Wall -o game -lX11 -lGL -lGLU -lm
 
-rainforest: rainforest.cpp log.cpp $(GFLAGS)
-	g++ $(CFLAGS) $(GFLAGS) rainforest.cpp  log.cpp libggfonts.a -Wall -Wextra $(LFLAGS) -o rainforest
 
 clean:
-	rm -f rainforest
+	rm -f game
 	rm -f *.o
 
