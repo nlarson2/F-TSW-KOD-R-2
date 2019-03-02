@@ -91,7 +91,6 @@ void Image::invertY() {
 		}
 	}
 }
-
 /*=======================================*/
 
 
@@ -231,9 +230,12 @@ bool Model::GenerateModel( const char * objFile) {
 
 bool Model::GenerateTexture ( const char * texFile ) {
 	//IMAGE CLASS NEEDS DEFINITION	
-	Image data = new Image(texFile);
-	int width = data->width;
-	int height = data->height;
+	Image data(texFile);
+    //flip image data because openGL is inverted on the Y
+    data.invertY();
+
+	int width = data.width;
+	int height = data.height;
 	glGenTextures( 1, &texture);
 	glBindTexture( GL_TEXTURE_2D, texture);
 
@@ -241,7 +243,7 @@ bool Model::GenerateTexture ( const char * texFile ) {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,GL_LINEAR);
 
 	glTexImage2D( GL_TEXTURE_2D, 0, 3, width, height, 0, GL_RGB,
-			GL_UNSIGNED_BYTE, data->data);
+			GL_UNSIGNED_BYTE, data.data);
 	glBindTexture( GL_TEXTURE_2D, 0);
 
 	return glIsTexture(texture);

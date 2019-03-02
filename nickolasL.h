@@ -13,6 +13,7 @@
 #include <vector>
 #include <GL/glx.h>
 #include "fonts.h"
+#include "Image.h"
 
 
 using namespace std;
@@ -39,8 +40,6 @@ public:
 
 };
 
-
-
 struct vec2
 {
 	float x, y;
@@ -62,9 +61,6 @@ struct vec3
 
 void draw_nickLCredit(int x, int y, GLuint texture);
 
-/*Added function to Gordons Image Class*/
-/*DONT FORGET TO ADD PROTOTYPE TO THE CLASS!!!!!*/
-
 struct Model
 {	
 	GLuint texture;
@@ -81,6 +77,9 @@ struct Model
 	bool GenerateModel( const char * objFile );
 	bool GenerateTexture( const char * texFile );
 };
+
+
+
 
 
 #endif
