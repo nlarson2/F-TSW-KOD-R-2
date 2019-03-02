@@ -8,7 +8,12 @@
 
 #include <GL/glx.h>
 #include "fonts.h"
+#include <iostream>
+#include <cmath>
 
+void Movement();
+bool inRange(int, int);
+void displayMap(int, int, int[][6]);
 void showMarbienPicture(int x, int y, GLuint textid);
 
 #endif
