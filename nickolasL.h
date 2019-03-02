@@ -59,6 +59,8 @@ struct vec3
 };
 
 
+void GenerateGLTexture(GLuint & texture, const char * dataSrc);
+
 void draw_nickLCredit(int x, int y, GLuint texture);
 
 struct Model
