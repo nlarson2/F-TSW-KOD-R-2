@@ -1,17 +1,50 @@
 //Brandon Hernandez
-//Feb 15, 2019
-
-// =================== Gordon, please read ===================
-// My files are both the MainMenu and Gamestate, both the .h files and .cpp files for a total of 4 files.
-// Additionally I merged together the asteroids framework and the lab1 framework to create the main.cpp file
-// to allow for testing and merging of our groups code.
 //
-// I could move the code over to my .cpp and .h files but I would prefer this method as I do not want to take
-// too much time moving code around as im hard at work on this game. Please take a look at our commit history
-// for further details.
-// ===========================================================
-
+#include <iostream>
 #include <GL/glx.h>
+#include <string>
 #include "fonts.h"
 
-void brandonH(int x, int y, GLuint textid);
+using namespace std;
+
+struct GameState
+{
+    bool mainMenu, newGame, loadGame, highScores, options, board, battle, credits;
+    GameState();
+    int set_gameState();
+    void set_mm();
+    void set_ng();
+    void set_lg();
+    void set_hs();
+    void set_op();
+};
+
+struct vec
+{
+    float x,y,z;
+};
+
+struct Button
+{
+    float height, width;
+    vec center;
+    string name;
+    Button();
+    Button(string n);
+    ~Button();
+};
+
+class Menu
+{
+    public:
+        int size;
+        Button * buttons;
+        Menu(int,Button*);
+        ~Menu();
+        void drawNames(int);
+        void posButtons();
+        void drawButtons();
+        int check_mouse(int,int,int);
+};
+
+//void brandonH(int x, int y, GLuint textid);
