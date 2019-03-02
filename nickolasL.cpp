@@ -231,8 +231,8 @@ bool Model::GenerateModel( const char * objFile) {
 bool Model::GenerateTexture ( const char * texFile ) {
 	//IMAGE CLASS NEEDS DEFINITION	
 	Image data(texFile);
-    //flip image data because openGL is inverted on the Y
-    data.invertY();
+	//flip image data because openGL is inverted on the Y
+	data.invertY();
 
 	int width = data.width;
 	int height = data.height;
