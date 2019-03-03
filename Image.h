@@ -11,4 +11,6 @@ class Image {
 		void invertY();
 };
 
+
+
 #endif

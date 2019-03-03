@@ -6,6 +6,7 @@
 #include <cmath>
 #include <X11/Xlib.h>
 #include <X11/keysym.h>
+#include <GL/glu.h>
 #include <GL/glx.h>
 #include "fonts.h"
 #include <unistd.h>
@@ -17,6 +18,7 @@
 #include "marbienJ.h"
 #include "brandonH.h"
 #include "adamO.h"
+#include "Game.h"
 
 
 using namespace std;
@@ -29,6 +31,7 @@ Menu mm(5,btn);
 Button char1("Archer"), char2("Soldier"), char3("Tank"), char4("Null"), char5("Main Menu");
 Button btn1[] = {char1,char2,char3,char4,char5};
 Menu ng(5,btn1);
+
 
 GameState gs;
 /******Image Class Definitions********/
@@ -80,13 +83,6 @@ Image::Image(const char *fname) {
 
 }
 /*******************************************************/
-
-
-Image img[3] = {
-    "./images/nickLCreditPic.jpg",
-    "./images/nicholasJo.png",
-    "./images/brandonH.png"
-};
 
 
 class Global
@@ -197,43 +193,43 @@ void init_opengl(void)
     //OpenGL initialization
     glViewport(0, 0, g.xres, g.yres);
     //Initialize matrices
+    
+    
+    //3D perspective view
+    /*
     glMatrixMode(GL_PROJECTION); glLoadIdentity();
+    gluPerspective(45.0f,(GLfloat)g.xres/(GLfloat)g.yres,0.1f,100.0f);
+
+
+	//discussed futher in later tutorial
+	glShadeModel(GL_SMOOTH);//enables smooth shading
+
+	// sets the depth buffer//stop elements from drawing over others
+	glClearDepth(1.0f);//Depth buffer setup
+	glEnable(GL_DEPTH_TEST);//Enables Depth Testing
+	glDepthFunc(GL_LEQUAL);//The type of depth test to do
+
+
+	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);//??makes the perspective view better??
+    */
+
+
     glMatrixMode(GL_MODELVIEW); glLoadIdentity();
     //Set 2D mode (no perspective)
+    //COMMENT OUT LINE BLOW BEFORE TYRING TO MAKE IT 3D
     glOrtho(0, g.xres, 0, g.yres, -1, 1);
+
+
     //Set the screen background color
     glClearColor(0.1, 0.1, 0.1, 1.0);
     //Insert Fonts
     glEnable(GL_TEXTURE_2D);
     initialize_fonts();
 
-    glGenTextures(1, &g.archerImage);
-    glGenTextures(1, &g.soldierImage);
-    glGenTextures(1, &g.tankImage);
-
-    int w = img[0].width;
-    int h = img[0].height;
-    glBindTexture(GL_TEXTURE_2D, g.archerImage);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexImage2D(GL_TEXTURE_2D, 0, 3, w, h, 0,
-	    GL_RGB, GL_UNSIGNED_BYTE, img[0].data);
+    GenerateGLTexture(g.archerImage, "./images/nickLCreditPic.jpg", false);
+    GenerateGLTexture(g.soldierImage, "./images/nicholasJo.png", false);
+    GenerateGLTexture(g.tankImage, "./images/brandonH.png", false);
     
-    w = img[1].width;
-    h = img[1].height;
-    glBindTexture(GL_TEXTURE_2D, g.soldierImage);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexImage2D(GL_TEXTURE_2D, 0, 3, w, h, 0,
-	    GL_RGB, GL_UNSIGNED_BYTE, img[1].data);
-
-    w = img[2].width;
-    h = img[2].height;
-    glBindTexture(GL_TEXTURE_2D, g.tankImage);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexImage2D(GL_TEXTURE_2D, 0, 3, w, h, 0,
-	    GL_RGB, GL_UNSIGNED_BYTE, img[2].data);
 }
 
 void check_mouse(XEvent *e)
@@ -327,14 +323,32 @@ int check_keys(XEvent *e)
     if (e->type == KeyPress) {
         switch (key) {
             case XK_1:
-                //Key 1 was pressed
-                break;
-            case XK_a:
-                //Key A was pressed
-                break;
-            case XK_Escape:
-                //Escape key was pressed
-                return 1;
+				//Key 1 was pressed
+				break;
+			case XK_a:
+				camera.translate(vector2(-0.5,0));
+
+				break;
+			case XK_d:
+				camera.translate(vector2(0.5,0));
+				break;
+			case XK_w:
+				camera.translate(vector2(0,-0.5));
+				break;
+			case XK_s:
+				camera.translate(vector2(0,0.5));
+
+				break;
+			case XK_q:
+				camera.rotate(-2.0f);
+				break;
+			case XK_e:
+				camera.rotate(2.0f);
+				break;
+
+			case XK_Escape:
+				//Escape key was pressed
+				return 1;
         }
     }
     return 0;
@@ -342,6 +356,7 @@ int check_keys(XEvent *e)
 
 void render()
 {
+    
     Player *player = Player::getInstance();
     glClear(GL_COLOR_BUFFER_BIT);
     int g = gs.set_gameState();
@@ -356,4 +371,22 @@ void render()
     //else if(g == 3)
     //else if(g == 4)
     //else if(g == 5)
+    
+    //3d MAP
+    /*
+    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+	glLoadIdentity();
+
+	camera.update();
+	//glTranslatef( 0.0f, 0.0f, -6.0f);
+	//glRotatef(rotation, 0.0f, 1.0f, 0.0f);
+
+	//glTranslatef(0.0f,0.0f,-10.0f);
+//	tiles[0].draw();
+	map.draw();
+	camera.drawCamera();	
+
+	//rotation+=0.2f;
+	glLoadIdentity();//resests the modelview matrix to center screen
+    */
 }
