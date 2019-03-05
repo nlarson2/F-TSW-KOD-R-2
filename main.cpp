@@ -415,17 +415,14 @@ void render()
 	}
 	ng.drawButtons();
     }
-    else if(g == 6) {
-       
+    else if(g == 6) { 
     //3d MAP
-    
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 
 	camera.update();
 	//glTranslatef( 0.0f, 0.0f, -6.0f);
 	//glRotatef(rotation, 0.0f, 1.0f, 0.0f);
-
 	//glTranslatef(0.0f,0.0f,-10.0f);
 //	tiles[0].draw();
 	map.draw();
