@@ -211,10 +211,10 @@ void init_opengl(void)
 
 
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);//??makes the perspective view better??
-    */
+    
 
 
-    glMatrixMode(GL_MODELVIEW); glLoadIdentity();
+    glMatrixMode(GL_MODELVIEW); glLoadIdentity();*/
     //Set 2D mode (no perspective)
     //COMMENT OUT LINE BLOW BEFORE TYRING TO MAKE IT 3D
     glOrtho(0, g.xres, 0, g.yres, -1, 1);
@@ -229,9 +229,49 @@ void init_opengl(void)
     GenerateGLTexture(g.archerImage, "./images/nickLCreditPic.jpg", false);
     GenerateGLTexture(g.soldierImage, "./images/nicholasJo.png", false);
     GenerateGLTexture(g.tankImage, "./images/brandonH.png", false);
-    
 }
 
+void init_opengl3D(void)
+{
+    //OpenGL initialization
+    glViewport(0, 0, g.xres, g.yres);
+    //Initialize matrices
+    
+    
+    //3D perspective view
+    
+    glMatrixMode(GL_PROJECTION); glLoadIdentity();
+    gluPerspective(45.0f,(GLfloat)g.xres/(GLfloat)g.yres,0.1f,100.0f);
+
+
+	//discussed futher in later tutorial
+	glShadeModel(GL_SMOOTH);//enables smooth shading
+
+	// sets the depth buffer//stop elements from drawing over others
+	glClearDepth(1.0f);//Depth buffer setup
+	glEnable(GL_DEPTH_TEST);//Enables Depth Testing
+	glDepthFunc(GL_LEQUAL);//The type of depth test to do
+
+
+	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);//??makes the perspective view better??
+    
+
+
+    glMatrixMode(GL_MODELVIEW); glLoadIdentity();
+    //Set 2D mode (no perspective)
+    //COMMENT OUT LINE BLOW BEFORE TYRING TO MAKE IT 3D
+    //glOrtho(0, g.xres, 0, g.yres, -1, 1);
+
+
+    //Set the screen background color
+    glClearColor(0.1, 0.1, 0.1, 1.0);
+    //Insert Fonts
+    glEnable(GL_TEXTURE_2D);
+    initialize_fonts();
+
+    GenerateGLTexture(g.archerImage, "./images/nickLCreditPic.jpg", false);
+    GenerateGLTexture(g.soldierImage, "./images/nicholasJo.png", false);
+}
 void check_mouse(XEvent *e)
 {
     static int savex;
@@ -268,6 +308,9 @@ void check_mouse(XEvent *e)
                     } else {
                        Player * player = Player::getInstance("archer", g.archerImage);
                        cout << player->getDefense() << endl; 
+                       gs.set_board();
+                       g.count++;
+                       init_opengl3D();
                     }
                     break;
                 case 1:
@@ -277,6 +320,9 @@ void check_mouse(XEvent *e)
                     } else {
                         Player * player = Player::getInstance("soldier", g.soldierImage);
                         cout << player->getDefense() << endl;
+                        gs.set_board();
+                        g.count++;
+                        init_opengl3D();
                     }
 
                     break;
@@ -287,6 +333,9 @@ void check_mouse(XEvent *e)
                     } else {
                         Player * player = Player::getInstance("tank", g.tankImage);
                         cout << player->getDefense() << endl;
+                        gs.set_board();
+                        g.count++;
+                        init_opengl3D();
                     }
                     break;
                 case 3:
@@ -326,24 +375,23 @@ int check_keys(XEvent *e)
 				//Key 1 was pressed
 				break;
 			case XK_a:
-				camera.translate(vector2(-0.5,0));
-
+				camera.translate(vector2(-1,0));
 				break;
 			case XK_d:
-				camera.translate(vector2(0.5,0));
+				camera.translate(vector2(1,0));
 				break;
 			case XK_w:
-				camera.translate(vector2(0,-0.5));
+				camera.translate(vector2(0,-1));
 				break;
 			case XK_s:
-				camera.translate(vector2(0,0.5));
+				camera.translate(vector2(0,1));
 
 				break;
 			case XK_q:
-				camera.rotate(-2.0f);
+				camera.rotate(-4.0f);
 				break;
 			case XK_e:
-				camera.rotate(2.0f);
+				camera.rotate(4.0f);
 				break;
 
 			case XK_Escape:
@@ -356,7 +404,6 @@ int check_keys(XEvent *e)
 
 void render()
 {
-    
     Player *player = Player::getInstance();
     glClear(GL_COLOR_BUFFER_BIT);
     int g = gs.set_gameState();
@@ -368,12 +415,10 @@ void render()
 	}
 	ng.drawButtons();
     }
-    //else if(g == 3)
-    //else if(g == 4)
-    //else if(g == 5)
-    
+    else if(g == 6) {
+       
     //3d MAP
-    /*
+    
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 
@@ -388,5 +433,5 @@ void render()
 
 	//rotation+=0.2f;
 	glLoadIdentity();//resests the modelview matrix to center screen
-    */
+    }
 }

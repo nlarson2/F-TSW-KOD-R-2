@@ -90,6 +90,7 @@ GameState::GameState()
     loadGame = false;
     highScores = false;
     options = false;
+    board = false;
     //Start mainMenu
     set_gameState();
 }
@@ -115,6 +116,9 @@ int GameState::set_gameState()
     if(options == true) {
         return 5;
     }
+    if(board == true) {
+        return 6;
+    }
     return 0;
 }
 
@@ -125,6 +129,7 @@ void GameState::set_mm()
     loadGame = false;
     highScores = false;
     options = false;
+    board = false;
 }
 void GameState::set_ng()
 {
@@ -133,7 +138,7 @@ void GameState::set_ng()
     loadGame = false;
     highScores = false;
     options = false;
-
+    board = false;
 }
 
 void GameState::set_lg()
@@ -143,6 +148,7 @@ void GameState::set_lg()
     newGame = false;
     highScores = false;
     options = false;
+    board = false;
 }
 
 void GameState::set_hs()
@@ -152,6 +158,7 @@ void GameState::set_hs()
     newGame = false;
     loadGame = false;
     options = false;
+    board = false;
 }
 void GameState::set_op()
 {
@@ -160,8 +167,17 @@ void GameState::set_op()
     newGame = false;
     loadGame = false;
     highScores = false;
+    board = false;
 }
-
+void GameState::set_board()
+{
+    board = true;
+    options = false;
+    mainMenu = false;
+    newGame = false;
+    loadGame = false;
+    highScores = false;
+}
 /*
    void brandonh(int x, int y,gluint textid) 
    {

@@ -17,6 +17,7 @@ struct GameState
     void set_lg();
     void set_hs();
     void set_op();
+    void set_board();
 };
 
 struct vec
