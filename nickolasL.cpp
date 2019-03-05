@@ -1,10 +1,13 @@
+//Author: Nickolas Larson
+//Date: 2/14/2019
+//Modified By: Nickolas Larson
+//Modified 3/02/2019
 
 #ifndef NICKOLAS_L_CPP
 #define NICKOLAS_L_CPP
 
 #include "nickolasL.h"
 
-class Image;
 
 /*============LARSON'S GLOBALS==========*/
 NLarsGlobal::NLarsGlobal() {
@@ -166,6 +169,8 @@ void Model::draw() {
 
 }
 
+static Model tiles[2] = {  Model( "tiles/grassPlain.obj" , "tiles/grassPlainTex.png" ),
+    	            Model( "tiles/mountain.obj" , "tiles/mountainTex.png" )};
 
 bool Model::GenerateModel( const char * objFile) {
 	FILE * inFile= fopen(objFile,"r");
@@ -229,10 +234,181 @@ bool Model::GenerateModel( const char * objFile) {
 }
 
 bool Model::GenerateTexture ( const char * texFile ) {
-	//IMAGE CLASS NEEDS DEFINITION	
-	Image data(texFile);
-    //flip image data because openGL is inverted on the Y
-    data.invertY();
+	
+	GenerateGLTexture(texture, texFile, true);
+	return glIsTexture(texture);
+
+}
+
+/*=======================================*/
+/*=======================================*/
+
+
+Map::Map(int *map, int _width, int _height){
+		mapW = _width;
+		mapH = _height;
+		tile = new Tile *[mapW];
+		for(int i = 0; i<25;i++){
+				tile[i] = new Tile[mapH];
+		}
+		int count = 0;
+		for(int i = 0; i < 25; i++){
+
+				for(int j = 0; j < 25 ; j++){
+					tile[i][j].modelID = map[count];
+					tile[i][j].x = 2.0*j;
+					tile[i][j].z = -1.70710378118f*i;
+					if(i%2 == 0)
+						tile[i][j].x -= 1.0f;
+					count++;
+				}
+		}
+}
+
+void Map::draw(){
+	for(int i = 0; i < 25; i++){
+		for(int j = 0; j< 25; j++){
+			tiles[tile[i][j].modelID].pos.x = tile[i][j].x;
+			tiles[tile[i][j].modelID].pos.y = tile[i][j].z;
+			tiles[tile[i][j].modelID].draw();
+		}
+	}
+}
+
+
+
+vector2::vector2(float _x,float _z)
+{
+	x = _x;
+	z = _z;
+}
+
+
+vector3::vector3(float _x, float _y, float _z) {
+			x = _x;
+			y = _y;
+			z = _z;
+
+	}
+
+void vector3::operator()(float _x, float _y, float _z) {
+			x = _x;
+			y = _y;
+			z = _z;
+
+	}
+
+
+vector3  vector3::operator=(vector3 & right) {
+	x = right.x;
+	y = right.y;
+	z = right.z;
+	return *this;
+
+}
+
+vector3 vector3::operator+(vector3  right) {
+	vector3 vec;
+	vec.x = x+right.x;
+	vec.y = y+right.y;
+	vec.z = z+right.z;
+	return vec;
+}
+
+
+Camera::Camera()
+{	
+	
+	yaw = 0.0f;
+	radius = 6.0f;
+	pos( sin(yaw * PI / 180)*radius, 10.0f, 
+			cos(yaw * PI / 180)*radius);
+	front( 0, 0, 0);
+	up( 0, 1.0f, 0);	
+	pitch = 45.0f;
+	view((pos.x + front.x),
+			(pos.y + front.y),
+			(pos.z + front.z));
+	wPos(0,0,0);			
+}
+void Camera::update()
+{
+	
+
+	view((wPos.x + front.x),
+			(wPos.y + front.y),
+			(wPos.z + front.z));
+	
+	
+
+	gluLookAt(  pos.x+wPos.x,  pos.y+wPos.y,  pos.z+wPos.z,
+			view.x, view.y, view.z,
+				up.x,   up.y,   up.z);
+
+
+}
+
+void Camera::drawCamera()
+{	
+	glPushMatrix();
+
+	glBegin(GL_QUADS);
+		glColor3f(1.0f,0.0f,0.0f);
+		glVertex3f(view.x+1, 0.5f , view.z+1);
+		glVertex3f(view.x+1, 0.5f , view.z-1);
+		glVertex3f(view.x-1, 0.5f , view.z-1);
+		glVertex3f(view.x-1, 0.5f , view.z+1);
+		glColor3f(1.0f,1.0f,1.0f);
+	glEnd();
+	glPopMatrix();
+
+}
+
+void Camera::rotate(float direction)
+{
+	yaw -= direction;
+	if(yaw < -180)
+		yaw = 180;
+	else if(yaw > 180)
+		yaw = -180;
+	pos.x = sin(yaw * PI / 180)*radius;	
+	pos.z = cos(yaw * PI / 180)*radius;
+	//printf("X: %f  Z: %f\n",pos.x, pos.z); 
+}
+void Camera::translate(vector2 direction)
+{
+	if(direction.z)
+	{
+		direction.x = (pos.x/6)*direction.z;
+		direction.z = (pos.z/6)*direction.z;
+	}else
+	{	
+		direction.x = (pos.z/6) * direction.x;
+		direction.z = -(pos.x/6) * direction.x;
+	}
+	
+	wPos.x += direction.x;
+		wPos.z += direction.z;
+
+//	front.x += direction.x;
+//	front.z += direction.z;
+}
+
+
+/*=======================================*/
+/*=======================================*/
+/*=======================================*/
+/*=======================================*/
+/*=======================================*/
+/*=======================================*/
+
+void GenerateGLTexture(GLuint & texture, const char * dataSrc, bool inverted)
+{
+//IMAGE CLASS NEEDS DEFINITION	
+	Image data(dataSrc);
+	//flip image data because openGL is inverted on the Y
+	if(inverted)
+		data.invertY();
 
 	int width = data.width;
 	int height = data.height;
@@ -245,19 +421,8 @@ bool Model::GenerateTexture ( const char * texFile ) {
 	glTexImage2D( GL_TEXTURE_2D, 0, 3, width, height, 0, GL_RGB,
 			GL_UNSIGNED_BYTE, data.data);
 	glBindTexture( GL_TEXTURE_2D, 0);
-
-	return glIsTexture(texture);
-
 }
 
-/*=======================================*/
-/*=======================================*/
-/*=======================================*/
-/*=======================================*/
-/*=======================================*/
-/*=======================================*/
-/*=======================================*/
-/*=======================================*/
 /*=======================================*/
 
 

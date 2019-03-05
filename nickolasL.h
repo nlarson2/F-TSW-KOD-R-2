@@ -1,7 +1,7 @@
 //Author: Nickolas Larson
 //Date: 2/14/2019
 //Modified By: Nickolas Larson
-//Modified 2/23/2019
+//Modified 3/02/2019
 
 #ifndef NICKOLAS_L_H
 #define NICKOLAS_L_H
@@ -11,7 +11,9 @@
 #include <iostream>
 #include <string.h>
 #include <vector>
+#include <cmath>
 #include <GL/glx.h>
+#include <GL/glu.h>
 #include "fonts.h"
 #include "Image.h"
 
@@ -20,7 +22,7 @@ using namespace std;
 
 
 
-#define PI 3.14159265359;
+#define PI 3.14159265359
 
 class Image;
 
@@ -59,6 +61,8 @@ struct vec3
 };
 
 
+void GenerateGLTexture(GLuint & texture, const char * dataSrc, bool inverted);
+
 void draw_nickLCredit(int x, int y, GLuint texture);
 
 struct Model
@@ -78,8 +82,68 @@ struct Model
 	bool GenerateTexture( const char * texFile );
 };
 
+struct Tile
+{
+	int modelID;
+	float x,z;
+};
+
+class Map
+{
+	private:
+		int mapW, mapH;
+		Tile ** tile;
+
+	public:
+		Map(){}
+		Map(int *map, int _width, int _height);
+		void draw();
+};
+
+
+struct vector2
+{
+	float x,z;
+
+	vector2(float _x,float _z);
+	
+};
+struct vector3
+{
+	float x,y,z;
+	vector3() = default;	
+	vector3(float _x, float _y, float _z);
+
+	void operator()(float _x, float _y, float _z);
+
+	vector3  operator=(vector3 & right);
+
+	vector3 operator+(vector3  right);
+/*
+	void rotateY
+*/
+};
 
 
 
+class Camera{
+	private:
+		vector3 wPos;//world position
+		vector3 pos;
+		vector3 front;
+		vector3 up;
+		vector3 view;
+		float radius;
+		float pitch;
+		float yaw;
+	public:
+		Camera();
+		void update();
+		
+		void drawCamera();
+		void rotate(float direction);
+		void translate(vector2 direction);
+
+};
 
 #endif
