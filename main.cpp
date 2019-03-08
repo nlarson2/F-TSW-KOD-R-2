@@ -91,9 +91,9 @@ class Global
         int xres, yres;
         int n;
         int count;
-	GLuint archerImage;
-	GLuint soldierImage;
-	GLuint tankImage;
+	    GLuint archerImage;
+	    GLuint soldierImage;
+	    GLuint tankImage;
         Global() {
             xres = 800;
             yres = 600;
@@ -101,6 +101,22 @@ class Global
             count = 0;
         }
 }g;
+
+void displayCharacterImage(GLuint image, float x, float y) {
+    float wid = 50;
+    glPushMatrix();
+    glTranslatef(x, y, 0.0f);
+    glColor3f(1.0f, 1.0f, 1.0f);
+    glBindTexture(GL_TEXTURE_2D, image);
+    glBegin(GL_QUADS);
+        glTexCoord2f(0.0f, 1.0f); glVertex2i(-wid, -wid);
+        glTexCoord2f(0.0f, 0.0f); glVertex2i(-wid, wid);
+        glTexCoord2f(1.0f, 0.0f); glVertex2i(wid, wid);
+        glTexCoord2f(1.0f, 1.0f); glVertex2i(wid, -wid);
+    glEnd();
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glPopMatrix();
+}
 
 class X11_wrapper {
     private:
@@ -259,7 +275,7 @@ void init_opengl3D(void)
 
     glMatrixMode(GL_MODELVIEW); glLoadIdentity();
     //Set 2D mode (no perspective)
-    //COMMENT OUT LINE BLOW BEFORE TYRING TO MAKE IT 3D
+    //COMMENT OUT LINE BELOW BEFORE TYRING TO MAKE IT 3D
     //glOrtho(0, g.xres, 0, g.yres, -1, 1);
 
 
@@ -271,6 +287,7 @@ void init_opengl3D(void)
 
     GenerateGLTexture(g.archerImage, "./images/nickLCreditPic.jpg", false);
     GenerateGLTexture(g.soldierImage, "./images/nicholasJo.png", false);
+    GenerateGLTexture(g.tankImage, "./images/brandonH.png", false);
 }
 void check_mouse(XEvent *e)
 {
@@ -306,8 +323,7 @@ void check_mouse(XEvent *e)
                     gs.set_ng();
                     g.count++;
                     } else {
-                       Player * player = Player::getInstance("archer", g.archerImage);
-                       cout << player->getDefense() << endl; 
+                       Player * player = Player::setInstance("archer", g.archerImage);
                        gs.set_board();
                        g.count++;
                        init_opengl3D();
@@ -318,8 +334,7 @@ void check_mouse(XEvent *e)
                     //gameState = loadGame || Char2
                     if(g.count == 0) {
                     } else {
-                        Player * player = Player::getInstance("soldier", g.soldierImage);
-                        cout << player->getDefense() << endl;
+                        Player * player = Player::setInstance("soldier", g.soldierImage);
                         gs.set_board();
                         g.count++;
                         init_opengl3D();
@@ -331,8 +346,7 @@ void check_mouse(XEvent *e)
                     //gameState = highScores || Char3
                     if(g.count == 0) {
                     } else {
-                        Player * player = Player::getInstance("tank", g.tankImage);
-                        cout << player->getDefense() << endl;
+                        Player * player = Player::setInstance("tank", g.tankImage);
                         gs.set_board();
                         g.count++;
                         init_opengl3D();
@@ -385,7 +399,6 @@ int check_keys(XEvent *e)
 				break;
 			case XK_s:
 				camera.translate(vector2(0,1));
-
 				break;
 			case XK_q:
 				camera.rotate(-4.0f);
@@ -404,30 +417,29 @@ int check_keys(XEvent *e)
 
 void render()
 {
-    Player *player = Player::getInstance();
     glClear(GL_COLOR_BUFFER_BIT);
-    int g = gs.set_gameState();
-    if (g == 1) {
+    int game = gs.set_gameState();
+    if (game == 1) {
         mm.drawButtons();
-    } else if (g == 2) {
-	if (player != 0) {
-	    player->displayImage();
-	}
-	ng.drawButtons();
+    } else if (game == 2) {
+	    displayCharacterImage(g.archerImage, 400, 500); 
+	    displayCharacterImage(g.soldierImage, 400, 400); 
+	    displayCharacterImage(g.tankImage, 400, 300); 
+        ng.drawButtons();
     }
-    else if(g == 6) { 
-    //3d MAP
-    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-	glLoadIdentity();
-	camera.update();
-	//glTranslatef( 0.0f, 0.0f, -6.0f);
-	//glRotatef(rotation, 0.0f, 1.0f, 0.0f);
-	//glTranslatef(0.0f,0.0f,-10.0f);
-//	tiles[0].draw();
-	map.draw();
-	camera.drawCamera();	
-
-	//rotation+=0.2f;
-	glLoadIdentity();//resests the modelview matrix to center screen
+    else if(game == 6) {
+        Player *player = Player::getInstance();
+        //3d MAP
+        glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+	    glLoadIdentity();
+	    camera.update();
+	    //glTranslatef(0.0f, 0.0f, -6.0f);
+	    //glRotatef(rotation, 0.0f, 1.0f, 0.0f);
+	    //glTranslatef(0.0f,0.0f,-10.0f);
+        //	tiles[0].draw();
+	    map.draw();
+	    camera.drawCamera(player->image);	
+	    //rotation+=0.2f;
+	    glLoadIdentity();//resests the modelview matrix to center screen
     }
 }

@@ -1,21 +1,17 @@
 //Brandon Hernandez
 #include "brandonH.h"
 
-Button::Button()
-{
+Button::Button() {
 }
 
-Button::Button(string n)
-{
+Button::Button(string n) {
     name = n;
 }
 
-Button::~Button()
-{
+Button::~Button() {
 }
 
-Menu::Menu(int s, Button * b)
-{
+Menu::Menu(int s, Button * b) {
     size = s;
     buttons = new Button[size];
     for(int i = 0; i < size; i++)
@@ -23,33 +19,29 @@ Menu::Menu(int s, Button * b)
     posButtons();
 }
 
-Menu::~Menu()
-{
+Menu::~Menu() {
     delete [] buttons;
 }
 
 
-void Menu::drawNames(int i)
-{
+void Menu::drawNames(int i) {
     int yres = 600;
     Rect r;
     r.bot = yres - (170 +(i*60));
-    r.left = 500 ;
+    r.left = 200 ;
     ggprint16(&r, 16, 0x00ffff00, buttons[i].name.c_str());
 }
 
-void Menu::posButtons()
-{
+void Menu::posButtons() {
     for(int i=0; i<size; i++) {
         buttons[i].width = 100;
         buttons[i].height = 20;
-        buttons[i].center.x = 500;
+        buttons[i].center.x = 200;
         buttons[i].center.y = 500 - (i+1)*60;
     }
 }
 
-void Menu::drawButtons()
-{
+void Menu::drawButtons() {
     for (int i=0; i<size; i++) {
         Button *s;
         glColor3ub(90,140,90);
@@ -70,8 +62,7 @@ void Menu::drawButtons()
     }
 }
 
-int Menu::check_mouse(int savex, int savey, int yres)
-{
+int Menu::check_mouse(int savex, int savey, int yres) {
     for(int i=0;i<size;i++) {
         if(yres - savey < buttons[i].center.y + buttons[i].height && yres - savey > buttons[i].center.y - buttons[i].height &&
                 savex < buttons[i].center.x + buttons[i].width && savex > buttons[i].center.x - buttons[i].width) {
@@ -82,8 +73,7 @@ int Menu::check_mouse(int savex, int savey, int yres)
     return 100;
 }
 
-GameState::GameState()
-{
+GameState::GameState() {
     //Menu Items
     mainMenu = true;
     newGame = false;
@@ -95,8 +85,7 @@ GameState::GameState()
     set_gameState();
 }
 
-int GameState::set_gameState()
-{
+int GameState::set_gameState() {
     if(mainMenu == true) {
         return 1;
     }
@@ -122,8 +111,7 @@ int GameState::set_gameState()
     return 0;
 }
 
-void GameState::set_mm()
-{
+void GameState::set_mm() {
     mainMenu = true;
     newGame = false;
     loadGame = false;
@@ -131,8 +119,7 @@ void GameState::set_mm()
     options = false;
     board = false;
 }
-void GameState::set_ng()
-{
+void GameState::set_ng() {
     newGame = true;
     mainMenu = false;
     loadGame = false;
@@ -141,8 +128,7 @@ void GameState::set_ng()
     board = false;
 }
 
-void GameState::set_lg()
-{
+void GameState::set_lg() {
     loadGame = true;
     mainMenu = false;
     newGame = false;
@@ -151,8 +137,7 @@ void GameState::set_lg()
     board = false;
 }
 
-void GameState::set_hs()
-{
+void GameState::set_hs() {
     highScores = true;
     mainMenu = false;
     newGame = false;
@@ -160,8 +145,7 @@ void GameState::set_hs()
     options = false;
     board = false;
 }
-void GameState::set_op()
-{
+void GameState::set_op() {
     options = true;
     mainMenu = false;
     newGame = false;
@@ -169,8 +153,7 @@ void GameState::set_op()
     highScores = false;
     board = false;
 }
-void GameState::set_board()
-{
+void GameState::set_board() {
     board = true;
     options = false;
     mainMenu = false;

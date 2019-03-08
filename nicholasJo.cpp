@@ -1,7 +1,7 @@
-// Fate the Shadow Wizard Kingdom of Darkness Revived Two The Second One
-// program: nicholasJo.cpp
-// author: Nicholas Jordan
-// date: 02/14/2019
+// Fate: The Shadow Wizard: Kingdom of Darkness: Revived Two: The Second One
+// Program: nicholasJo.cpp
+// Author: Nicholas Jordan
+// Date: 02/14/2019
 
 #ifndef NICHOLAS_JO_CPP
 #define NICHOLAS_JO_CPP
@@ -13,7 +13,7 @@
 
 Entity::Entity() {
 }
-
+//==========[Health Functions]=========
 float Entity::getMaxHealth() {
 	return max_health;
 }
@@ -30,40 +30,66 @@ float Entity::getCurrentHealth() {
 	return current_health;
 }
 
-float Entity::getDefense() {
-	return defense;
+void Entity::setMaxHealth(float h) {
+	max_health = h;
+    return;
+}
+//==========[Defense Functions]=========
+float Entity::getDefaultDefense() {
+    return default_defense;
 }
 
+float Entity::getCurrentDefense() {
+	return current_defense;
+}
+
+void Entity::setDefaultDefense(float d) {
+	default_defense = d;
+    return;
+}
+//==========[Damage Functions]=========
+void Entity::setDefaultDamage(float d) {
+    default_damage = d;
+    return;
+}
+
+float Entity::getCurrentDamage() {
+    return current_damage;
+}
+
+float Entity::getDefaultDamage() {
+    return default_damage;
+}
+//==========[Ally Functions]=========
 void Entity::setAlly(bool a) {
 	ally = a;
+    return;
 }
 
 bool Entity::getAlly() {
 	return ally;
 }
-
-void Entity::setMaxHealth(float h) {
-	max_health = h;
-}
-
-void Entity::setDefense(float d) {
-	defense = d;
-}
-
-void Entity::displayImage() {
-	float wid = 50;
+//==========[ETC]=========
+void Entity::displayImage(int x, int y, int z) {
+	float wid = 1;
 	glPushMatrix();
-	glTranslatef(100, 100, 0);
+	glTranslatef(x, y, z);
 	glColor3f(1.0f, 1.0f, 1.0f);
 	glBindTexture(GL_TEXTURE_2D, image);
 	glBegin(GL_QUADS);
-        glTexCoord2f(0.0f, 1.0f); glVertex2i(-wid,-wid);
-        glTexCoord2f(0.0f, 0.0f); glVertex2i(-wid, wid);
-        glTexCoord2f(1.0f, 0.0f); glVertex2i( wid, wid);
-        glTexCoord2f(1.0f, 1.0f); glVertex2i( wid,-wid);
+        glTexCoord2f(0.0f, 1.0f); glVertex3f(wid, 0.5f, wid);
+        glTexCoord2f(0.0f, 0.0f); glVertex3f(wid, 0.5f, -wid);
+        glTexCoord2f(1.0f, 0.0f); glVertex3f(-wid, 0.5f, -wid);
+        glTexCoord2f(1.0f, 1.0f); glVertex3f(-wid, 0.5f, wid);
         glEnd();
         glBindTexture(GL_TEXTURE_2D, 0);
 	glPopMatrix();
+}
+
+void Entity::resetStats() {
+    current_health = max_health;
+    current_defense = default_defense;
+    current_damage = default_damage;
 }
 
 //==========================[ALLY CLASS]===============================
@@ -72,29 +98,33 @@ void Entity::displayImage() {
 Ally::Ally() {
 	setAlly(true);
 	setAllyCombatType();
+    current_health = getMaxHealth();
+    current_defense = getDefaultDefense();
+    current_damage = getDefaultDamage();
 }
 
 void Ally::setAllyCombatType() {
 	//randomly generate a number from 0 to 2 to choose combat type
-	int random = rand() % 3;
+	srand(time(NULL));
+    int random = rand() % 3;
 	switch (random) {
 		case 0 :
 			combatType = "archer";
 			setMaxHealth(50.0);
-			setDefense(0.3);
-			damage = 10;
+			setDefaultDefense(0.3);
+			setDefaultDamage(10.0);
 			break;
 		case 1:
 			combatType = "soldier";
 			setMaxHealth(75.0);
-			setDefense(0.5);
-			damage = 15;
+			setDefaultDefense(0.5);
+			setDefaultDamage(15.0);
 			break;
 		case 2:
 			combatType = "tank";
 			setMaxHealth(100);
-			setDefense(0.7);
-			damage = 12;
+			setDefaultDefense(0.7);
+			setDefaultDamage(12.0);
 			break;
 	}
 	return;
@@ -106,6 +136,9 @@ void Ally::setAllyCombatType() {
 Enemy::Enemy() {
 	setAlly(false);
 	setEnemyCombatType();
+    current_health = getMaxHealth();
+    current_defense = getDefaultDefense();
+    current_damage = getDefaultDamage();
 }
 
 void Enemy::setEnemyCombatType() {
@@ -116,23 +149,27 @@ void Enemy::setEnemyCombatType() {
 		case 0 :
 			combatType = "archer";
 			setMaxHealth(50.0);
-			setDefense(0.3);
-			damage = 10;
+			setDefaultDefense(0.3);
+			setDefaultDamage(10.0);
 			break;
 		case 1:
 			combatType = "soldier";
 			setMaxHealth(75.0);
-			setDefense(0.5);
-			damage = 15;
+			setDefaultDefense(0.5);
+			setDefaultDamage(15.0);
 			break;
 		case 2:
 			combatType = "tank";
 			setMaxHealth(100);
-			setDefense(0.7);
-			damage = 12;
+			setDefaultDefense(0.7);
+			setDefaultDamage(12.0);
 			break;
 	}
 	return;
+}
+
+void Enemy::setEnemyImage() {
+
 }
 
 //==========================[PLAYER CLASS]===============================
@@ -143,6 +180,9 @@ int Player::count = 0;
 Player::Player(string c, GLuint i) {
 	setPlayerCombatType(c);
 	setPlayerImage(i);
+    current_health = getMaxHealth();
+    current_defense = getDefaultDefense();
+    current_damage = getDefaultDamage();
 	count++;
 }
 
@@ -156,7 +196,7 @@ Player* Player::getInstance() {
 	return 0;
 }
 
-Player* Player::getInstance(string c, GLuint i) {
+Player* Player::setInstance(string c, GLuint i) {
 	if (instance == 0) {
 		instance = new Player(c, i);
 	}
@@ -170,16 +210,16 @@ Player::~Player() {
 void Player::setPlayerCombatType(string c) {
 	if (c == "archer") {
 		setMaxHealth(75.0);
-		setDefense(0.60);
-		damage = 15;
+		setDefaultDefense(0.60);
+		setDefaultDamage(15.0);
 	} else if (c == "soldier") {
 		setMaxHealth(100.0);
-		setDefense(0.70);
-		damage = 20;
+		setDefaultDefense(0.70);
+		setDefaultDamage(20.0);
 	} else if (c == "tank") {
 		setMaxHealth(125.0);
-		setDefense(0.80);
-		damage = 22;
+		setDefaultDefense(0.80);
+	    setDefaultDamage(22.0);
 	}
 	return;
 }
@@ -221,6 +261,11 @@ void Display_NicholasJordan(int x, int y, GLuint textid) {
     r.center = 0;
     ggprint8b(&r, 16, 0x00000000, "Nicholas Jordan");
     glPopMatrix();
+}
+
+Enemy* spawnEnemies(int amount) {
+    Enemy *baddies = new Enemy[amount];
+    return baddies;
 }
 
 #endif

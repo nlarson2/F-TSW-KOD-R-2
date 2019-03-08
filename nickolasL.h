@@ -132,15 +132,16 @@ class Camera{
 		vector3 pos;
 		vector3 front;
 		vector3 up;
-		vector3 view;
 		float radius;
 		float pitch;
 		float yaw;
 	public:
+        //view was private
+		vector3 view;
 		Camera();
 		void update();
 		
-		void drawCamera();
+		void drawCamera(GLuint);
 		void rotate(float direction);
 		void translate(vector2 direction);
 

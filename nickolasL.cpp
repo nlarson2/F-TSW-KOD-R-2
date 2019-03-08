@@ -166,7 +166,6 @@ void Model::draw() {
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 
-
 }
 
 static Model tiles[2] = {  Model( "tiles/grassPlain.obj" , "tiles/grassPlainTex.png" ),
@@ -348,20 +347,27 @@ void Camera::update()
 
 }
 
-void Camera::drawCamera()
+void Camera::drawCamera(GLuint texture)
 {	
-	glPushMatrix();
-
+	glBindTexture( GL_TEXTURE_2D, texture);
+    glPushMatrix();
+    
 	glBegin(GL_QUADS);
-		glColor3f(1.0f,0.0f,0.0f);
+		glTexCoord2f(1, 1);
 		glVertex3f(view.x+1, 0.5f , view.z+1);
+		
+        glTexCoord2f(1, 0);
 		glVertex3f(view.x+1, 0.5f , view.z-1);
+		
+        glTexCoord2f(0, 0);
 		glVertex3f(view.x-1, 0.5f , view.z-1);
+		
+        glTexCoord2f(0, 1);
 		glVertex3f(view.x-1, 0.5f , view.z+1);
 		glColor3f(1.0f,1.0f,1.0f);
 	glEnd();
 	glPopMatrix();
-
+	glBindTexture( GL_TEXTURE_2D, 0);
 }
 
 void Camera::rotate(float direction)

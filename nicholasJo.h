@@ -1,62 +1,82 @@
-//Author: Nicholas Jordan
-//Date: 02/24/2019
+// Fate: The Shadow Wizard: Kingdom of Darkness: Revived Two: The Second One
+// Program: nicholasJo.h
+// Author: Nicholas Jordan
+// Date: 02/24/2019
 
 #include <GL/glx.h>
 #include "fonts.h"
 #include <string>
+#include <typeinfo>
 
 using namespace std;
 
 #ifndef NICHOLAS_JO_H
 #define NICHOLAS_JO_H
 
-void Display_NicholasJordan(int, int, GLuint);
-
 class Entity
 {
 	private:
+        // can only be called in parent class
 		float max_health;
-		float defense;
+		float default_defense;
+        float default_damage;
 		bool ally;
+    protected:
+        // can only be called in parent or inherited classes
+		void setMaxHealth(float);
+        void setDefaultDefense(float);
+        void setDefaultDamage(float);
 	public:
 		Entity();
-		float getMaxHealth();
+		//====[Health Functions]====
+        float getMaxHealth();
 		float getCurrentHealth();
-		void setMaxHealth(float);
-		float getDefense();
-		void setDefense(float);
-		void setAlly(bool);
+		//====[Defense Functions]====
+		float getDefaultDefense();
+		float getCurrentDefense();
+		//====[Damage Functions]====
+        float getDefaultDamage();
+        float getCurrentDamage();
+		//====[Ally Functions]====
+        void setAlly(bool);
 		bool getAlly();
-		void displayImage();
+		//====[ETC]====
+        void displayImage(int x, int y, int z);
+		void resetStats();
 
 		string combatType;
 		float current_health;
-		float damage;
+        float current_defense;
+		float current_damage;
 		GLuint image;
-};
-
-class Ally : public Entity
-{
-	public:
-		Ally();
-		void setAllyCombatType();
 };
 
 class Enemy : public Entity
 {
 	public:
 		Enemy();
+    private:
 		void setEnemyCombatType();
+		void setEnemyImage();
+};
+
+class Ally : public Entity
+{
+	public:
+		Ally();
+    private:
+		void setAllyCombatType();
+		void setAllyImage();
 };
 
 //singleton class
-//initialize player with: Player *player = Player::getInstance();
 class Player : public Entity
 {
 	public:
+        Ally *allies;
 		static int count;
 		static Player* getInstance();
-		static Player* getInstance(string, GLuint);
+		static Player* setInstance(string, GLuint);
 		void setPlayerCombatType(string);
 		void setPlayerImage(GLuint);
 	private:
@@ -64,5 +84,8 @@ class Player : public Entity
 		Player(string, GLuint);
 		~Player();
 };
+
+void Display_NicholasJordan(int, int, GLuint);
+Enemy* spawnEnemies(int);
 
 #endif
