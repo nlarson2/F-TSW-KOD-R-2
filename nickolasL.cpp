@@ -320,8 +320,8 @@ Camera::Camera()
 {	
 	
 	yaw = 0.0f;
-	radius = 6.0f;
-	pos( sin(yaw * PI / 180)*radius, 10.0f, 
+	radius = 10.0f;
+	pos( sin(yaw * PI / 180)*radius, 8.0f, 
 			cos(yaw * PI / 180)*radius);
 	front( 0, 0, 0);
 	up( 0, 1.0f, 0);	
