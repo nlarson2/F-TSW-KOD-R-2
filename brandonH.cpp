@@ -73,6 +73,67 @@ int Menu::check_mouse(int savex, int savey, int yres) {
     return 100;
 }
 
+MenuGS::MenuGS(int s, Button * b)
+{
+    size = s;
+    buttons = new Button[size];
+    this->xres = xres;
+    this->yres = yres;
+    for (int i=0; i<size; i++) {
+        buttons[i] = b[i];
+        //Position Buttons
+        buttons[i].width = 100;
+        buttons[i].height = 20;
+        buttons[i].center.x = 200;
+        buttons[i].center.y = 500 - (i+1)*60;
+    }
+}
+
+void MenuGS::procMouseInput(int x, int y)
+{
+        for(int i=0;i<size;i++) {
+        if(yres - y < buttons[i].center.y + buttons[i].height && yres - y > buttons[i].center.y - buttons[i].height &&
+                x < buttons[i].center.x + buttons[i].width && x > buttons[i].center.x - buttons[i].width) {
+            cout << "Count: " << i << " Button: " << buttons[i].name << endl;
+        }
+    }
+}
+
+void MenuGS::procKeyInput(int key)
+{
+    //read keys
+}
+
+void MenuGS::drawGameState()
+{
+        for (int i=0; i<size; i++) {
+            //Draw Buttons
+            Button *s;
+            glColor3ub(90,140,90);
+            s = &buttons[i];
+            glPushMatrix();
+            glTranslatef(s->center.x, s->center.y, s->center.z);
+            float w, h;
+            w = s->width;
+            h = s->height;
+            glBegin(GL_QUADS);
+            glVertex2i(-w, -h);
+            glVertex2i(-w,  h);
+            glVertex2i( w,  h);
+            glVertex2i( w, -h);
+            glEnd();
+            glPopMatrix();
+        
+            //Draw Names
+            int yres = 600;
+            Rect r;
+            r.bot = yres - (170 +(i*60));
+            r.left = 200 ;
+            ggprint16(&r, 16, 0x00ffff00, buttons[i].name.c_str());
+    }
+}
+
+/*
 GameState::GameState() {
     //Menu Items
     mainMenu = true;
@@ -160,7 +221,7 @@ void GameState::set_board() {
     newGame = false;
     loadGame = false;
     highScores = false;
-}
+}*/
 /*
    void brandonh(int x, int y,gluint textid) 
    {

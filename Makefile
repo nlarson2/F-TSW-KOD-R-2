@@ -1,7 +1,8 @@
-FFLAGS = main.cpp nicholasJo.cpp brandonH.cpp nickolasL.cpp
+FFLAGS = main.cpp nicholasJo.cpp brandonH.cpp nickolasL.cpp Game.cpp maps.cpp
+HFLAGS = nicholasJo.h brandonH.h nickolasL.h Game.h maps.h
 all: game
 
-game: $(FFLAGS)
+game: $(FFLAGS) $(HFLAGS)
 	g++ $(FFLAGS) libggfonts.a -Wall -o game -lX11 -lGL -lGLU -lm
 
 

@@ -8,20 +8,19 @@
 
 #include "nickolasL.h"
 
-
 /*============LARSON'S GLOBALS==========*/
-NLarsGlobal::NLarsGlobal() {
+NLarsGlobal::NLarsGlobal()
+{
 	
 }
 
-NLarsGlobal& NLarsGlobal::getInstance() {
+NLarsGlobal& NLarsGlobal::getInstance()
+{
 	static NLarsGlobal instance;
 	return instance;
 }
 
 /*=======================================*/
-
-
 /*========VECTORE MATH(vec2/vec3)========*/
 
 //vec2-----------------------------------
@@ -75,10 +74,9 @@ vec3 vec3::operator +=(const vec3& right)
 }
 //---------------------------------------
 /*=======================================*/
-
-
 /*=====Function added to Image Class=====*/
-void Image::invertY() {
+void Image::invertY()
+{
 	unsigned char flip[height][width*3];
 	int iter = 0, i, j;
 	for ( i = 0 ; i < height ; i++ ) {
@@ -95,8 +93,6 @@ void Image::invertY() {
 	}
 }
 /*=======================================*/
-
-
 /*==============Draw Credits=============*/
 
 void draw_nickLCredit(int x, int y, GLuint texture)
@@ -131,7 +127,8 @@ void draw_nickLCredit(int x, int y, GLuint texture)
 
 
 /*============MODEL STUCTURE=============*/
-Model::Model( const char * objFile, const char * texFile ) {
+Model::Model( const char * objFile, const char * texFile )
+{
 	if(!GenerateModel(objFile)) {
 		printf("Failed to generate model\n");
 	}
@@ -140,7 +137,8 @@ Model::Model( const char * objFile, const char * texFile ) {
 	}
 }
 
-void Model::draw() {
+void Model::draw() 
+{
 	glBindTexture(GL_TEXTURE_2D, texture);
 	glBegin(GL_TRIANGLES);
 
@@ -256,7 +254,7 @@ Map::Map(int *map, int _width, int _height){
 				for(int j = 0; j < 25 ; j++){
 					tile[i][j].modelID = map[count];
 					tile[i][j].x = 2.0*j;
-					tile[i][j].z = -1.70710378118f*i;
+					tile[i][j].z = 1.70710378118f*i;
 					if(i%2 == 0)
 						tile[i][j].x -= 1.0f;
 					count++;
@@ -318,33 +316,46 @@ vector3 vector3::operator+(vector3  right) {
 Camera::Camera()
 {	
 	
-	yaw = 0.0f;
+	yaw = 180.0f;
 	radius = 10.0f;
 	pos( sin(yaw * PI / 180)*radius, 8.0f, 
-			cos(yaw * PI / 180)*radius);
+		cos(yaw * PI / 180)*radius);
 	front( 0, 0, 0);
 	up( 0, 1.0f, 0);	
 	pitch = 45.0f;
 	view((pos.x + front.x),
-			(pos.y + front.y),
-			(pos.z + front.z));
+		(pos.y + front.y),
+		(pos.z + front.z));
 	wPos(0,0,0);			
 }
+
+Camera::Camera(float rot, int posx, int posz)
+{	
+	
+	yaw = rot;
+	wPos.x = posx;
+	wPos.z = posz;
+	radius = 10.0f;
+	pos( sin(yaw * PI / 180)*radius, 8.0f, 
+		cos(yaw * PI / 180)*radius);
+	front( 0, 0, 0);
+	up( 0, 1.0f, 0);	
+	pitch = 45.0f;
+	view((pos.x + front.x),
+		(pos.y + front.y),
+		(pos.z + front.z));
+	wPos(0,0,0);			
+}
+
 void Camera::update()
 {
-	
-
 	view((wPos.x + front.x),
-			(wPos.y + front.y),
-			(wPos.z + front.z));
+		(wPos.y + front.y),
+		(wPos.z + front.z));
 	
-	
-
-	gluLookAt(  pos.x+wPos.x,  pos.y+wPos.y,  pos.z+wPos.z,
+	gluLookAt(pos.x+wPos.x,  pos.y+wPos.y,  pos.z+wPos.z,
 			view.x, view.y, view.z,
-				up.x,   up.y,   up.z);
-
-
+			up.x,   up.y,   up.z);
 }
 
 void Camera::drawCamera(GLuint texture)
@@ -401,9 +412,75 @@ void Camera::translate(vector2 direction)
 //	front.z += direction.z;
 }
 
+/*=======================================*/
+/*===============WORLDGS=================*/
+WorldGS::WorldGS(int* mapArr,int sizex,int sizey,
+	float camRot, int posx, int posz,
+	float xres, float yres) :
+	map(mapArr, sizex, sizey), camera(camRot, posx, posz)
+{	
+	this->xres = xres;
+	this->yres = yres;
+	glMatrixMode(GL_PROJECTION); glLoadIdentity();
+	//discussed futher in later tutorial
+	glShadeModel(GL_SMOOTH);//enables smooth shading
 
-/*=======================================*/
-/*=======================================*/
+	// sets the depth buffer//stop elements from drawing over others
+	glClearDepth(1.0f);//Depth buffer setup
+	glEnable(GL_DEPTH_TEST);//Enables Depth Testing
+	glDepthFunc(GL_LEQUAL);//The type of depth test to do
+
+	//??makes the perspective view better?
+	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+}
+void WorldGS::procMouseInput(int x, int y)
+{
+
+}
+void WorldGS::procKeyInput(int key)
+{
+	switch (key) {
+            case XK_1:
+				//Key 1 was pressed
+				break;
+			case XK_a:
+				camera.translate(vector2(-1,0));
+				break;
+			case XK_d:
+				camera.translate(vector2(1,0));
+				break;
+			case XK_w:
+				camera.translate(vector2(0,-1));
+				break;
+			case XK_s:
+				camera.translate(vector2(0,1));
+				break;
+			case XK_q:
+				camera.rotate(-4.0f);
+				break;
+			case XK_e:
+				camera.rotate(4.0f);
+				break;
+        }
+}
+void WorldGS::drawGameState()
+{
+    //draw map
+	//
+	//
+    gluPerspective(45.0f, xres/yres, 0.1f, 100.0f);
+    glMatrixMode(GL_MODELVIEW); glLoadIdentity();
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+	glLoadIdentity();
+	camera.update();
+	map.draw();
+	camera.drawCamera(0);
+
+	//draw UI
+	//
+	//
+}
+
 /*=======================================*/
 /*=======================================*/
 /*=======================================*/

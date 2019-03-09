@@ -10,19 +10,24 @@
 #include <GL/glx.h>
 #include "fonts.h"
 #include <unistd.h>
+#include <stack>
 
 #include "Image.h"
+#include "maps.h"
 
+#include "Game.h"
 #include "nickolasL.h"
 #include "nicholasJo.h"
 #include "marbienJ.h"
 #include "brandonH.h"
 #include "adamO.h"
-#include "Game.h"
+
 
 
 using namespace std;
 
+Map map(tileMap, 25, 25);
+Camera camera;
 
 Button newGame("New Game"), loadGame("Load Game"), highScores("High Scores"), options("Controls"), exitf("Exit");
 Button btn[] = {newGame,loadGame,highScores,options,exitf};
@@ -33,7 +38,7 @@ Button btn1[] = {char1,char2,char3,char4,char5};
 Menu ng(5,btn1);
 
 
-GameState gs;
+stack<GameState> gs;
 /******Image Class Definitions********/
 Image::~Image() { delete [] data; }
 Image::Image(const char *fname) {
@@ -97,7 +102,6 @@ class Global
         Global() {
             xres = 800;
             yres = 600;
-            n = 0;
             count = 0;
         }
 }g;
@@ -254,26 +258,7 @@ void init_opengl3D(void)
     //Initialize matrices
     
     
-    //3D perspective view
     
-    glMatrixMode(GL_PROJECTION); glLoadIdentity();
-    gluPerspective(45.0f,(GLfloat)g.xres/(GLfloat)g.yres,0.1f,100.0f);
-
-
-	//discussed futher in later tutorial
-	glShadeModel(GL_SMOOTH);//enables smooth shading
-
-	// sets the depth buffer//stop elements from drawing over others
-	glClearDepth(1.0f);//Depth buffer setup
-	glEnable(GL_DEPTH_TEST);//Enables Depth Testing
-	glDepthFunc(GL_LEQUAL);//The type of depth test to do
-
-
-	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);//??makes the perspective view better??
-    
-
-
-    glMatrixMode(GL_MODELVIEW); glLoadIdentity();
     //Set 2D mode (no perspective)
     //COMMENT OUT LINE BELOW BEFORE TYRING TO MAKE IT 3D
     //glOrtho(0, g.xres, 0, g.yres, -1, 1);
@@ -441,6 +426,7 @@ void render()
 	    map.draw();
 	    camera.drawCamera(0);	
 	    //rotation+=0.2f;
-	    glLoadIdentity();//resests the modelview matrix to center screen
     }
+	glLoadIdentity();//resests the modelview matrix to center screen
+
 }

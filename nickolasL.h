@@ -1,7 +1,7 @@
 //Author: Nickolas Larson
 //Date: 2/14/2019
 //Modified By: Nickolas Larson
-//Modified 3/02/2019
+//Modified 3/08/2019
 
 #ifndef NICKOLAS_L_H
 #define NICKOLAS_L_H
@@ -15,11 +15,12 @@
 #include <GL/glx.h>
 #include <GL/glu.h>
 #include "fonts.h"
-#include "Image.h"
 
+
+#include "Image.h"
+//#include "Game.h"
 
 using namespace std;
-
 
 
 #define PI 3.14159265359
@@ -41,6 +42,7 @@ public:
         static NLarsGlobal& getInstance();
 
 };
+
 
 struct vec2
 {
@@ -139,12 +141,43 @@ class Camera{
         //view was private
 		vector3 view;
 		Camera();
+		Camera(float rot, int posx, int posz);
 		void update();
 		
 		void drawCamera(GLuint);
 		void rotate(float direction);
 		void translate(vector2 direction);
 
+};
+
+
+
+class GameState
+{
+    private:
+		
+	public:
+		GameState();
+		
+		virtual void procMouseInput(int x, int y) = 0;
+		virtual void procKeyInput(int key) = 0;
+		virtual void drawGameState() = 0;
+
+};
+
+class WorldGS : public GameState {
+
+    private:
+        Map map;
+		Camera camera;
+		float xres, yres;
+    public:
+        WorldGS(int* mapArr,int sizex,int sizey,
+			float camRot, int posx, int posz,
+			float xres, float yres);
+        void procMouseInput(int x, int y);
+		void procKeyInput(int key);
+		void drawGameState();
 };
 
 #endif
