@@ -349,6 +349,7 @@ void Camera::update()
 
 void Camera::drawCamera(GLuint texture)
 {	
+
 	glBindTexture( GL_TEXTURE_2D, texture);
     glPushMatrix();
     

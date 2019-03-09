@@ -315,6 +315,7 @@ void check_mouse(XEvent *e)
                 flag = mm.check_mouse(savex, savey, g.yres);
             if(g.count == 1)
                 flag = ng.check_mouse(savex,savey, g.yres);
+            //Player * player;
             switch(flag) {
                 case 0:
                     //check gameState
@@ -323,7 +324,7 @@ void check_mouse(XEvent *e)
                     gs.set_ng();
                     g.count++;
                     } else {
-                       Player * player = Player::setInstance("archer", g.archerImage);
+                       //player = Player::setInstance("archer", g.archerImage);
                        gs.set_board();
                        g.count++;
                        init_opengl3D();
@@ -334,7 +335,7 @@ void check_mouse(XEvent *e)
                     //gameState = loadGame || Char2
                     if(g.count == 0) {
                     } else {
-                        Player * player = Player::setInstance("soldier", g.soldierImage);
+                        //player = Player::setInstance("soldier", g.soldierImage);
                         gs.set_board();
                         g.count++;
                         init_opengl3D();
@@ -346,7 +347,7 @@ void check_mouse(XEvent *e)
                     //gameState = highScores || Char3
                     if(g.count == 0) {
                     } else {
-                        Player * player = Player::setInstance("tank", g.tankImage);
+                        //player = Player::setInstance("tank", g.tankImage);
                         gs.set_board();
                         g.count++;
                         init_opengl3D();
@@ -428,7 +429,7 @@ void render()
         ng.drawButtons();
     }
     else if(game == 6) {
-        Player *player = Player::getInstance();
+        //Player *player = Player::getInstance();
         //3d MAP
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 	    glLoadIdentity();
@@ -438,7 +439,7 @@ void render()
 	    //glTranslatef(0.0f,0.0f,-10.0f);
         //	tiles[0].draw();
 	    map.draw();
-	    camera.drawCamera(player->image);	
+	    camera.drawCamera(0);	
 	    //rotation+=0.2f;
 	    glLoadIdentity();//resests the modelview matrix to center screen
     }
