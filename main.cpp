@@ -26,8 +26,8 @@
 
 using namespace std;
 
-Map map(tileMap, 25, 25);
-Camera camera;
+//Map map(tileMap, 25, 25);
+//Camera camera;
 
 Button newGame("New Game"), loadGame("Load Game"), highScores("High Scores"), options("Controls"), exitf("Exit");
 Button btn[] = {newGame,loadGame,highScores,options,exitf};
@@ -181,18 +181,18 @@ class X11_wrapper {
 } x11;
 
 //Function prototypes
-void init_opengl(void);
+void init_opengl3D(void);
 void check_mouse(XEvent *e);
 int check_keys(XEvent *e);
 void render();
-
+WorldGS worldGS(mainMap, 25, 25, 180, 0, 0, g.xres, g.yres);
 //=====================================
 // MAIN FUNCTION IS HERE
 //=====================================
 int main()
 {
     srand(time(NULL));
-    init_opengl();
+    //init_opengl3D();
     //Main animation loop
     int done = 0;
     while (!done) {
@@ -258,7 +258,26 @@ void init_opengl3D(void)
     //Initialize matrices
     
     
+    //3D perspective view
     
+    glMatrixMode(GL_PROJECTION); glLoadIdentity();
+    gluPerspective(45.0f,(GLfloat)g.xres/(GLfloat)g.yres,0.1f,100.0f);
+
+
+	//discussed futher in later tutorial
+	glShadeModel(GL_SMOOTH);//enables smooth shading
+
+	// sets the depth buffer//stop elements from drawing over others
+	glClearDepth(1.0f);//Depth buffer setup
+	glEnable(GL_DEPTH_TEST);//Enables Depth Testing
+	glDepthFunc(GL_LEQUAL);//The type of depth test to do
+
+
+	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);//??makes the perspective view better??
+    
+
+
+    glMatrixMode(GL_MODELVIEW); glLoadIdentity();
     //Set 2D mode (no perspective)
     //COMMENT OUT LINE BELOW BEFORE TYRING TO MAKE IT 3D
     //glOrtho(0, g.xres, 0, g.yres, -1, 1);
@@ -272,7 +291,7 @@ void init_opengl3D(void)
 
     GenerateGLTexture(g.archerImage, "./images/nickLCreditPic.jpg", false);
     GenerateGLTexture(g.soldierImage, "./images/nicholasJo.png", false);
-    GenerateGLTexture(g.tankImage, "./images/brandonH.png", false);
+GenerateGLTexture(g.tankImage, "./images/brandonH.png", false);
 }
 void check_mouse(XEvent *e)
 {
@@ -306,11 +325,11 @@ void check_mouse(XEvent *e)
                     //check gameState
                     //NewGame GameBoard || Char1 || Save file 1
                     if(g.count == 0) {
-                    gs.set_ng();
+                   // gs.set_ng();
                     g.count++;
                     } else {
                        //player = Player::setInstance("archer", g.archerImage);
-                       gs.set_board();
+                     //  gs.set_board();
                        g.count++;
                        init_opengl3D();
                     }
@@ -321,7 +340,7 @@ void check_mouse(XEvent *e)
                     if(g.count == 0) {
                     } else {
                         //player = Player::setInstance("soldier", g.soldierImage);
-                        gs.set_board();
+                      //  gs.set_board();
                         g.count++;
                         init_opengl3D();
                     }
@@ -333,7 +352,7 @@ void check_mouse(XEvent *e)
                     if(g.count == 0) {
                     } else {
                         //player = Player::setInstance("tank", g.tankImage);
-                        gs.set_board();
+                      //  gs.set_board();
                         g.count++;
                         init_opengl3D();
                     }
@@ -346,7 +365,7 @@ void check_mouse(XEvent *e)
                     if(g.count == 0)
                         exit(0);
                     else if(g.count == 1){
-                        gs.set_mm();
+                        //gs.set_mm();
                         g.count--;
                     }
                     break;
@@ -369,22 +388,24 @@ int check_keys(XEvent *e)
     if (e->type != KeyPress && e->type != KeyRelease)
         return 0;
     int key = XLookupKeysym(&e->xkey, 0);
+    worldGS.procKeyInput(key);
+    /*
     if (e->type == KeyPress) {
         switch (key) {
             case XK_1:
 				//Key 1 was pressed
 				break;
 			case XK_a:
-				camera.translate(vector2(-1,0));
+				camera.translate(vec2(-1,0));
 				break;
 			case XK_d:
-				camera.translate(vector2(1,0));
+				camera.translate(vec2(1,0));
 				break;
 			case XK_w:
-				camera.translate(vector2(0,-1));
+				camera.translate(vec2(0,-1));
 				break;
 			case XK_s:
-				camera.translate(vector2(0,1));
+				camera.translate(vec2(0,1));
 				break;
 			case XK_q:
 				camera.rotate(-4.0f);
@@ -398,13 +419,14 @@ int check_keys(XEvent *e)
 				return 1;
         }
     }
+    */
     return 0;
 }
 
 void render()
-{
-    glClear(GL_COLOR_BUFFER_BIT);
-    int game = gs.set_gameState();
+{/*
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    /*int game = gs.set_gameState();
     if (game == 1) {
         mm.drawButtons();
     } else if (game == 2) {
@@ -426,7 +448,8 @@ void render()
 	    map.draw();
 	    camera.drawCamera(0);	
 	    //rotation+=0.2f;
-    }
+    //}
 	glLoadIdentity();//resests the modelview matrix to center screen
-
+*/
+    worldGS.drawGameState();
 }

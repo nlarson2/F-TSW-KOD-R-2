@@ -48,6 +48,7 @@ struct vec2
 {
 	float x, y;
 	vec2();
+	vec2(float x, float z);
 	vec2 operator = (const vec2& right);
 	vec2 operator +(const vec2& right);
 	vec2 operator +=(const vec2& right);
@@ -57,6 +58,8 @@ struct vec3
 {
 	float x, y, z;
 	vec3();
+	vec3(float x, float y, float z);
+	void operator()(float _x, float _y, float _z);
 	vec3 operator = (const vec3& right);
 	vec3 operator +(const vec3& right);
 	vec3 operator +=(const vec3& right);
@@ -103,50 +106,29 @@ class Map
 };
 
 
-struct vector2
-{
-	float x,z;
-
-	vector2(float _x,float _z);
-	
-};
-struct vector3
-{
-	float x,y,z;
-	vector3() = default;	
-	vector3(float _x, float _y, float _z);
-
-	void operator()(float _x, float _y, float _z);
-
-	vector3  operator=(vector3 & right);
-
-	vector3 operator+(vector3  right);
-/*
-	void rotateY
-*/
-};
 
 
 
 class Camera{
 	private:
-		vector3 wPos;//world position
-		vector3 pos;
-		vector3 front;
-		vector3 up;
+		vec3 wPos;//world position
+		vec3 pos;
+		vec3 front;
+		vec3 up;
+		vec2 vel;
 		float radius;
 		float pitch;
 		float yaw;
 	public:
         //view was private
-		vector3 view;
+		vec3 view;
 		Camera();
 		Camera(float rot, int posx, int posz);
 		void update();
 		
 		void drawCamera(GLuint);
 		void rotate(float direction);
-		void translate(vector2 direction);
+		void translate(vec2 direction);
 
 };
 
@@ -157,7 +139,7 @@ class GameState
     private:
 		
 	public:
-		GameState();
+		GameState() {};
 		
 		virtual void procMouseInput(int x, int y) = 0;
 		virtual void procKeyInput(int key) = 0;
@@ -175,6 +157,7 @@ class WorldGS : public GameState {
         WorldGS(int* mapArr,int sizex,int sizey,
 			float camRot, int posx, int posz,
 			float xres, float yres);
+		void initWGS_GL();
         void procMouseInput(int x, int y);
 		void procKeyInput(int key);
 		void drawGameState();

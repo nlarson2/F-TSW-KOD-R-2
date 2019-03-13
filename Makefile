@@ -3,7 +3,7 @@ HFLAGS = nicholasJo.h brandonH.h nickolasL.h Game.h maps.h
 all: game
 
 game: $(FFLAGS) $(HFLAGS)
-	g++ $(FFLAGS) libggfonts.a -Wall -o game -lX11 -lGL -lGLU -lm
+	g++ -g $(FFLAGS) libggfonts.a -Wall -o game -lX11 -lGL -lGLU -lm
 
 
 clean:

@@ -262,10 +262,9 @@ bool Model::GenerateTexture ( const char * texFile ) {
 /*=======================================*/
 
 
-Map::Map(int *map, int _width, int _height){
+Map::Map(int map[], int _width, int _height){
 		mapW = _width;
 		mapH = _height;
-		printf("%d  %d", mapW, mapH);
 		tile = new Tile *[mapW];
 		for(int i = 0; i<25;i++){
 				tile[i] = new Tile[mapH];
@@ -274,7 +273,8 @@ Map::Map(int *map, int _width, int _height){
 		for(int i = 0; i < 25; i++){
 
 				for(int j = 0; j < 25 ; j++){
-					tile[i][j].modelID = 0;
+					printf("%d\n",count);
+					tile[i][j].modelID = map[count];
 					tile[i][j].x = 2.0*j;
 					tile[i][j].z = 1.70710378118f*i;
 					if(i%2 == 0)
@@ -391,7 +391,7 @@ void Camera::translate(vec2 direction)
 	}
 	
 	wPos.x += direction.x;
-	wPos.y += direction.y;
+	wPos.z += direction.y;
 
 //	front.x += direction.x;
 //	front.z += direction.z;
@@ -406,7 +406,22 @@ WorldGS::WorldGS(int* mapArr,int sizex,int sizey,
 {	
 	this->xres = xres;
 	this->yres = yres;
-	glMatrixMode(GL_PROJECTION); glLoadIdentity();
+	initWGS_GL();
+}
+
+void WorldGS::initWGS_GL()
+{
+	 //OpenGL initialization
+    glViewport(0, 0, xres, yres);
+    //Initialize matrices
+    
+    
+    //3D perspective view
+    
+    glMatrixMode(GL_PROJECTION); glLoadIdentity();
+    gluPerspective(45.0f,(GLfloat)xres/(GLfloat)yres,0.1f,100.0f);
+
+
 	//discussed futher in later tutorial
 	glShadeModel(GL_SMOOTH);//enables smooth shading
 
@@ -415,8 +430,21 @@ WorldGS::WorldGS(int* mapArr,int sizex,int sizey,
 	glEnable(GL_DEPTH_TEST);//Enables Depth Testing
 	glDepthFunc(GL_LEQUAL);//The type of depth test to do
 
-	//??makes the perspective view better?
-	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+
+	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);//??makes the perspective view better??
+    
+
+
+    glMatrixMode(GL_MODELVIEW); glLoadIdentity();
+    //Set 2D mode (no perspective)
+    //COMMENT OUT LINE BELOW BEFORE TYRING TO MAKE IT 3D
+    //glOrtho(0, g.xres, 0, g.yres, -1, 1);
+
+
+    //Set the screen background color
+    glClearColor(0.1, 0.1, 0.1, 1.0);
+    //Insert Fonts
+    glEnable(GL_TEXTURE_2D);
 }
 void WorldGS::procMouseInput(int x, int y)
 {
@@ -456,6 +484,7 @@ void WorldGS::procKeyInput(int key)
 }
 void WorldGS::drawGameState()
 {
+	// set perspective
     //draw map
 	//
 	//
@@ -469,6 +498,7 @@ void WorldGS::drawGameState()
 	map.draw();
 	camera.drawCamera(0);
 
+	//set ortho
 
 	//draw UI
 	//
