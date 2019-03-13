@@ -22,20 +22,18 @@
 #include "brandonH.h"
 #include "adamO.h"
 
-
-
 using namespace std;
 
 //Map map(tileMap, 25, 25);
 //Camera camera;
 
-Button newGame("New Game"), loadGame("Load Game"), highScores("High Scores"), options("Controls"), exitf("Exit");
+Button newGame("New Game", NEW_GAME), loadGame("Load Game",LOAD_GAME), highScores("High Scores",HIGH_SCORES), options("Controls", CONTROLS), exitf("Exit",EXIT);
 Button btn[] = {newGame,loadGame,highScores,options,exitf};
-Menu mm(5,btn);
+//Menu mm(5,btn);
 
-Button char1("Archer"), char2("Soldier"), char3("Tank"), char4("Null"), char5("Main Menu");
-Button btn1[] = {char1,char2,char3,char4,char5};
-Menu ng(5,btn1);
+//Button char1("Archer"), char2("Soldier"), char3("Tank"), char4("Null"), char5("Main Menu");
+//Button btn1[] = {char1,char2,char3,char4,char5};
+//Menu ng(5,btn1);
 
 
 stack<GameState> gs;
@@ -181,18 +179,19 @@ class X11_wrapper {
 } x11;
 
 //Function prototypes
-void init_opengl3D(void);
+void init_opengl(void);
 void check_mouse(XEvent *e);
 int check_keys(XEvent *e);
 void render();
-WorldGS worldGS(mainMap, 25, 25, 180, 0, 0, g.xres, g.yres);
+//WorldGS worldGS(mainMap, 25, 25, 180, 0, 0, g.xres, g.yres);
+MenuGS menuGS(5, btn, g.xres, g.yres);
 //=====================================
 // MAIN FUNCTION IS HERE
 //=====================================
 int main()
 {
     srand(time(NULL));
-    //init_opengl3D();
+    init_opengl();
     //Main animation loop
     int done = 0;
     while (!done) {
@@ -297,7 +296,7 @@ void check_mouse(XEvent *e)
 {
     static int savex;
     static int savey;
-    int flag;
+    //int flag;
 
     if (e->type != ButtonRelease &&
             e->type != ButtonPress) {
@@ -315,7 +314,8 @@ void check_mouse(XEvent *e)
                 savex = e->xbutton.x;
                 savey = e->xbutton.y;
             }
-            if(g.count == 0)
+            menuGS.procMouseInput(savex, savey);
+            /*if(g.count == 0)
                 flag = mm.check_mouse(savex, savey, g.yres);
             if(g.count == 1)
                 flag = ng.check_mouse(savex,savey, g.yres);
@@ -372,7 +372,7 @@ void check_mouse(XEvent *e)
                 default:
                     break;          
             }
-            return;
+            return;*/
 
             //---------------------------------------------------------
             if (e->xbutton.button==3) {
@@ -388,7 +388,7 @@ int check_keys(XEvent *e)
     if (e->type != KeyPress && e->type != KeyRelease)
         return 0;
     int key = XLookupKeysym(&e->xkey, 0);
-    worldGS.procKeyInput(key);
+    //worldGS.procKeyInput(key);
     /*
     if (e->type == KeyPress) {
         switch (key) {
@@ -426,7 +426,7 @@ int check_keys(XEvent *e)
 void render()
 {/*
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    /*int game = gs.set_gameState();
+    int game = gs.set_gameState();
     if (game == 1) {
         mm.drawButtons();
     } else if (game == 2) {
@@ -451,5 +451,6 @@ void render()
     //}
 	glLoadIdentity();//resests the modelview matrix to center screen
 */
-    worldGS.drawGameState();
+    //worldGS.drawGameState();
+    menuGS.drawGameState();
 }

@@ -24,6 +24,10 @@ using namespace std;
     void set_board();
 };*/
 
+enum ButtonID
+{
+    NEW_GAME,LOAD_GAME,HIGH_SCORES,CONTROLS,EXIT
+};
 
 struct vec
 {
@@ -35,8 +39,9 @@ struct Button
     float height, width;
     vec center;
     string name;
+    ButtonID bid;
     Button();
-    Button(string n);
+    Button(string,ButtonID);
     ~Button();
 };
 
@@ -46,21 +51,24 @@ class Menu
         int size;
         Button * buttons;
         Menu(int,Button*);
+        int state;
         ~Menu();
         void drawNames(int);
         void posButtons();
         void drawButtons();
-        int check_mouse(int,int,int);
+        void check_mouse(int,int,int);
 };
 
 class MenuGS : public GameState {
     private:
+        int state;
         int size;
-        Button * buttons;
+        Button ** buttons;
         float xres, yres;
     public:
-        MenuGS(int, Button*);
-        void procMouseInput(int x, int y);
+        MenuGS(int, Button*,int, int);
+        ~MenuGS();
+        void procMouseInput(int, int);
 		void procKeyInput(int key);
 		void drawGameState();
 };
