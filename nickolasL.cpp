@@ -7,6 +7,7 @@
 #define NICKOLAS_L_CPP
 
 #include "nickolasL.h"
+#include "iostream"
 
 /*============LARSON'S GLOBALS==========*/
 NLarsGlobal::NLarsGlobal()
@@ -28,6 +29,12 @@ vec2::vec2()
 {
 	x = y = 0;
 }
+vec2::vec2(float _x,float _y)
+{
+	x = _x;
+	y = _y;
+}
+
 vec2 vec2::operator = (const vec2& right)
 {
 	x = right.x;
@@ -52,6 +59,20 @@ vec2 vec2::operator +=(const vec2& right)
 vec3::vec3()
 {
 	x = y = z = 0;
+}
+
+vec3::vec3(float _x, float _y, float _z)
+{
+			x = _x;
+			y = _y;
+			z = _z;
+}
+
+void vec3::operator()(float _x, float _y, float _z)
+{
+		x = _x;
+		y = _y;
+		z = _z;
 }
 vec3 vec3::operator = (const vec3& right)
 {	
@@ -244,6 +265,7 @@ bool Model::GenerateTexture ( const char * texFile ) {
 Map::Map(int *map, int _width, int _height){
 		mapW = _width;
 		mapH = _height;
+		printf("%d  %d", mapW, mapH);
 		tile = new Tile *[mapW];
 		for(int i = 0; i<25;i++){
 				tile[i] = new Tile[mapH];
@@ -252,7 +274,7 @@ Map::Map(int *map, int _width, int _height){
 		for(int i = 0; i < 25; i++){
 
 				for(int j = 0; j < 25 ; j++){
-					tile[i][j].modelID = map[count];
+					tile[i][j].modelID = 0;
 					tile[i][j].x = 2.0*j;
 					tile[i][j].z = 1.70710378118f*i;
 					if(i%2 == 0)
@@ -274,43 +296,6 @@ void Map::draw(){
 
 
 
-vector2::vector2(float _x,float _z)
-{
-	x = _x;
-	z = _z;
-}
-
-
-vector3::vector3(float _x, float _y, float _z) {
-			x = _x;
-			y = _y;
-			z = _z;
-
-	}
-
-void vector3::operator()(float _x, float _y, float _z) {
-			x = _x;
-			y = _y;
-			z = _z;
-
-	}
-
-
-vector3  vector3::operator=(vector3 & right) {
-	x = right.x;
-	y = right.y;
-	z = right.z;
-	return *this;
-
-}
-
-vector3 vector3::operator+(vector3  right) {
-	vector3 vec;
-	vec.x = x+right.x;
-	vec.y = y+right.y;
-	vec.z = z+right.z;
-	return vec;
-}
 
 
 Camera::Camera()
@@ -393,20 +378,20 @@ void Camera::rotate(float direction)
 	pos.z = cos(yaw * PI / 180)*radius;
 	//printf("X: %f  Z: %f\n",pos.x, pos.z); 
 }
-void Camera::translate(vector2 direction)
+void Camera::translate(vec2 direction)
 {
-	if(direction.z)
+	if(direction.y)
 	{
-		direction.x = (pos.x/6)*direction.z;
-		direction.z = (pos.z/6)*direction.z;
+		direction.x = (pos.x/6)*direction.y;
+		direction.y = (pos.z/6)*direction.y;
 	}else
 	{	
 		direction.x = (pos.z/6) * direction.x;
-		direction.z = -(pos.x/6) * direction.x;
+		direction.y = -(pos.x/6) * direction.x;
 	}
 	
 	wPos.x += direction.x;
-		wPos.z += direction.z;
+	wPos.y += direction.y;
 
 //	front.x += direction.x;
 //	front.z += direction.z;
@@ -435,7 +420,7 @@ WorldGS::WorldGS(int* mapArr,int sizex,int sizey,
 }
 void WorldGS::procMouseInput(int x, int y)
 {
-
+	//picking/UI
 }
 void WorldGS::procKeyInput(int key)
 {
@@ -444,22 +429,28 @@ void WorldGS::procKeyInput(int key)
 				//Key 1 was pressed
 				break;
 			case XK_a:
-				camera.translate(vector2(-1,0));
+				camera.translate(vec2(-1,0));
+				printf("MoveLeft\n");
 				break;
 			case XK_d:
-				camera.translate(vector2(1,0));
+				camera.translate(vec2(1,0));
+				printf("MoveRight\n");
 				break;
 			case XK_w:
-				camera.translate(vector2(0,-1));
+				camera.translate(vec2(0,-1));
+				printf("MoveUp\n");
 				break;
 			case XK_s:
-				camera.translate(vector2(0,1));
+				camera.translate(vec2(0,1));
+				printf("MoveDown\n");
 				break;
 			case XK_q:
 				camera.rotate(-4.0f);
+				printf("RotateLeft\n");
 				break;
 			case XK_e:
 				camera.rotate(4.0f);
+				printf("RotateRight\n");
 				break;
         }
 }
@@ -468,17 +459,22 @@ void WorldGS::drawGameState()
     //draw map
 	//
 	//
-    gluPerspective(45.0f, xres/yres, 0.1f, 100.0f);
-    glMatrixMode(GL_MODELVIEW); glLoadIdentity();
+    //gluPerspective(45.0f, xres/yres, 0.1f, 100.0f);
+   // glMatrixMode(GL_MODELVIEW); glLoadIdentity();
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+
 	glLoadIdentity();
+
 	camera.update();
 	map.draw();
 	camera.drawCamera(0);
 
+
 	//draw UI
 	//
 	//
+
+
 }
 
 /*=======================================*/
