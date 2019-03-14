@@ -25,19 +25,7 @@
 
 using namespace std;
 
-//Map map(tileMap, 25, 25);
-//Camera camera;
 
-//Button newGame("New Game", NEW_GAME), loadGame("Load Game",LOAD_GAME), highScores("High Scores",HIGH_SCORES), options("Controls", CONTROLS), exitf("Exit",EXIT);
-//Button btn[] = {newGame,loadGame,highScores,options,exitf};
-
-//Button char1("Archer", ARCHER), char2("Soldier", SOLDIER), char3("Tank", TANK), char4("Nick", NICK), char5("Main Menu", MAIN_MENU);
-//Button btn1[] = {char1,char2,char3,char4,char5};
-
-//Button menus[5][5];
-BHglobal bhg;
-
-stack<GameState> gs;
 /******Image Class Definitions********/
 Image::~Image() { delete [] data; }
 Image::Image(const char *fname) {
@@ -184,13 +172,17 @@ void init_opengl(void);
 void check_mouse(XEvent *e);
 int check_keys(XEvent *e);
 void render();
-MenuGS menuGS(5, bhg.menus, g.xres, g.yres);
+Game game(g.xres, g.yres);
+//BHglobal bhg;
 //WorldGS worldGS(mainMap, 25, 25, 180, 0, 0, g.xres, g.yres);
 //=====================================
 // MAIN FUNCTION IS HERE
 //=====================================
 int main()
 {
+    game.init(); 
+    //MenuGS menuGS2(5, bhg.menus, g.xres, g.yres);
+    //menuGS = &menuGS2;
     srand(time(NULL));
     init_opengl();
     //Main animation loop
@@ -315,7 +307,7 @@ void check_mouse(XEvent *e)
                 savex = e->xbutton.x;
                 savey = e->xbutton.y;
             }
-            menuGS.procMouseInput(savex, savey);
+            game.procMouseInput(savex, savey);
             /*if(g.count == 0)
                 flag = mm.check_mouse(savex, savey, g.yres);
             if(g.count == 1)
@@ -389,7 +381,7 @@ int check_keys(XEvent *e)
     if (e->type != KeyPress && e->type != KeyRelease)
         return 0;
     int key = XLookupKeysym(&e->xkey, 0);
-    //worldGS.procKeyInput(key);
+    game.procKeyInput(key);
     /*
     if (e->type == KeyPress) {
         switch (key) {
@@ -453,5 +445,5 @@ void render()
 	glLoadIdentity();//resests the modelview matrix to center screen
 */
     //worldGS.drawGameState();
-    menuGS.drawGameState();
+    game.drawGameState();
 }

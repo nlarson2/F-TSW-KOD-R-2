@@ -1,89 +1,99 @@
 //Brandon Hernandez
 #include "brandonH.h"
 
-Button newGame("New Game", NEW_GAME), loadGame("Load Game",LOAD_GAME), highScores("High Scores",HIGH_SCORES), options("Controls", CONTROLS), exitf("Exit",EXIT);
-Button btn[] = {newGame,loadGame,highScores,options,exitf};
-
-Button char1("Archer", ARCHER), char2("Soldier", SOLDIER), char3("Tank", TANK), char4("Nick", NICK), char5("Main Menu", MAIN_MENU);
-Button btn1[] = {char1,char2,char3,char4,char5};
-
-
 BHglobal::BHglobal() {
-    for(int i=0; i<5; i++) {
-        menus[0][i] = btn[i];
-        menus[1][i] = btn1[i];
-    }
+	static Button btn[5] = {
+		Button("New Game", NEW_GAME),
+		Button("Load Game",LOAD_GAME),
+		Button("High Scores",HIGH_SCORES),
+		Button("Controls", CONTROLS),
+		Button("Exit",EXIT)
+	};
+	static Button btn1[5] = {
+		Button("Archer", ARCHER),
+		Button("Soldier", SOLDIER),
+		Button("Tank", TANK),
+		Button("Nick", NICK),
+		Button("Main Menu", MAIN_MENU)
+	};
+
+	for(int i=0; i<5; i++) {
+		menus[0][i] = btn[i];
+		menus[1][i] = btn1[i];
+	}
 }
+
+BHglobal bhg;
 
 Button::Button() {
 }
 
 Button::Button(string n, ButtonID _bid) {
-    name = n;
-    bid = _bid;
+	name = n;
+	bid = _bid;
 }
 
 Button::~Button() {
 }
 
 Menu::Menu(int s, Button * b) {
-    size = s;
-    buttons = new Button[size];
-    for(int i = 0; i < size; i++)
-        buttons[i] = b[i];
-    posButtons();
+	size = s;
+	buttons = new Button[size];
+	for(int i = 0; i < size; i++)
+		buttons[i] = b[i];
+	posButtons();
 }
 
 Menu::~Menu() {
-    delete [] buttons;
+	delete [] buttons;
 }
 
 
 void Menu::drawNames(int i) {
-    int yres = 600;
-    Rect r;
-    r.bot = yres - (170 +(i*60));
-    r.left = 200 ;
-    ggprint16(&r, 16, 0x00ffff00, buttons[i].name.c_str());
+	int yres = 600;
+	Rect r;
+	r.bot = yres - (170 +(i*60));
+	r.left = 200 ;
+	ggprint16(&r, 16, 0x00ffff00, buttons[i].name.c_str());
 }
 
 void Menu::posButtons() {
-    for(int i=0; i<size; i++) {
-        buttons[i].width = 100;
-        buttons[i].height = 20;
-        buttons[i].center.x = 200;
-        buttons[i].center.y = 500 - (i+1)*60;
-    }
+	for(int i=0; i<size; i++) {
+		buttons[i].width = 100;
+		buttons[i].height = 20;
+		buttons[i].center.x = 200;
+		buttons[i].center.y = 500 - (i+1)*60;
+	}
 }
 
 void Menu::drawButtons() {
-    for (int i=0; i<size; i++) {
-        Button *s;
-        glColor3ub(90,140,90);
-        s = &buttons[i];
-        glPushMatrix();
-        glTranslatef(s->center.x, s->center.y, s->center.z);
-        float w, h;
-        w = s->width;
-        h = s->height;
-        glBegin(GL_QUADS);
-        glVertex2i(-w, -h);
-        glVertex2i(-w,  h);
-        glVertex2i( w,  h);
-        glVertex2i( w, -h);
-        glEnd();
-        glPopMatrix();
-        drawNames(i);
-    }
+	for (int i=0; i<size; i++) {
+		Button *s;
+		glColor3ub(90,140,90);
+		s = &buttons[i];
+		glPushMatrix();
+		glTranslatef(s->center.x, s->center.y, s->center.z);
+		float w, h;
+		w = s->width;
+		h = s->height;
+		glBegin(GL_QUADS);
+		glVertex2i(-w, -h);
+		glVertex2i(-w,  h);
+		glVertex2i( w,  h);
+		glVertex2i( w, -h);
+		glEnd();
+		glPopMatrix();
+		drawNames(i);
+	}
 }
 
 void Menu::check_mouse(int savex, int savey, int yres) {
-    for(int i=0;i<size;i++) {
-        if(yres - savey < buttons[i].center.y + buttons[i].height && yres - savey > buttons[i].center.y - buttons[i].height &&
-                savex < buttons[i].center.x + buttons[i].width && savex > buttons[i].center.x - buttons[i].width) {
-            cout << "Count: " << i << " Button: " << buttons[i].name << endl;
-        }
-    }
+	for(int i=0;i<size;i++) {
+		if(yres - savey < buttons[i].center.y + buttons[i].height && yres - savey > buttons[i].center.y - buttons[i].height &&
+				savex < buttons[i].center.x + buttons[i].width && savex > buttons[i].center.x - buttons[i].width) {
+			cout << "Count: " << i << " Button: " << buttons[i].name << endl;
+		}
+	}
 }
 
 
@@ -93,100 +103,120 @@ void Menu::check_mouse(int savex, int savey, int yres) {
 
 MenuGS::MenuGS(int s, Button b[5][5], int xres, int yres)
 {
-    state = 0;
-    size = s;
-    buttons = new Button*[5];
-    for(int i=0; i<5; i++)
-        buttons[i] = new Button[5];
-    this->xres = xres;
-    this->yres = yres;
-    for(int j=0; j<size; j++) {
-        for (int i=0; i<size; i++) {
-            buttons[j][i] = b[j][i];
-            //Position Buttons
-            buttons[j][i].width = 100;
-            buttons[j][i].height = 20;
-            buttons[j][i].center.x = 200;
-            buttons[j][i].center.y = 500 - (i+1)*60;
-        }
-    }
+	state = 0;
+	size = 5;
+	buttons = new Button*[5];
+	for(int i=0; i<5; i++)
+		buttons[i] = new Button[5];
+	this->xres = xres;
+	this->yres = yres;
+	for(int j=0; j<size; j++) {
+		for (int i=0; i<size; i++) {
+			buttons[j][i] = b[j][i];
+			//Position Buttons
+			buttons[j][i].width = 100;
+			buttons[j][i].height = 20;
+			buttons[j][i].center.x = 200;
+			buttons[j][i].center.y = 500 - (i+1)*60;
+		}
+	}
 }
 
 MenuGS::~MenuGS()
 {
-     for(int i=0; i<5; i++)
-         delete [] buttons[i];
-     delete [] buttons;
+	for(int i=0; i<5; i++)
+		delete [] buttons[i];
+	delete [] buttons;
 }
 
-void MenuGS::procMouseInput(int x, int y)
+int MenuGS::procMouseInput(int x, int y)
 {
-    ButtonID btn;
-    for(int i=0;i<size;i++) {
-        if(yres - y < buttons[state][i].center.y + buttons[state][i].height && yres - y > buttons[state][i].center.y - buttons[state][i].height &&
-                x < buttons[state][i].center.x + buttons[state][i].width && x > buttons[state][i].center.x - buttons[state][i].width) {
-            // Output which button and its corressponding ID to verify button clicks
-            cout << "Count: " << i << " Button: " << buttons[state][i].name << endl;
-            btn = buttons[state][i].bid;
-        }
-    }
-    switch(btn) {
-        case MAIN_MENU:
-            break;
-        case NEW_GAME:
-            break;
-        case LOAD_GAME:
-            break;
-        case HIGH_SCORES:
-            break;
-        case CONTROLS:
-            break;
-        case EXIT:
-            break;
-        case ARCHER:
-            break;
-        case SOLDIER:
-            break;
-        case TANK:
-            break;
-        case NICK:
-            break;
-    }
+	ButtonID btn;
+	for(int i=0;i<size;i++) {
+		if(yres - y < buttons[state][i].center.y + buttons[state][i].height && yres - y > buttons[state][i].center.y - buttons[state][i].height &&
+				x < buttons[state][i].center.x + buttons[state][i].width && x > buttons[state][i].center.x - buttons[state][i].width) {
+			// Output which button and its corressponding ID to verify button clicks
+			cout << "Count: " << i << " Button: " << buttons[state][i].name << endl;
+			btn = buttons[state][i].bid;
+		}
+	}
+	switch(btn) {
+		case MAIN_MENU:
+			state = MAIN_MENU;
+			break;
+		case NEW_GAME:
+			state = NEW_GAME;
+			break;
+		case LOAD_GAME:
+			state = LOAD_GAME;
+			break;
+		case HIGH_SCORES:
+			state = HIGH_SCORES;
+			break;
+		case CONTROLS:
+			state = CONTROLS;
+			break;
+		case EXIT:
+			exit(0);
+			break;
+		case ARCHER:
+            state = MAIN_MENU;
+            return 1;
+			break;
+		case SOLDIER:
+            state = MAIN_MENU;
+            return 1;
+			break;
+		case TANK:
+            state = MAIN_MENU;
+            return 1;
+			break;
+		case NICK:
+            state = MAIN_MENU;
+            return 1;
+			break;
+	}
+    return 0;
 }
 
-void MenuGS::procKeyInput(int key)
+int MenuGS::procKeyInput(int key)
 {
-    //read keys
+	return 0;//read keys
 }
 
 void MenuGS::drawGameState()
 {
-    for (int i=0; i<size; i++) {
-        //Draw Buttons
-        Button *s;
-        glColor3ub(90,140,90);
-        s = &buttons[state][i];
-        glPushMatrix();
-        glTranslatef(s->center.x, s->center.y, s->center.z);
-        float w, h;
-        w = s->width;
-        h = s->height;
-        glBegin(GL_QUADS);
-        glVertex2i(-w, -h);
-        glVertex2i(-w,  h);
-        glVertex2i( w,  h);
-        glVertex2i( w, -h);
-        glEnd();
-        glPopMatrix();
+    glClear(GL_COLOR_BUFFER_BIT);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(0,xres,0,yres,-1,1);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+	for (int i=0; i<size; i++) {
+		//Draw Buttons
+		Button *s;
+		glColor3ub(90,140,90);
+		s = &buttons[state][i];
+		glPushMatrix();
+		glTranslatef(s->center.x, s->center.y, s->center.z);
+		float w, h;
+		w = s->width;
+		h = s->height;
+		glBegin(GL_QUADS);
+		glVertex2i(-w, -h);
+		glVertex2i(-w,  h);
+		glVertex2i( w,  h);
+		glVertex2i( w, -h);
+		glEnd();
+		glPopMatrix();
 
-        //Draw Names
-        int yres = 600;
-        Rect r;
-        r.bot = yres - (170 +(i*60));
-        r.left = 200 ;
-        ggprint16(&r, 16, 0x00ffff00, buttons[state][i].name.c_str());
-        std::cout << buttons[state][i].name << endl;
-    }
+		//Draw Names
+		int yres = 600;
+		Rect r;
+		r.bot = yres - (170 +(i*60));
+		r.left = 200 ;
+		ggprint16(&r, 16, 0x00ffff00, buttons[state][i].name.c_str());
+	}
 }
 
 /*
@@ -263,20 +293,20 @@ options = false;
 board = false;
 }
 void GameState::set_op() {
-    options = true;
-    mainMenu = false;
-    newGame = false;
-    loadGame = false;
-    highScores = false;
-    board = false;
+	options = true;
+	mainMenu = false;
+	newGame = false;
+	loadGame = false;
+	highScores = false;
+	board = false;
 }
 void GameState::set_board() {
-    board = true;
-    options = false;
-    mainMenu = false;
-    newGame = false;
-    loadGame = false;
-    highScores = false;
+	board = true;
+	options = false;
+	mainMenu = false;
+	newGame = false;
+	loadGame = false;
+	highScores = false;
 }*/
 /*
    void brandonh(int x, int y,gluint textid) 

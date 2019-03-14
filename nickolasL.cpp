@@ -8,7 +8,6 @@
 
 #include "nickolasL.h"
 #include "iostream"
-
 /*============LARSON'S GLOBALS==========*/
 NLarsGlobal::NLarsGlobal()
 {
@@ -446,11 +445,12 @@ void WorldGS::initWGS_GL()
     //Insert Fonts
     glEnable(GL_TEXTURE_2D);
 }
-void WorldGS::procMouseInput(int x, int y)
+int WorldGS::procMouseInput(int x, int y)
 {
+    return 0;
 	//picking/UI
 }
-void WorldGS::procKeyInput(int key)
+int WorldGS::procKeyInput(int key)
 {
 	switch (key) {
             case XK_1:
@@ -480,7 +480,10 @@ void WorldGS::procKeyInput(int key)
 				camera.rotate(4.0f);
 				printf("RotateRight\n");
 				break;
+            case XK_Escape:
+                return -1;
         }
+    return 0;
 }
 void WorldGS::drawGameState()
 {

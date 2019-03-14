@@ -71,8 +71,8 @@ class MenuGS : public GameState {
     public:
         MenuGS(int, Button[5][5],int, int);
         ~MenuGS();
-        void procMouseInput(int, int);
-		void procKeyInput(int key);
+        int procMouseInput(int, int);
+		int procKeyInput(int key);
 		void drawGameState();
 };
 //void brandonH(int x, int y, GLuint textid);

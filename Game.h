@@ -8,25 +8,29 @@
 #include "brandonH.h"
 #include "nicholasJo.h"
 
-
-
+extern BHglobal bhg;
 //Map map(tileMap, 25, 25);
 //Camera camera;
+
+//enum GameStates
+//{
+//    MM,WORLD,BATTLE
+//};
 
 class Game
 {
 	private:
-		stack<GameState> states;
+        int xres, yres;
+		stack<GameState*> states;
 		//Player player;
 		vector<Ally> allies;
 		vector<Enemy> enemies;
 	public:
-		Game();
+		Game(int x, int y);
+        void init();
 		void procMouseInput(int x, int y);
 		void procKeyInput(int key);
 		void drawGameState();
 };
-
-
 
 #endif

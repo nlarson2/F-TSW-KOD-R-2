@@ -16,7 +16,6 @@
 #include <GL/glu.h>
 #include "fonts.h"
 
-
 #include "Image.h"
 //#include "Game.h"
 
@@ -140,9 +139,8 @@ class GameState
 		
 	public:
 		GameState() {};
-		
-		virtual void procMouseInput(int x, int y) = 0;
-		virtual void procKeyInput(int key) = 0;
+		virtual int procMouseInput(int x, int y) = 0;
+		virtual int procKeyInput(int key) = 0;
 		virtual void drawGameState() = 0;
 
 };
@@ -158,8 +156,8 @@ class WorldGS : public GameState {
 			float camRot, int posx, int posz,
 			float xres, float yres);
 		void initWGS_GL();
-        void procMouseInput(int x, int y);
-		void procKeyInput(int key);
+        int procMouseInput(int x, int y);
+		int procKeyInput(int key);
 		void drawGameState();
 };
 
