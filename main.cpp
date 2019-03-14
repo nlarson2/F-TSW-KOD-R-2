@@ -11,6 +11,7 @@
 #include "fonts.h"
 #include <unistd.h>
 #include <stack>
+#include <string>
 
 #include "Image.h"
 #include "maps.h"
@@ -27,14 +28,14 @@ using namespace std;
 //Map map(tileMap, 25, 25);
 //Camera camera;
 
-Button newGame("New Game", NEW_GAME), loadGame("Load Game",LOAD_GAME), highScores("High Scores",HIGH_SCORES), options("Controls", CONTROLS), exitf("Exit",EXIT);
-Button btn[] = {newGame,loadGame,highScores,options,exitf};
-//Menu mm(5,btn);
+//Button newGame("New Game", NEW_GAME), loadGame("Load Game",LOAD_GAME), highScores("High Scores",HIGH_SCORES), options("Controls", CONTROLS), exitf("Exit",EXIT);
+//Button btn[] = {newGame,loadGame,highScores,options,exitf};
 
-//Button char1("Archer"), char2("Soldier"), char3("Tank"), char4("Null"), char5("Main Menu");
+//Button char1("Archer", ARCHER), char2("Soldier", SOLDIER), char3("Tank", TANK), char4("Nick", NICK), char5("Main Menu", MAIN_MENU);
 //Button btn1[] = {char1,char2,char3,char4,char5};
-//Menu ng(5,btn1);
 
+//Button menus[5][5];
+BHglobal bhg;
 
 stack<GameState> gs;
 /******Image Class Definitions********/
@@ -183,8 +184,8 @@ void init_opengl(void);
 void check_mouse(XEvent *e);
 int check_keys(XEvent *e);
 void render();
+MenuGS menuGS(5, bhg.menus, g.xres, g.yres);
 //WorldGS worldGS(mainMap, 25, 25, 180, 0, 0, g.xres, g.yres);
-MenuGS menuGS(5, btn, g.xres, g.yres);
 //=====================================
 // MAIN FUNCTION IS HERE
 //=====================================

@@ -1,6 +1,20 @@
 //Brandon Hernandez
 #include "brandonH.h"
 
+Button newGame("New Game", NEW_GAME), loadGame("Load Game",LOAD_GAME), highScores("High Scores",HIGH_SCORES), options("Controls", CONTROLS), exitf("Exit",EXIT);
+Button btn[] = {newGame,loadGame,highScores,options,exitf};
+
+Button char1("Archer", ARCHER), char2("Soldier", SOLDIER), char3("Tank", TANK), char4("Nick", NICK), char5("Main Menu", MAIN_MENU);
+Button btn1[] = {char1,char2,char3,char4,char5};
+
+
+BHglobal::BHglobal() {
+    for(int i=0; i<5; i++) {
+        menus[0][i] = btn[i];
+        menus[1][i] = btn1[i];
+    }
+}
+
 Button::Button() {
 }
 
@@ -77,7 +91,7 @@ void Menu::check_mouse(int savex, int savey, int yres) {
 //---------------- START OF MENUGS ----------------
 //=================================================
 
-MenuGS::MenuGS(int s, Button * b, int xres, int yres)
+MenuGS::MenuGS(int s, Button b[5][5], int xres, int yres)
 {
     state = 0;
     size = s;
@@ -88,7 +102,7 @@ MenuGS::MenuGS(int s, Button * b, int xres, int yres)
     this->yres = yres;
     for(int j=0; j<size; j++) {
         for (int i=0; i<size; i++) {
-            buttons[j][i] = b[i];
+            buttons[j][i] = b[j][i];
             //Position Buttons
             buttons[j][i].width = 100;
             buttons[j][i].height = 20;
@@ -117,6 +131,8 @@ void MenuGS::procMouseInput(int x, int y)
         }
     }
     switch(btn) {
+        case MAIN_MENU:
+            break;
         case NEW_GAME:
             break;
         case LOAD_GAME:
@@ -126,6 +142,14 @@ void MenuGS::procMouseInput(int x, int y)
         case CONTROLS:
             break;
         case EXIT:
+            break;
+        case ARCHER:
+            break;
+        case SOLDIER:
+            break;
+        case TANK:
+            break;
+        case NICK:
             break;
     }
 }
@@ -161,6 +185,7 @@ void MenuGS::drawGameState()
         r.bot = yres - (170 +(i*60));
         r.left = 200 ;
         ggprint16(&r, 16, 0x00ffff00, buttons[state][i].name.c_str());
+        std::cout << buttons[state][i].name << endl;
     }
 }
 

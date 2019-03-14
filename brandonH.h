@@ -3,10 +3,6 @@
 #ifndef BRANDON_H
 #define BRANDON_H
 
-#include <iostream>
-#include <GL/glx.h>
-#include <string>
-#include "fonts.h"
 #include "nickolasL.h"
 
 using namespace std;
@@ -26,7 +22,7 @@ using namespace std;
 
 enum ButtonID
 {
-    NEW_GAME,LOAD_GAME,HIGH_SCORES,CONTROLS,EXIT
+    MAIN_MENU,NEW_GAME,LOAD_GAME,HIGH_SCORES,CONTROLS,EXIT,ARCHER,SOLDIER,TANK,NICK,
 };
 
 struct vec
@@ -43,6 +39,13 @@ struct Button
     Button();
     Button(string,ButtonID);
     ~Button();
+};
+
+struct BHglobal
+{
+    Button menus[5][5];
+    //Button btn[5], btn1[5];
+    BHglobal();
 };
 
 class Menu
@@ -66,7 +69,7 @@ class MenuGS : public GameState {
         Button ** buttons;
         float xres, yres;
     public:
-        MenuGS(int, Button*,int, int);
+        MenuGS(int, Button[5][5],int, int);
         ~MenuGS();
         void procMouseInput(int, int);
 		void procKeyInput(int key);
