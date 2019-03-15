@@ -487,6 +487,7 @@ int WorldGS::procKeyInput(int key)
 }
 void WorldGS::drawGameState()
 {
+    initWGS_GL();
 	// set perspective
     //draw map
 	//

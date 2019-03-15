@@ -41,7 +41,8 @@ struct BHglobal
     Button pmenu[3];
     BHglobal();
 };
-
+// Done During Lab hours
+// Creates pause functionality by pressing esc while in game.
 class PauseGS : public GameState {
     private:
         Button * buttons;
@@ -53,7 +54,7 @@ class PauseGS : public GameState {
         int procKeyInput(int);
         void drawGameState();
 };
-
+// Updated During lab hours
 class MenuGS : public GameState {
     private:
         int state;
