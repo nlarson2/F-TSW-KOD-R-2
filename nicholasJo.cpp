@@ -70,6 +70,7 @@ bool Entity::getAlly() {
 	return ally;
 }
 //==========[ETC]=========
+/*
 void Entity::displayImage(int x, int y, int z) {
 	float wid = 1;
 	glPushMatrix();
@@ -85,6 +86,7 @@ void Entity::displayImage(int x, int y, int z) {
         glBindTexture(GL_TEXTURE_2D, 0);
 	glPopMatrix();
 }
+*/
 
 void Entity::resetStats() {
     current_health = max_health;
@@ -183,6 +185,10 @@ Player::Player(string c, GLuint i) {
     current_health = getMaxHealth();
     current_defense = getDefaultDefense();
     current_damage = getDefaultDamage();
+    //initial player position
+    playerModel.pos.x = -1;
+    playerModel.pos.y = 0.1;
+    playerModel.pos.z = 0;
 	count++;
 }
 

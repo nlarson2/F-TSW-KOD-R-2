@@ -7,6 +7,7 @@
 #include "fonts.h"
 #include <string>
 #include <typeinfo>
+#include "nickolasL.h"
 
 using namespace std;
 
@@ -41,7 +42,7 @@ class Entity
         void setAlly(bool);
 		bool getAlly();
 		//====[ETC]====
-        void displayImage(int x, int y, int z);
+        //void displayImage(int x, int y, int z);
 		void resetStats();
 
 		string combatType;
@@ -49,6 +50,8 @@ class Entity
         float current_defense;
 		float current_damage;
 		GLuint image;
+        Model playerModel;
+        vec3 wPos; //world position
 };
 
 class Enemy : public Entity

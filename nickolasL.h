@@ -77,8 +77,8 @@ struct Model
 	vector<vec3> vertNorm;
 	//connection values
 	vector<unsigned int> vIndices, vtIndices, vnIndices;
-	vec2 pos; //moves along x and z(y will be used in place of z
-	Model () {}
+	vec3 pos; //moves along x and z
+	Model ();
 	Model ( const char * objFile, const char * texFile);
 	void draw();
 	private:

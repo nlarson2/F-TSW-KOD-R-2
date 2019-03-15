@@ -147,6 +147,17 @@ void draw_nickLCredit(int x, int y, GLuint texture)
 
 
 /*============MODEL STUCTURE=============*/
+Model::Model() {
+    const char * objFile = "tiles/mountain.obj";
+    const char * texFile = "tiles/mountainTex.png";
+	if(!GenerateModel(objFile)) {
+		printf("Failed to generate model\n");
+	}
+	if(!GenerateTexture(texFile)) {
+		printf("Failed to load texture\n");
+	}
+}
+
 Model::Model( const char * objFile, const char * texFile )
 {
 	if(!GenerateModel(objFile)) {
@@ -166,18 +177,18 @@ void Model::draw()
 		glTexCoord2f(vertTex[vtIndices.at(i)-1].x,
 				vertTex[vtIndices.at(i)-1].y);
 		glVertex3f(vert[vIndices.at(i)-1].x + pos.x ,
-				vert[vIndices.at(i)-1].y ,
-				vert[vIndices.at(i)-1].z + pos.y);
+				vert[vIndices.at(i)-1].y + pos.y,
+				vert[vIndices.at(i)-1].z + pos.z);
 		glTexCoord2f(vertTex[vtIndices.at(i+1)-1].x,
 				vertTex[vtIndices.at(i+1)-1].y);
 		glVertex3f(vert[vIndices.at(i+1)-1].x + pos.x,
-				vert[vIndices.at(i+1)-1].y,
-				vert[vIndices.at(i+1)-1].z + pos.y);
+				vert[vIndices.at(i+1)-1].y + pos.y,
+				vert[vIndices.at(i+1)-1].z + pos.z);
 		glTexCoord2f(vertTex[vtIndices.at(i+2)-1].x,
 				vertTex[vtIndices.at(i+2)-1].y);
 		glVertex3f(vert[vIndices.at(i+2)-1].x + pos.x,
-				vert[vIndices.at(i+2)-1].y,
-				vert[vIndices.at(i+2)-1].z + pos.y);
+				vert[vIndices.at(i+2)-1].y + pos.y,
+				vert[vIndices.at(i+2)-1].z + pos.z);
 	}
 
 	glEnd();
@@ -287,7 +298,7 @@ void Map::draw(){
 	for(int i = 0; i < 25; i++){
 		for(int j = 0; j< 25; j++){
 			tiles[tile[i][j].modelID].pos.x = tile[i][j].x;
-			tiles[tile[i][j].modelID].pos.y = tile[i][j].z;
+			tiles[tile[i][j].modelID].pos.z = tile[i][j].z;
 			tiles[tile[i][j].modelID].draw();
 		}
 	}
