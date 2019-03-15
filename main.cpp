@@ -61,7 +61,7 @@ Image::Image(const char *fname) {
         //get pixel data
         int n = width * height * 3;
         data = new unsigned char[n];
-    
+
         for (int i=0; i<n; i++){
             data[i] = fgetc(fpi);
         }
@@ -83,9 +83,9 @@ class Global
         int xres, yres;
         int n;
         int count;
-	    GLuint archerImage;
-	    GLuint soldierImage;
-	    GLuint tankImage;
+        GLuint archerImage;
+        GLuint soldierImage;
+        GLuint tankImage;
         Global() {
             xres = 800;
             yres = 600;
@@ -100,10 +100,10 @@ void displayCharacterImage(GLuint image, float x, float y) {
     glColor3f(1.0f, 1.0f, 1.0f);
     glBindTexture(GL_TEXTURE_2D, image);
     glBegin(GL_QUADS);
-        glTexCoord2f(0.0f, 1.0f); glVertex2i(-wid, -wid);
-        glTexCoord2f(0.0f, 0.0f); glVertex2i(-wid, wid);
-        glTexCoord2f(1.0f, 0.0f); glVertex2i(wid, wid);
-        glTexCoord2f(1.0f, 1.0f); glVertex2i(wid, -wid);
+    glTexCoord2f(0.0f, 1.0f); glVertex2i(-wid, -wid);
+    glTexCoord2f(0.0f, 0.0f); glVertex2i(-wid, wid);
+    glTexCoord2f(1.0f, 0.0f); glVertex2i(wid, wid);
+    glTexCoord2f(1.0f, 1.0f); glVertex2i(wid, -wid);
     glEnd();
     glBindTexture(GL_TEXTURE_2D, 0);
     glPopMatrix();
@@ -173,16 +173,12 @@ void check_mouse(XEvent *e);
 int check_keys(XEvent *e);
 void render();
 Game game(g.xres, g.yres);
-//BHglobal bhg;
-//WorldGS worldGS(mainMap, 25, 25, 180, 0, 0, g.xres, g.yres);
 //=====================================
 // MAIN FUNCTION IS HERE
 //=====================================
 int main()
 {
     game.init(); 
-    //MenuGS menuGS2(5, bhg.menus, g.xres, g.yres);
-    //menuGS = &menuGS2;
     srand(time(NULL));
     init_opengl();
     //Main animation loop
@@ -205,32 +201,8 @@ void init_opengl(void)
     //OpenGL initialization
     glViewport(0, 0, g.xres, g.yres);
     //Initialize matrices
-    
-    
-    //3D perspective view
-    /*
-    glMatrixMode(GL_PROJECTION); glLoadIdentity();
-    gluPerspective(45.0f,(GLfloat)g.xres/(GLfloat)g.yres,0.1f,100.0f);
 
-
-	//discussed futher in later tutorial
-	glShadeModel(GL_SMOOTH);//enables smooth shading
-
-	// sets the depth buffer//stop elements from drawing over others
-	glClearDepth(1.0f);//Depth buffer setup
-	glEnable(GL_DEPTH_TEST);//Enables Depth Testing
-	glDepthFunc(GL_LEQUAL);//The type of depth test to do
-
-
-	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);//??makes the perspective view better??
-    
-
-
-    glMatrixMode(GL_MODELVIEW); glLoadIdentity();*/
-    //Set 2D mode (no perspective)
-    //COMMENT OUT LINE BLOW BEFORE TYRING TO MAKE IT 3D
     glOrtho(0, g.xres, 0, g.yres, -1, 1);
-
 
     //Set the screen background color
     glClearColor(0.1, 0.1, 0.1, 1.0);
@@ -248,32 +220,21 @@ void init_opengl3D(void)
     //OpenGL initialization
     glViewport(0, 0, g.xres, g.yres);
     //Initialize matrices
-    
-    
     //3D perspective view
-    
+
     glMatrixMode(GL_PROJECTION); glLoadIdentity();
     gluPerspective(45.0f,(GLfloat)g.xres/(GLfloat)g.yres,0.1f,100.0f);
 
+    glShadeModel(GL_SMOOTH);//enables smooth shading
 
-	//discussed futher in later tutorial
-	glShadeModel(GL_SMOOTH);//enables smooth shading
+    // sets the depth buffer//stop elements from drawing over others
+    glClearDepth(1.0f);//Depth buffer setup
+    glEnable(GL_DEPTH_TEST);//Enables Depth Testing
+    glDepthFunc(GL_LEQUAL);//The type of depth test to do
 
-	// sets the depth buffer//stop elements from drawing over others
-	glClearDepth(1.0f);//Depth buffer setup
-	glEnable(GL_DEPTH_TEST);//Enables Depth Testing
-	glDepthFunc(GL_LEQUAL);//The type of depth test to do
-
-
-	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);//??makes the perspective view better??
-    
-
+    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);//??makes the perspective view better??
 
     glMatrixMode(GL_MODELVIEW); glLoadIdentity();
-    //Set 2D mode (no perspective)
-    //COMMENT OUT LINE BELOW BEFORE TYRING TO MAKE IT 3D
-    //glOrtho(0, g.xres, 0, g.yres, -1, 1);
-
 
     //Set the screen background color
     glClearColor(0.1, 0.1, 0.1, 1.0);
@@ -283,7 +244,7 @@ void init_opengl3D(void)
 
     GenerateGLTexture(g.archerImage, "./images/nickLCreditPic.jpg", false);
     GenerateGLTexture(g.soldierImage, "./images/nicholasJo.png", false);
-GenerateGLTexture(g.tankImage, "./images/brandonH.png", false);
+    GenerateGLTexture(g.tankImage, "./images/brandonH.png", false);
 }
 void check_mouse(XEvent *e)
 {
@@ -308,65 +269,6 @@ void check_mouse(XEvent *e)
                 savey = e->xbutton.y;
             }
             game.procMouseInput(savex, savey);
-            /*if(g.count == 0)
-                flag = mm.check_mouse(savex, savey, g.yres);
-            if(g.count == 1)
-                flag = ng.check_mouse(savex,savey, g.yres);
-            //Player * player;
-            switch(flag) {
-                case 0:
-                    //check gameState
-                    //NewGame GameBoard || Char1 || Save file 1
-                    if(g.count == 0) {
-                   // gs.set_ng();
-                    g.count++;
-                    } else {
-                       //player = Player::setInstance("archer", g.archerImage);
-                     //  gs.set_board();
-                       g.count++;
-                       init_opengl3D();
-                    }
-                    break;
-                case 1:
-                    //check gameState
-                    //gameState = loadGame || Char2
-                    if(g.count == 0) {
-                    } else {
-                        //player = Player::setInstance("soldier", g.soldierImage);
-                      //  gs.set_board();
-                        g.count++;
-                        init_opengl3D();
-                    }
-
-                    break;
-                case 2:
-                    //check gameState
-                    //gameState = highScores || Char3
-                    if(g.count == 0) {
-                    } else {
-                        //player = Player::setInstance("tank", g.tankImage);
-                      //  gs.set_board();
-                        g.count++;
-                        init_opengl3D();
-                    }
-                    break;
-                case 3:
-                    //check gameState
-                    //gameState = options
-                    break;
-                case 4:
-                    if(g.count == 0)
-                        exit(0);
-                    else if(g.count == 1){
-                        //gs.set_mm();
-                        g.count--;
-                    }
-                    break;
-                default:
-                    break;          
-            }
-            return;*/
-
             //---------------------------------------------------------
             if (e->xbutton.button==3) {
                 //Right button was pressed
@@ -380,70 +282,14 @@ int check_keys(XEvent *e)
 {
     if (e->type != KeyPress && e->type != KeyRelease)
         return 0;
-    int key = XLookupKeysym(&e->xkey, 0);
-    game.procKeyInput(key);
-    /*
+    int key = XLookupKeysym(&e->xkey, 0); 
     if (e->type == KeyPress) {
-        switch (key) {
-            case XK_1:
-				//Key 1 was pressed
-				break;
-			case XK_a:
-				camera.translate(vec2(-1,0));
-				break;
-			case XK_d:
-				camera.translate(vec2(1,0));
-				break;
-			case XK_w:
-				camera.translate(vec2(0,-1));
-				break;
-			case XK_s:
-				camera.translate(vec2(0,1));
-				break;
-			case XK_q:
-				camera.rotate(-4.0f);
-				break;
-			case XK_e:
-				camera.rotate(4.0f);
-				break;
-
-			case XK_Escape:
-				//Escape key was pressed
-				return 1;
-        }
-    }
-    */
-    return 0;
+        game.procKeyInput(key);
+}
+return 0;
 }
 
 void render()
-{/*
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    int game = gs.set_gameState();
-    if (game == 1) {
-        mm.drawButtons();
-    } else if (game == 2) {
-	    displayCharacterImage(g.archerImage, 400, 500); 
-	    displayCharacterImage(g.soldierImage, 400, 400); 
-	    displayCharacterImage(g.tankImage, 400, 300); 
-        ng.drawButtons();
-    }
-    else if(game == 6) {
-        //Player *player = Player::getInstance();
-        //3d MAP
-        glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-	    glLoadIdentity();
-	    camera.update();
-	    //glTranslatef(0.0f, 0.0f, -6.0f);
-	    //glRotatef(rotation, 0.0f, 1.0f, 0.0f);
-	    //glTranslatef(0.0f,0.0f,-10.0f);
-        //	tiles[0].draw();
-	    map.draw();
-	    camera.drawCamera(0);	
-	    //rotation+=0.2f;
-    //}
-	glLoadIdentity();//resests the modelview matrix to center screen
-*/
-    //worldGS.drawGameState();
+{
     game.drawGameState();
 }

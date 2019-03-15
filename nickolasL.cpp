@@ -272,7 +272,7 @@ Map::Map(int map[], int _width, int _height){
 		for(int i = 0; i < 25; i++){
 
 				for(int j = 0; j < 25 ; j++){
-					printf("%d\n",count);
+					//printf("%d\n",count);
 					tile[i][j].modelID = map[count];
 					tile[i][j].x = 2.0*j;
 					tile[i][j].z = 1.70710378118f*i;

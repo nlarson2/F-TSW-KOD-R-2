@@ -35,7 +35,6 @@ void Game::procKeyInput(int key)
 	int changeState = states.top()->procKeyInput(key);
     switch(changeState) {
         case -1:
-            cout << "pop:\n "; 
             states.pop();
             break;
     }
