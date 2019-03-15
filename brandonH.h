@@ -4,6 +4,7 @@
 #define BRANDON_H
 
 #include "nickolasL.h"
+#include "nicholasJo.h"
 
 using namespace std;
 

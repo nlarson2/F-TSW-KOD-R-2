@@ -76,23 +76,6 @@ Image::Image(const char *fname) {
 }
 /*******************************************************/
 
-
-class Global
-{
-    public:
-        int xres, yres;
-        int n;
-        int count;
-        GLuint archerImage;
-        GLuint soldierImage;
-        GLuint tankImage;
-        Global() {
-            xres = 800;
-            yres = 600;
-            count = 0;
-        }
-}g;
-
 void displayCharacterImage(GLuint image, float x, float y) {
     float wid = 50;
     glPushMatrix();
@@ -108,6 +91,18 @@ void displayCharacterImage(GLuint image, float x, float y) {
     glBindTexture(GL_TEXTURE_2D, 0);
     glPopMatrix();
 }
+
+class Global {
+    public:
+        int xres, yres;
+        int n;
+        int count;
+        Global() {
+            xres = 800;
+            yres = 600;
+            count = 0;
+        }
+}g;
 
 class X11_wrapper {
     private:
@@ -210,9 +205,9 @@ void init_opengl(void)
     glEnable(GL_TEXTURE_2D);
     initialize_fonts();
 
-    GenerateGLTexture(g.archerImage, "./images/nickLCreditPic.jpg", false);
-    GenerateGLTexture(g.soldierImage, "./images/nicholasJo.png", false);
-    GenerateGLTexture(g.tankImage, "./images/brandonH.png", false);
+    //GenerateGLTexture(g.archerImage, "./images/nickLCreditPic.jpg", false);
+    //GenerateGLTexture(g.soldierImage, "./images/nicholasJo.png", false);
+    //GenerateGLTexture(g.tankImage, "./images/brandonH.png", false);
 }
 
 void init_opengl3D(void)
@@ -242,9 +237,9 @@ void init_opengl3D(void)
     glEnable(GL_TEXTURE_2D);
     initialize_fonts();
 
-    GenerateGLTexture(g.archerImage, "./images/nickLCreditPic.jpg", false);
-    GenerateGLTexture(g.soldierImage, "./images/nicholasJo.png", false);
-    GenerateGLTexture(g.tankImage, "./images/brandonH.png", false);
+    //GenerateGLTexture(g.archerImage, "./images/nickLCreditPic.jpg", false);
+    //GenerateGLTexture(g.soldierImage, "./images/nicholasJo.png", false);
+    //GenerateGLTexture(g.tankImage, "./images/brandonH.png", false);
 }
 void check_mouse(XEvent *e)
 {
@@ -291,7 +286,10 @@ return 0;
 
 void render()
 {
-    Player *player = Player::setInstance("archer", g.archerImage);
     game.drawGameState();
-    player->playerModel.draw();
+    if (Player::count != 0) {
+        Player *player = Player::getInstance();
+        player->playerModel.draw();
+        player->displayImage(-5,0,-5);
+    }
 }

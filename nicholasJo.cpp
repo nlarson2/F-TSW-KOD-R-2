@@ -70,7 +70,7 @@ bool Entity::getAlly() {
 	return ally;
 }
 //==========[ETC]=========
-/*
+
 void Entity::displayImage(int x, int y, int z) {
 	float wid = 1;
 	glPushMatrix();
@@ -86,7 +86,7 @@ void Entity::displayImage(int x, int y, int z) {
         glBindTexture(GL_TEXTURE_2D, 0);
 	glPopMatrix();
 }
-*/
+
 
 void Entity::resetStats() {
     current_health = max_health;
@@ -179,9 +179,9 @@ void Enemy::setEnemyImage() {
 
 int Player::count = 0;
 
-Player::Player(string c, GLuint i) {
+Player::Player(string c) {
 	setPlayerCombatType(c);
-	setPlayerImage(i);
+	setPlayerImage();
     current_health = getMaxHealth();
     current_defense = getDefaultDefense();
     current_damage = getDefaultDamage();
@@ -189,49 +189,65 @@ Player::Player(string c, GLuint i) {
     playerModel.pos.x = -1;
     playerModel.pos.y = 0.1;
     playerModel.pos.z = 0;
-	count++;
+    count++;
 }
 
 //Null because instance will be initialized on demand
 Player* Player::instance = 0;
 
 Player* Player::getInstance() {
-	if (instance != 0) {
+	if (count != 0) {
 		return instance;
 	}
 	return 0;
 }
 
-Player* Player::setInstance(string c, GLuint i) {
-	if (instance == 0) {
-		instance = new Player(c, i);
-	}
+Player* Player::setInstance(string c) {
+	if (count == 0) {
+		instance = new Player(c);
+    }
 	return instance;
 }
 
-Player::~Player() {
-	delete []instance;
+void Player::resetInstance() {
+    delete instance;
+    instance = NULL;
+    count--;
 }
 
 void Player::setPlayerCombatType(string c) {
 	if (c == "archer") {
+        combatType = c;
 		setMaxHealth(75.0);
 		setDefaultDefense(0.60);
 		setDefaultDamage(15.0);
 	} else if (c == "soldier") {
+        combatType = c;
 		setMaxHealth(100.0);
 		setDefaultDefense(0.70);
 		setDefaultDamage(20.0);
 	} else if (c == "tank") {
+        combatType = c;
 		setMaxHealth(125.0);
 		setDefaultDefense(0.80);
 	    setDefaultDamage(22.0);
-	}
+	} else if (c == "nick") {
+        combatType = c;
+		setMaxHealth(999);
+		setDefaultDefense(1);
+	    setDefaultDamage(999);
+    }
 	return;
 }
 
-void Player::setPlayerImage(GLuint i) {
-	image = i;
+void Player::setPlayerImage() {
+    if (combatType == "archer" || combatType == "nick") {
+        GenerateGLTexture(image, "./images/nickLCreditPic.jpg", false);
+    } else if (combatType == "soldier") {
+        GenerateGLTexture(image, "./images/nicholasJo.png", false);
+    } else if (combatType == "tank") {
+        GenerateGLTexture(image, "./images/brandonH.png", false);
+    }
 }
 
 //============================================================================
