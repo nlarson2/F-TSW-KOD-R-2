@@ -10,7 +10,12 @@ using namespace std;
 
 enum ButtonID
 {
-    MAIN_MENU,NEW_GAME,PAUSE,LOAD_GAME,HIGH_SCORES,CONTROLS,EXIT,ARCHER,SOLDIER,TANK,NICK,RESUME,SAVE_GAME,
+    MAIN_MENU,NEW_GAME,LOAD_GAME,HIGH_SCORES,CONTROLS,EXIT,ARCHER,SOLDIER,TANK,NICK,
+};
+
+enum pButtonID
+{
+    RESUME,SAVE_GAME,PMAIN_MENU
 };
 
 struct vec
@@ -23,16 +28,30 @@ struct Button
     float height, width;
     vec center;
     string name;
-    ButtonID bid;
+    ButtonID bid; pButtonID pbid;
     Button();
     Button(string,ButtonID);
+    Button(string,pButtonID);
     ~Button();
 };
 
 struct BHglobal
 {
     Button menus[5][5];
+    Button pmenu[3];
     BHglobal();
+};
+
+class PauseGS : public GameState {
+    private:
+        Button * buttons;
+        float xres, yres;
+    public:
+        PauseGS(Button[3],int,int);
+        ~PauseGS();
+        int procMouseInput(int, int);
+        int procKeyInput(int);
+        void drawGameState();
 };
 
 class MenuGS : public GameState {
@@ -45,7 +64,7 @@ class MenuGS : public GameState {
         MenuGS(int, Button[5][5],int, int);
         ~MenuGS();
         int procMouseInput(int, int);
-		int procKeyInput(int key);
+		int procKeyInput(int);
 		void drawGameState();
 };
 #endif

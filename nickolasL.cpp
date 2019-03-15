@@ -481,7 +481,7 @@ int WorldGS::procKeyInput(int key)
 				printf("RotateRight\n");
 				break;
             case XK_Escape:
-                return -1;
+                return 2;
         }
     return 0;
 }
