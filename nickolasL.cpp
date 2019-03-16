@@ -8,10 +8,19 @@
 
 #include "nickolasL.h"
 #include "iostream"
+extern int mainMap[0][25];
+NLarsGlobal nlG;
 /*============LARSON'S GLOBALS==========*/
 NLarsGlobal::NLarsGlobal()
 {
-	
+  MainMap = new int*[25];
+  for ( int i = 0 ; i < 25 ; i++) {
+    MainMap[i] = new int[25];
+    for(int j = 0 ; j < 25 ; j++) {
+      MainMap[i][j] = mainMap[i][j];
+    }
+  }
+  
 }
 
 NLarsGlobal& NLarsGlobal::getInstance()
@@ -148,7 +157,7 @@ void draw_nickLCredit(int x, int y, GLuint texture)
 
 /*============MODEL STUCTURE=============*/
 Model::Model() {
-    const char * objFile = "tiles/mountain.obj";
+    const char * objFile = "tank.obj";
     const char * texFile = "tiles/mountainTex.png";
 	if(!GenerateModel(objFile)) {
 		printf("Failed to generate model\n");
@@ -168,27 +177,35 @@ Model::Model( const char * objFile, const char * texFile )
 	}
 }
 
-void Model::draw() 
+void Model::draw(int x, int z) 
 {
 	glBindTexture(GL_TEXTURE_2D, texture);
+
+	
 	glBegin(GL_TRIANGLES);
+
+	float posx = x * -2.0f;
+	float posz = z * -1.70710378118f;
+	if(z%2 == 0)
+		posx -= 1.0f;
+	//glTranslatef(x * 2.0f , 0.0f,z * 1.70710378118f );
 
 	for( unsigned int i = 0 ; i < vIndices.size() ; i+=3 ) {
 		glTexCoord2f(vertTex[vtIndices.at(i)-1].x,
 				vertTex[vtIndices.at(i)-1].y);
-		glVertex3f(vert[vIndices.at(i)-1].x + pos.x ,
+		glVertex3f(vert[vIndices.at(i)-1].x + posx ,
 				vert[vIndices.at(i)-1].y + pos.y,
-				vert[vIndices.at(i)-1].z + pos.z);
+				vert[vIndices.at(i)-1].z + posz);
 		glTexCoord2f(vertTex[vtIndices.at(i+1)-1].x,
 				vertTex[vtIndices.at(i+1)-1].y);
-		glVertex3f(vert[vIndices.at(i+1)-1].x + pos.x,
+		glVertex3f(vert[vIndices.at(i+1)-1].x + posx,
 				vert[vIndices.at(i+1)-1].y + pos.y,
-				vert[vIndices.at(i+1)-1].z + pos.z);
+				vert[vIndices.at(i+1)-1].z + posz);
 		glTexCoord2f(vertTex[vtIndices.at(i+2)-1].x,
 				vertTex[vtIndices.at(i+2)-1].y);
-		glVertex3f(vert[vIndices.at(i+2)-1].x + pos.x,
+		glVertex3f(vert[vIndices.at(i+2)-1].x + posx,
 				vert[vIndices.at(i+2)-1].y + pos.y,
-				vert[vIndices.at(i+2)-1].z + pos.z);
+				vert[vIndices.at(i+2)-1].z + posz);
 	}
 
 	glEnd();
@@ -272,7 +289,7 @@ bool Model::GenerateTexture ( const char * texFile ) {
 /*=======================================*/
 
 
-Map::Map(int map[], int _width, int _height){
+Map::Map(int ** map, int _width, int _height){
 		mapW = _width;
 		mapH = _height;
 		tile = new Tile *[mapW];
@@ -284,11 +301,14 @@ Map::Map(int map[], int _width, int _height){
 
 				for(int j = 0; j < 25 ; j++){
 					//printf("%d\n",count);
-					tile[i][j].modelID = map[count];
-					tile[i][j].x = 2.0*j;
-					tile[i][j].z = 1.70710378118f*i;
-					if(i%2 == 0)
-						tile[i][j].x -= 1.0f;
+					tile[i][j].modelID = map[i][j];
+					tile[i][j].x = i;
+          			tile[i][j].z = j;
+          
+         			 //tile[i][j].x = 2.0*j;
+					//tile[i][j].z = 1.70710378118f*i;
+					/*if(i%2 == 0)
+						tile[i][j].x -= 1.0f;*/
 					count++;
 				}
 		}
@@ -297,9 +317,9 @@ Map::Map(int map[], int _width, int _height){
 void Map::draw(){
 	for(int i = 0; i < 25; i++){
 		for(int j = 0; j< 25; j++){
-			tiles[tile[i][j].modelID].pos.x = tile[i][j].x;
-			tiles[tile[i][j].modelID].pos.z = tile[i][j].z;
-			tiles[tile[i][j].modelID].draw();
+			//tiles[tile[i][j].modelID].pos.x = tile[i][j].x;
+			//tiles[tile[i][j].modelID].pos.z = tile[i][j].z;
+			tiles[tile[i][j].modelID].draw(i,j);
 		}
 	}
 }
@@ -409,7 +429,7 @@ void Camera::translate(vec2 direction)
 
 /*=======================================*/
 /*===============WORLDGS=================*/
-WorldGS::WorldGS(int* mapArr,int sizex,int sizey,
+WorldGS::WorldGS(int ** mapArr,int sizex,int sizey,
 	float camRot, int posx, int posz,
 	float xres, float yres) :
 	map(mapArr, sizex, sizey), camera(camRot, posx, posz)

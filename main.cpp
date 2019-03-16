@@ -293,5 +293,5 @@ void render()
 {
     Player *player = Player::setInstance("archer", g.archerImage);
     game.drawGameState();
-    player->playerModel.draw();
+    player->playerModel.draw(0,0);
 }
