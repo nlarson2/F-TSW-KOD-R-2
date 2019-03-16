@@ -30,14 +30,12 @@ class Image;
 class NLarsGlobal
 {
 public:
-        //Variables here
-
-private:
+        int ** MainMap;
+        
         NLarsGlobal();
         NLarsGlobal(NLarsGlobal const& copy);
         NLarsGlobal& operator=(NLarsGlobal const& copy);
 
-public:
         static NLarsGlobal& getInstance();
 
 };
@@ -80,7 +78,7 @@ struct Model
 	vec3 pos; //moves along x and z
 	Model ();
 	Model ( const char * objFile, const char * texFile);
-	void draw();
+	void draw(int x, int z);
 	private:
 	bool GenerateModel( const char * objFile );
 	bool GenerateTexture( const char * texFile );
@@ -89,7 +87,7 @@ struct Model
 struct Tile
 {
 	int modelID;
-	float x,z;
+	int x,z;
 };
 
 class Map
@@ -100,7 +98,7 @@ class Map
 
 	public:
 		Map(){}
-		Map(int *map, int _width, int _height);
+		Map(int ** map, int _width, int _height);
 		void draw();
 };
 
@@ -152,13 +150,13 @@ class WorldGS : public GameState {
 		Camera camera;
 		float xres, yres;
     public:
-        WorldGS(int* mapArr,int sizex,int sizey,
+        WorldGS(int ** mapArr,int sizex,int sizey,
 			float camRot, int posx, int posz,
 			float xres, float yres);
-		void initWGS_GL();
-        int procMouseInput(int x, int y);
-		int procKeyInput(int key);
-		void drawGameState();
+		  void initWGS_GL();
+      int procMouseInput(int x, int y);
+		  int procKeyInput(int key);
+		  void drawGameState();
 };
 
 #endif

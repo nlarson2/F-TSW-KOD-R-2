@@ -44,6 +44,7 @@ class Entity
 		//====[ETC]====
         //void displayImage(int x, int y, int z);
 		void resetStats();
+        void displayImage(int,int,int);
 
 		string combatType;
 		float current_health;
@@ -79,13 +80,13 @@ class Player : public Entity
         Ally *allies;
 		static int count;
 		static Player* getInstance();
-		static Player* setInstance(string, GLuint);
+		static Player* setInstance(string);
+        static void resetInstance();
 		void setPlayerCombatType(string);
-		void setPlayerImage(GLuint);
+		void setPlayerImage();
 	private:
 		static Player* instance;
-		Player(string, GLuint);
-		~Player();
+		Player(string);
 };
 
 void Display_NicholasJordan(int, int, GLuint);

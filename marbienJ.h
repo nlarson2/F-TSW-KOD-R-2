@@ -41,7 +41,7 @@ void tracePath(cell[][25], Pair dest);
 void aStarSearch(int[][25], Pair src, Pair dest);
 void displayMap(int[][25]);
 
-void Movement(int[][25]); 
+void Movement(int[][25], int, int, int, int); 
 void showMarbienPicture(int x, int y, GLuint textid);
 
 #endif

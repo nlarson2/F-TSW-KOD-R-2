@@ -160,20 +160,48 @@ int MenuGS::procMouseInput(int x, int y)
 			exit(0);
 			break;
 		case ARCHER:
-            state = MAIN_MENU;
-            return 1;
+            {
+                if (Player::count != 0) {
+                    Player::resetInstance();
+                }
+                Player *player = Player::setInstance("archer");
+                (void)player;
+                state = MAIN_MENU;
+                return 1;
+            }
 			break;
 		case SOLDIER:
-            state = MAIN_MENU;
-            return 1;
-			break;
+            {
+                if (Player::count != 0) {
+                    Player::resetInstance();
+                }
+                Player *player = Player::setInstance("soldier");
+                (void)player;
+                state = MAIN_MENU;
+                return 1;
+            }
+            break;
 		case TANK:
-            state = MAIN_MENU;
-            return 1;
-			break;
+            {
+                if (Player::count != 0) {
+                    Player::resetInstance();
+                }
+                Player *player = Player::setInstance("tank");
+                (void)player;
+                state = MAIN_MENU;
+                return 1;
+            }
+            break;
 		case NICK:
-            state = MAIN_MENU;
-            return 1;
+            {
+                if (Player::count != 0) {
+                    Player::resetInstance();
+                }
+                Player *player = Player::setInstance("nick");
+                (void)player;
+                state = MAIN_MENU;
+                return 1;
+            }
 			break;
 	}
     return 0;

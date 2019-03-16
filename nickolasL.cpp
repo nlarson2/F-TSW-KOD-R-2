@@ -527,7 +527,6 @@ void WorldGS::drawGameState()
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
 	glLoadIdentity();
-
 	camera.update();
 	map.draw();
 	camera.drawCamera(0);
