@@ -289,8 +289,8 @@ void render()
     game.drawGameState();
     if (Player::count != 0) {
         Player *player = Player::getInstance();
-        player->playerModel.draw(0,2);
-        player->displayImage(-5,0,-5);
+        player->playerModel.draw(0,0);
+        player->displayImage(5,0,5);
      }
 
 }

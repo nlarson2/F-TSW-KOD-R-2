@@ -5,8 +5,10 @@
 
 #include <GL/glx.h>
 #include "fonts.h"
+#include <fstream>
+#include <iostream>
+#include <cstdio>
 #include <string>
-#include <typeinfo>
 #include "nickolasL.h"
 
 using namespace std;
@@ -16,14 +18,12 @@ using namespace std;
 
 class Entity
 {
-	private:
-        // can only be called in parent class
+    private:
 		float max_health;
 		float default_defense;
         float default_damage;
 		bool ally;
-    protected:
-        // can only be called in parent or inherited classes
+	protected:
 		void setMaxHealth(float);
         void setDefaultDefense(float);
         void setDefaultDamage(float);
@@ -68,8 +68,17 @@ class Ally : public Entity
 {
 	public:
 		Ally();
+        //saveAllies is called in saveInstance
+        void saveAllies(ofstream&);
+        //loadAllies is called in loadInstance
+        void loadAllies(ifstream&);
+        static int count;
     private:
+        //setAlly is used for initializing a new ally's combat type
 		void setAllyCombatType();
+        //loadAllyCombatType is used for loading already set 
+        //combat types from save(*number*).txt
+		void loadAllyCombatType(string);
 		void setAllyImage();
 };
 
@@ -81,6 +90,13 @@ class Player : public Entity
 		static int count;
 		static Player* getInstance();
 		static Player* setInstance(string);
+        //saveInstance and loadInstance are called from brandonH.cpp
+        //save player and ally instances in save(*number*).txt file
+        //The save functions write to save(*number*).txt line by 
+        //line for easy reading for the load functions
+        void saveInstance(int);
+        //load player and ally intances from save(*number*).txt file
+        void loadInstance(int);
         static void resetInstance();
 		void setPlayerCombatType(string);
 		void setPlayerImage();
@@ -91,5 +107,6 @@ class Player : public Entity
 
 void Display_NicholasJordan(int, int, GLuint);
 Enemy* spawnEnemies(int);
+Ally* spawnAllies(int);
 
 #endif
