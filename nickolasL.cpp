@@ -345,8 +345,7 @@ Camera::Camera()
 }
 
 Camera::Camera(float rot, int posx, int posz)
-{	
-	
+{		
 	yaw = rot;
 	wPos.x = posx;
 	wPos.z = posz;
@@ -512,12 +511,13 @@ int WorldGS::procKeyInput(int key)
 				printf("RotateRight\n");
 				break;
             case XK_Escape:
-                return -1;
+                return 2;
         }
     return 0;
 }
 void WorldGS::drawGameState()
 {
+    initWGS_GL();
 	// set perspective
     //draw map
 	//

@@ -9,13 +9,6 @@
 #include "nicholasJo.h"
 
 extern BHglobal bhg;
-//Map map(tileMap, 25, 25);
-//Camera camera;
-
-//enum GameStates
-//{
-//    MM,WORLD,BATTLE
-//};
 
 class Game
 {

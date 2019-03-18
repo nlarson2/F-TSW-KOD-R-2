@@ -1,10 +1,10 @@
 FFLAGS = main.cpp nicholasJo.cpp brandonH.cpp nickolasL.cpp Game.cpp maps.cpp
 HFLAGS = nicholasJo.h brandonH.h nickolasL.h Game.h maps.h
+CFLAGS = libggfonts.a -Wall -o game -lX11 -lGL -lGLU -lm
 all: game
 
 game: $(FFLAGS) $(HFLAGS)
-	g++ -g $(FFLAGS) libggfonts.a -Wall -o game -lX11 -lGL -lGLU -lm
-
+	g++ -g $(FFLAGS) $(CFLAGS)
 
 clean:
 	rm -f game
