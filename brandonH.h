@@ -14,7 +14,6 @@ enum ButtonID
     MAIN_MENU,NEW_GAME,LOAD_GAME,HIGH_SCORES,CONTROLS,
     EXIT,ARCHER,SOLDIER,TANK,NICK,
     SAVE1, SAVE2, SAVE3, SAVE4,
-    SAVE_GAME
 };
 
 enum pButtonID
@@ -47,6 +46,7 @@ struct BHglobal
 };
 // Done During Lab hours
 // Creates pause functionality by pressing esc while in game.
+// Additionally added save game functionality
 class PauseGS : public GameState {
     private:
         Button * buttons;

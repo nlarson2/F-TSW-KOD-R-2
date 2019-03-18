@@ -48,7 +48,7 @@ void Game::procKeyInput(int key)
             states.pop();
             break;
         case 1:
-            states.push(new WorldGS(mainMap,25 ,25, 180, 0, 0, xres, yres));
+            states.push(new WorldGS(nlG.MainMap,25 ,25, 180, 0, 0, xres, yres));
             break;
         case 2:
             states.push(new PauseGS(bhg.pmenu,xres,yres));

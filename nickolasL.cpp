@@ -345,8 +345,7 @@ Camera::Camera()
 }
 
 Camera::Camera(float rot, int posx, int posz)
-{	
-	
+{		
 	yaw = rot;
 	wPos.x = posx;
 	wPos.z = posz;
