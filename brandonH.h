@@ -4,13 +4,17 @@
 #define BRANDON_H
 
 #include "nickolasL.h"
+#include "nicholasJo.h"
 
 using namespace std;
 
 
 enum ButtonID
 {
-    MAIN_MENU,NEW_GAME,LOAD_GAME,HIGH_SCORES,CONTROLS,EXIT,ARCHER,SOLDIER,TANK,NICK,
+    MAIN_MENU,NEW_GAME,LOAD_GAME,HIGH_SCORES,CONTROLS,
+    EXIT,ARCHER,SOLDIER,TANK,NICK,
+    SAVE1, SAVE2, SAVE3, SAVE4,
+    SAVE_GAME
 };
 
 enum pButtonID

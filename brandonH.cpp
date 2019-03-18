@@ -23,24 +23,41 @@ BHglobal::BHglobal() {
         Button("Nick", NICK),
         Button("Main Menu", MAIN_MENU)
     };
+    static Button btn2[5] = {
+        Button("Save 1", SAVE1),
+        Button("Save 2", SAVE2),
+        Button("Save 3", SAVE3),
+        Button("Save 4", SAVE4),
+        Button("Main Menu", MAIN_MENU)
+    };
     static Button pbtn[3] = {
         Button("Resume", RESUME),
         Button("Save Game", SAVE_GAME),
         Button("Main Menu", PMAIN_MENU),
     };
-
+    // Derived Menu from PauseMenu. Select which save file to override
+    // Needs implementation
+    static Button pbtn2[5] = {
+        Button("Save 1", SAVE1),
+        Button("Save 2", SAVE2),
+        Button("Save 3", SAVE3),
+        Button("Save 4", SAVE4),
+        Button("Return", PMAIN_MENU),
+    };
     for (int i=0; i<5; i++) {
         menus[0][i] = btn[i];
         menus[1][i] = btn1[i];
+        menus[2][i] = btn2[i];
     }
-    for (int i=0; i<3; i++) 
+    for (int i=0; i<3; i++) { 
         pmenu[i] = pbtn[i];
-
+    }
 } BHglobal bhg;
 
 //=================================================//
 //---------------- START OF BUTTON ----------------//
 //=================================================//
+
 Button::Button() {
 }
 
@@ -82,8 +99,10 @@ int PauseGS::procMouseInput(int x, int y)
 {
     pButtonID btn;
     for (int i=0;i<3;i++) {
-        if (yres - y < buttons[i].center.y + buttons[i].height && yres - y > buttons[i].center.y - buttons[i].height &&
-                x < buttons[i].center.x + buttons[i].width && x > buttons[i].center.x - buttons[i].width) {
+        if (yres - y < buttons[i].center.y + buttons[i].height &&
+                yres - y > buttons[i].center.y - buttons[i].height &&
+                x < buttons[i].center.x + buttons[i].width &&
+                x > buttons[i].center.x - buttons[i].width) {
             // Output which button and its corressponding ID to verify button clicks
             cout << "Count: " << i << " Button: " << buttons[i].name << endl;
             btn = buttons[i].pbid;
@@ -94,7 +113,10 @@ int PauseGS::procMouseInput(int x, int y)
             return -1;
             break;
         case SAVE_GAME:
-            // nothing
+            {
+                Player *player = Player::getInstance();
+                player->saveInstance(1);
+            }
             break;
         case PMAIN_MENU:
             return -2;
@@ -175,12 +197,14 @@ MenuGS::~MenuGS()
     delete [] buttons;
 }
 
-int MenuGS::procMouseInput(int x, int y)
+int MenuGS::procMouseInput(int x, int y) 
 {
     ButtonID btn;
-    for (int i=0;i<size;i++) {
-        if (yres - y < buttons[state][i].center.y + buttons[state][i].height && yres - y > buttons[state][i].center.y - buttons[state][i].height &&
-                x < buttons[state][i].center.x + buttons[state][i].width && x > buttons[state][i].center.x - buttons[state][i].width) {
+    for(int i=0;i<size;i++) {
+        if(yres - y < buttons[state][i].center.y + buttons[state][i].height &&
+                yres - y > buttons[state][i].center.y - buttons[state][i].height &&
+                x < buttons[state][i].center.x + buttons[state][i].width &&
+                x > buttons[state][i].center.x - buttons[state][i].width) {
             // Output which button and its corressponding ID to verify button clicks
             cout << "Count: " << i << " Button: " << buttons[state][i].name << endl;
             btn = buttons[state][i].bid;
@@ -194,32 +218,96 @@ int MenuGS::procMouseInput(int x, int y)
             state = NEW_GAME;
             break;
         case LOAD_GAME:
-            //state = ;
+            state = LOAD_GAME;
             break;
         case HIGH_SCORES:
-            //state =;
+            //state = HIGH_SCORES;
             break;
         case CONTROLS:
-            //state =;
+            //state = CONTROLS;
             break;
         case EXIT:
             exit(0);
             break;
         case ARCHER:
-            state = MAIN_MENU;
-            return 1;
+            {
+                if (Player::count != 0) {
+                    Player::resetInstance();
+                }
+                Player *player = Player::setInstance("archer");
+                //stops 'unused variable' warning
+                (void)player;
+                state = MAIN_MENU;
+                return 1;
+            }
             break;
         case SOLDIER:
-            state = MAIN_MENU;
-            return 1;
+            {
+                if (Player::count != 0) {
+                    Player::resetInstance();
+                }
+                Player *player = Player::setInstance("soldier");
+                //stops 'unused variable' warning
+                (void)player;
+                state = MAIN_MENU;
+                return 1;
+            }
             break;
         case TANK:
-            state = MAIN_MENU;
-            return 1;
+            {
+                if (Player::count != 0) {
+                    Player::resetInstance();
+                }
+                Player *player = Player::setInstance("tank");
+                //stops 'unused variable' warning
+                (void)player;
+                state = MAIN_MENU;
+                return 1;
+            }
             break;
         case NICK:
-            state = MAIN_MENU;
-            return 1;
+            {
+                if (Player::count != 0) {
+                    Player::resetInstance();
+                }
+                Player *player = Player::setInstance("nick");
+                //stops 'unused variable' warning
+                (void)player;
+                state = MAIN_MENU;
+                return 1;
+            }
+            break;
+        case SAVE1:
+            {
+                Player *player = Player::getInstance();
+                player->loadInstance(1);
+                state = MAIN_MENU;
+                return 1;
+            }
+            break;
+        case SAVE2:
+            {
+                Player *player = Player::getInstance();
+                player->loadInstance(2);
+                state = MAIN_MENU;
+                return 1;
+            }
+            break;
+        case SAVE3:
+            {
+                Player *player = Player::getInstance();
+                player->loadInstance(3);
+                state = MAIN_MENU;
+                return 1;
+            }
+            break;
+        case SAVE4:
+            {
+                Player *player = Player::getInstance();
+                player->loadInstance(4);
+                state = MAIN_MENU;
+                return 1;
+            }
             break;
     }
     return 0;

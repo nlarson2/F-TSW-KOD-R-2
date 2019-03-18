@@ -3,8 +3,7 @@
 #include "Game.h"
 
 extern BHglobal bhg;
-extern int mainMap[];
-
+extern NLarsGlobal nlG;
 Game::Game(int x, int y) 
 {
     xres = x;
@@ -29,7 +28,7 @@ void Game::procMouseInput(int x, int y)
             states.pop();
             break;
         case 1:
-            states.push(new WorldGS(mainMap,25 ,25, 180, 0, 0, xres, yres));
+            states.push(new WorldGS(nlG.MainMap, 25 ,25, 180, 0, 0, xres, yres));
             break;
         case 2:
             states.push(new PauseGS(bhg.pmenu,xres,yres));

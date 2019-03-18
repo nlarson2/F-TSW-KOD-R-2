@@ -27,7 +27,7 @@ class Game
 		vector<Enemy> enemies;
 	public:
 		Game(int x, int y);
-        void init();
+    void init();
 		void procMouseInput(int x, int y);
 		void procKeyInput(int key);
 		void drawGameState();
