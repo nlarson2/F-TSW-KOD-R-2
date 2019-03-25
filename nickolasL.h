@@ -1,7 +1,7 @@
 //Author: Nickolas Larson
 //Date: 2/14/2019
 //Modified By: Nickolas Larson
-//Modified 3/08/2019
+//Modified 3/20/2019
 
 #ifndef NICKOLAS_L_H
 #define NICKOLAS_L_H
@@ -27,22 +27,19 @@ using namespace std;
 class Image;
 
 
-class NLarsGlobal
-{
+class NLarsGlobal {
 public:
-        int ** MainMap;
+	int ** MainMap;
         
-        NLarsGlobal();
-        NLarsGlobal(NLarsGlobal const& copy);
-        NLarsGlobal& operator=(NLarsGlobal const& copy);
+	NLarsGlobal();
+	NLarsGlobal(NLarsGlobal const& copy);
+	NLarsGlobal& operator=(NLarsGlobal const& copy);
 
-        static NLarsGlobal& getInstance();
-
+	static NLarsGlobal& getInstance();
 };
 
 
-struct vec2
-{
+struct vec2 {
 	float x, y;
 	vec2();
 	vec2(float x, float z);
@@ -51,8 +48,7 @@ struct vec2
 	vec2 operator +=(const vec2& right);
 };
 
-struct vec3
-{
+struct vec3 {
 	float x, y, z;
 	vec3();
 	vec3(float x, float y, float z);
@@ -67,8 +63,7 @@ void GenerateGLTexture(GLuint & texture, const char * dataSrc, bool inverted);
 
 void draw_nickLCredit(int x, int y, GLuint texture);
 
-struct Model
-{	
+struct Model {
 	GLuint texture;
 	vector<vec3> vert;
 	vector<vec2> vertTex;
@@ -84,79 +79,68 @@ struct Model
 	bool GenerateTexture( const char * texFile );
 };
 
-struct Tile
-{
+struct Tile {
 	int modelID;
 	int x,z;
 };
 
-class Map
-{
-	private:
-		int mapW, mapH;
-		Tile ** tile;
-
-	public:
-		Map(){}
-		Map(int ** map, int _width, int _height);
-		void draw();
+class Map {
+private:
+	int mapW, mapH;
+	Tile ** tile;
+public:
+	Map(){}
+	Map(int ** map, int _width, int _height);
+	void draw();
 };
 
-
-
-
-
-class Camera{
-	private:
-		vec3 wPos;//world position
-		vec3 pos;
-		vec3 front;
-		vec3 up;
-		vec2 vel;
-		float radius;
-		float pitch;
-		float yaw;
-	public:
+class Camera {
+private:
+	vec3 wPos;//world position
+	vec3 pos;
+	vec3 front;
+	vec3 up;
+	vec2 vel;
+	float radius;
+	float pitch;
+	float yaw;
+public:
         //view was private
-		vec3 view;
-		Camera();
-		Camera(float rot, int posx, int posz);
-		void update();
-		
-		void drawCamera(GLuint);
-		void rotate(float direction);
-		void translate(vec2 direction);
+	vec3 view;
+	Camera();
+	Camera(float rot, int posx, int posz);
+	void update();
 
+	void drawCamera(GLuint);
+	void rotate(float direction);
+	void translate(vec2 direction);
 };
 
 
 
-class GameState
-{
-    private:
-		
-	public:
-		GameState() {};
-		virtual int procMouseInput(int x, int y) = 0;
-		virtual int procKeyInput(int key) = 0;
-		virtual void drawGameState() = 0;
+class GameState {
+private:
 
+public:
+	GameState() {};
+	virtual int procMouseInput(int x, int y) = 0;
+	virtual int procKeyInput(int key) = 0;
+	virtual void drawGameState() = 0;
 };
 
 class WorldGS : public GameState {
-
-    private:
-        Map map;
-		Camera camera;
-		float xres, yres;
-    public:
-        WorldGS(int ** mapArr,int sizex,int sizey,
-			float camRot, int posx, int posz,
-			float xres, float yres);
-		  void initWGS_GL();
-      int procMouseInput(int x, int y);
-		  int procKeyInput(int key);
-		  void drawGameState();
+private:
+	Map map;
+	Camera camera;
+	float xres, yres;
+public:
+	WorldGS(int ** mapArr,int sizex,int sizey,
+	float camRot, int posx, int posz,
+	float xres, float yres);
+	void initWGS_GL();
+	int procMouseInput(int x, int y);
+	int procKeyInput(int key);
+	void drawGameState();
 };
 
 #endif

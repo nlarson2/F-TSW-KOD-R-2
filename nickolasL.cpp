@@ -1,7 +1,7 @@
 //Author: Nickolas Larson
 //Date: 2/14/2019
 //Modified By: Nickolas Larson
-//Modified 3/02/2019
+//Modified 3/20/2019
 
 #ifndef NICKOLAS_L_CPP
 #define NICKOLAS_L_CPP
@@ -13,13 +13,13 @@ NLarsGlobal nlG;
 /*============LARSON'S GLOBALS==========*/
 NLarsGlobal::NLarsGlobal()
 {
-  MainMap = new int*[25];
-  for ( int i = 0 ; i < 25 ; i++) {
-    MainMap[i] = new int[25];
-    for(int j = 0 ; j < 25 ; j++) {
-      MainMap[i][j] = mainMap[i][j];
-    }
-  }
+	MainMap = new int*[25];
+	for ( int i = 0 ; i < 25 ; i++) {
+		MainMap[i] = new int[25];
+		for(int j = 0 ; j < 25 ; j++) {
+			MainMap[i][j] = mainMap[i][j];
+		}
+	}
   
 }
 
@@ -28,10 +28,8 @@ NLarsGlobal& NLarsGlobal::getInstance()
 	static NLarsGlobal instance;
 	return instance;
 }
-
 /*=======================================*/
 /*========VECTORE MATH(vec2/vec3)========*/
-
 //vec2-----------------------------------
 vec2::vec2() 
 {
@@ -71,16 +69,16 @@ vec3::vec3()
 
 vec3::vec3(float _x, float _y, float _z)
 {
-			x = _x;
-			y = _y;
-			z = _z;
+	x = _x;
+	y = _y;
+	z = _z;
 }
 
 void vec3::operator()(float _x, float _y, float _z)
 {
-		x = _x;
-		y = _y;
-		z = _z;
+	x = _x;
+	y = _y;
+	z = _z;
 }
 vec3 vec3::operator = (const vec3& right)
 {	
@@ -153,8 +151,6 @@ void draw_nickLCredit(int x, int y, GLuint texture)
 }
 
 /*=======================================*/
-
-
 /*============MODEL STUCTURE=============*/
 Model::Model() {
     const char * objFile = "tank.obj";
@@ -180,16 +176,11 @@ Model::Model( const char * objFile, const char * texFile )
 void Model::draw(int x, int z) 
 {
 	glBindTexture(GL_TEXTURE_2D, texture);
-
-	
 	glBegin(GL_TRIANGLES);
-
 	float posx = x * -2.0f;
 	float posz = z * -1.70710378118f;
 	if(z%2 == 0)
 		posx -= 1.0f;
-	//glTranslatef(x * 2.0f , 0.0f,z * 1.70710378118f );
-
 	for( unsigned int i = 0 ; i < vIndices.size() ; i+=3 ) {
 		glTexCoord2f(vertTex[vtIndices.at(i)-1].x,
 				vertTex[vtIndices.at(i)-1].y);
@@ -207,11 +198,8 @@ void Model::draw(int x, int z)
 				vert[vIndices.at(i+2)-1].y + pos.y,
 				vert[vIndices.at(i+2)-1].z + posz);
 	}
-
 	glEnd();
 	glBindTexture(GL_TEXTURE_2D, 0);
-
-
 }
 
 static Model tiles[2] = {  Model( "tiles/grassPlain.obj" , "tiles/grassPlainTex.png" ),
@@ -271,24 +259,17 @@ bool Model::GenerateModel( const char * objFile) {
 			vnIndices.push_back(normalIndex[1]);
 			vnIndices.push_back(normalIndex[2]);
 		}
-
-
 	}
 	fclose(inFile);
 	return true;
 }
 
 bool Model::GenerateTexture ( const char * texFile ) {
-	
 	GenerateGLTexture(texture, texFile, true);
 	return glIsTexture(texture);
-
 }
-
 /*=======================================*/
 /*=======================================*/
-
-
 Map::Map(int ** map, int _width, int _height){
 		mapW = _width;
 		mapH = _height;
@@ -330,7 +311,6 @@ void Map::draw(){
 
 Camera::Camera()
 {	
-	
 	yaw = 180.0f;
 	radius = 10.0f;
 	pos( sin(yaw * PI / 180)*radius, 8.0f, 
@@ -350,22 +330,17 @@ Camera::Camera(float rot, int posx, int posz)
 	wPos.x = posx;
 	wPos.z = posz;
 	radius = 10.0f;
-	pos( sin(yaw * PI / 180)*radius, 8.0f, 
-		cos(yaw * PI / 180)*radius);
+	pos( sin(yaw * PI / 180)*radius, 8.0f, cos(yaw * PI / 180)*radius);
 	front( 0, 0, 0);
 	up( 0, 1.0f, 0);	
 	pitch = 45.0f;
-	view((pos.x + front.x),
-		(pos.y + front.y),
-		(pos.z + front.z));
+	view((pos.x + front.x), (pos.y + front.y), (pos.z + front.z));
 	wPos(0,0,0);			
 }
 
 void Camera::update()
 {
-	view((wPos.x + front.x),
-		(wPos.y + front.y),
-		(wPos.z + front.z));
+	view((wPos.x + front.x), (wPos.y + front.y), (wPos.z + front.z));
 	
 	gluLookAt(pos.x+wPos.x,  pos.y+wPos.y,  pos.z+wPos.z,
 			view.x, view.y, view.z,
@@ -376,21 +351,17 @@ void Camera::drawCamera(GLuint texture)
 {	
 
 	glBindTexture( GL_TEXTURE_2D, texture);
-    glPushMatrix();
-    
+	glPushMatrix();
 	glBegin(GL_QUADS);
 		glTexCoord2f(1, 1);
-		glVertex3f(view.x+1, 0.5f , view.z+1);
-		
-        glTexCoord2f(1, 0);
+		glVertex3f(view.x+1, 0.5f , view.z+1);	
+        	glTexCoord2f(1, 0);
 		glVertex3f(view.x+1, 0.5f , view.z-1);
-		
-        glTexCoord2f(0, 0);
+        	glTexCoord2f(0, 0);
 		glVertex3f(view.x-1, 0.5f , view.z-1);
-		
-        glTexCoord2f(0, 1);
+        	glTexCoord2f(0, 1);
 		glVertex3f(view.x-1, 0.5f , view.z+1);
-		glColor3f(1.0f,1.0f,1.0f);
+	glColor3f(1.0f,1.0f,1.0f);
 	glEnd();
 	glPopMatrix();
 	glBindTexture( GL_TEXTURE_2D, 0);
@@ -409,14 +380,12 @@ void Camera::rotate(float direction)
 }
 void Camera::translate(vec2 direction)
 {
-	if(direction.y)
-	{
-		direction.x = (pos.x/6)*direction.y;
-		direction.y = (pos.z/6)*direction.y;
-	}else
-	{	
-		direction.x = (pos.z/6) * direction.x;
-		direction.y = -(pos.x/6) * direction.x;
+	if(direction.y) {
+		direction.x = (pos.x/radius)*direction.y;
+		direction.y = (pos.z/radius)*direction.y;
+	} else {	
+		direction.x = (pos.z/radius) * direction.x;
+		direction.y = -(pos.x/radius) * direction.x;
 	}
 	
 	wPos.x += direction.x;
@@ -440,16 +409,13 @@ WorldGS::WorldGS(int ** mapArr,int sizex,int sizey,
 
 void WorldGS::initWGS_GL()
 {
-	 //OpenGL initialization
-    glViewport(0, 0, xres, yres);
-    //Initialize matrices
-    
-    
-    //3D perspective view
-    
-    glMatrixMode(GL_PROJECTION); glLoadIdentity();
-    gluPerspective(45.0f,(GLfloat)xres/(GLfloat)yres,0.1f,100.0f);
-
+	//OpenGL initialization
+	glViewport(0, 0, xres, yres);
+	//Initialize matrices    
+	//3D perspective view
+	
+	glMatrixMode(GL_PROJECTION); glLoadIdentity();
+	gluPerspective(45.0f,(GLfloat)xres/(GLfloat)yres,0.1f,100.0f);
 
 	//discussed futher in later tutorial
 	glShadeModel(GL_SMOOTH);//enables smooth shading
@@ -459,71 +425,70 @@ void WorldGS::initWGS_GL()
 	glEnable(GL_DEPTH_TEST);//Enables Depth Testing
 	glDepthFunc(GL_LEQUAL);//The type of depth test to do
 
-
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);//??makes the perspective view better??
-    
 
 
-    glMatrixMode(GL_MODELVIEW); glLoadIdentity();
-    //Set 2D mode (no perspective)
-    //COMMENT OUT LINE BELOW BEFORE TYRING TO MAKE IT 3D
-    //glOrtho(0, g.xres, 0, g.yres, -1, 1);
+
+	glMatrixMode(GL_MODELVIEW); glLoadIdentity();
+	//Set 2D mode (no perspective)
+	//COMMENT OUT LINE BELOW BEFORE TYRING TO MAKE IT 3D
+	//glOrtho(0, g.xres, 0, g.yres, -1, 1);
 
 
-    //Set the screen background color
-    glClearColor(0.1, 0.1, 0.1, 1.0);
-    //Insert Fonts
-    glEnable(GL_TEXTURE_2D);
+	//Set the screen background color
+	glClearColor(0.1, 0.1, 0.1, 1.0);
+	//Insert Fonts
+	glEnable(GL_TEXTURE_2D);
 }
 int WorldGS::procMouseInput(int x, int y)
 {
-    return 0;
+	return 0;
 	//picking/UI
 }
 int WorldGS::procKeyInput(int key)
 {
 	switch (key) {
-            case XK_1:
-				//Key 1 was pressed
-				break;
-			case XK_a:
-				camera.translate(vec2(-1,0));
-				printf("MoveLeft\n");
-				break;
-			case XK_d:
-				camera.translate(vec2(1,0));
-				printf("MoveRight\n");
-				break;
-			case XK_w:
-				camera.translate(vec2(0,-1));
-				printf("MoveUp\n");
-				break;
-			case XK_s:
-				camera.translate(vec2(0,1));
-				printf("MoveDown\n");
-				break;
-			case XK_q:
-				camera.rotate(-4.0f);
-				printf("RotateLeft\n");
-				break;
-			case XK_e:
-				camera.rotate(4.0f);
-				printf("RotateRight\n");
-				break;
-            case XK_Escape:
-                return 2;
-        }
-    return 0;
+		case XK_1:
+			//Key 1 was pressed
+			break;
+		case XK_a:
+			camera.translate(vec2(-1,0));
+			printf("MoveLeft\n");
+			break;
+		case XK_d:
+			camera.translate(vec2(1,0));
+			printf("MoveRight\n");
+			break;
+		case XK_w:
+			camera.translate(vec2(0,-1));
+			printf("MoveUp\n");
+			break;
+		case XK_s:
+			camera.translate(vec2(0,1));
+			printf("MoveDown\n");
+			break;
+		case XK_q:
+			camera.rotate(-4.0f);
+			printf("RotateLeft\n");
+			break;
+		case XK_e:
+			camera.rotate(4.0f);
+			printf("RotateRight\n");
+			break;
+		case XK_Escape:
+			return 2;
+	}
+	return 0;
 }
 void WorldGS::drawGameState()
 {
-    initWGS_GL();
+	initWGS_GL();
 	// set perspective
-    //draw map
+	//draw map
 	//
 	//
-    //gluPerspective(45.0f, xres/yres, 0.1f, 100.0f);
-   // glMatrixMode(GL_MODELVIEW); glLoadIdentity();
+	//gluPerspective(45.0f, xres/yres, 0.1f, 100.0f);
+	// glMatrixMode(GL_MODELVIEW); glLoadIdentity();
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
 	glLoadIdentity();
@@ -536,10 +501,7 @@ void WorldGS::drawGameState()
 	//draw UI
 	//
 	//
-
-
 }
-
 /*=======================================*/
 /*=======================================*/
 /*=======================================*/
@@ -547,7 +509,7 @@ void WorldGS::drawGameState()
 
 void GenerateGLTexture(GLuint & texture, const char * dataSrc, bool inverted)
 {
-//IMAGE CLASS NEEDS DEFINITION	
+	//IMAGE CLASS NEEDS DEFINITION	
 	Image data(dataSrc);
 	//flip image data because openGL is inverted on the Y
 	if(inverted)
@@ -567,6 +529,4 @@ void GenerateGLTexture(GLuint & texture, const char * dataSrc, bool inverted)
 }
 
 /*=======================================*/
-
-
 #endif
