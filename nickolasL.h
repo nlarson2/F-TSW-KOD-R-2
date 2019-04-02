@@ -56,6 +56,13 @@ struct vec3 {
 	vec3 operator = (const vec3& right);
 	vec3 operator +(const vec3& right);
 	vec3 operator +=(const vec3& right);
+	vec3 operator -(const vec3& right);
+	vec3 operator -=(const vec3& right);
+	vec3 operator*(float scale);
+	vec3 operator/(float scale);
+	static vec3 crossProd(const vec3& left, const vec3& right);
+	static float Magnitude(vec3& vec);
+	static vec3 Normalize(const vec3& vec);
 };
 
 
@@ -104,6 +111,8 @@ private:
 	float radius;
 	float pitch;
 	float yaw;
+
+	vec3 pickPos;
 public:
         //view was private
 	vec3 view;
@@ -113,7 +122,8 @@ public:
 
 	void drawCamera(GLuint);
 	void rotate(float direction);
-	void translate(vec2 direction);
+	void translate(int key);
+	void picking(int x, int y);
 };
 
 

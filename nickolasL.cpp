@@ -97,7 +97,50 @@ vec3 vec3::operator +(const vec3& right)
 }
 vec3 vec3::operator +=(const vec3& right)
 {
-	return *this + right;
+	this->x += right.x;
+	this->y += right.y;
+	this->z += right.z;
+	return *this;
+}
+vec3 vec3::operator -(const vec3& right)
+{
+	vec3 ret;
+        ret.x = x - right.x;
+        ret.y = y - right.y;
+	ret.z = z - right.z;
+        return ret;
+}
+vec3 vec3::operator -=(const vec3& right)
+{
+	this->x -= right.x;
+	this->y -= right.y;
+	this->z -= right.z;
+	return *this;
+}
+vec3 vec3::operator*(float scale)
+{
+	return vec3(x*scale, y*scale, z*scale);
+}
+vec3 vec3::operator/(float scale)
+{
+	return vec3(x/scale, y/scale, z/scale);
+}
+vec3 vec3::crossProd(const vec3& left, const vec3& right)
+{
+	vec3 ret;
+	ret.x = left.y*right.z - left.z*right.y;
+	ret.y = left.z*right.x - left.x*right.z;
+	ret.z = left.x*right.y - left.y*right.x;
+	return ret;
+}
+float vec3::Magnitude(vec3& vec)
+{
+	return sqrt(vec.x*vec.x + vec.y*vec.y + vec.z*vec.z);
+}
+vec3 vec3::Normalize(const vec3& vec)
+{
+	vec3 ret = vec;
+	return (ret/Magnitude(ret));
 }
 //---------------------------------------
 /*=======================================*/
@@ -153,8 +196,8 @@ void draw_nickLCredit(int x, int y, GLuint texture)
 /*=======================================*/
 /*============MODEL STUCTURE=============*/
 Model::Model() {
-    const char * objFile = "tank.obj";
-    const char * texFile = "tiles/mountainTex.png";
+    const char * objFile = "models/tank/Tank.obj";
+    const char * texFile = "models/tank/TankTexture.png";
 	if(!GenerateModel(objFile)) {
 		printf("Failed to generate model\n");
 	}
@@ -202,8 +245,12 @@ void Model::draw(int x, int z)
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-static Model tiles[2] = {  Model( "tiles/grassPlain.obj" , "tiles/grassPlainTex.png" ),
-    	            Model( "tiles/mountain.obj" , "tiles/mountainTex.png" )};
+static Model tiles[4] = {  
+	Model( "tiles/waterTile.obj" , "tiles/waterTexture.png" ),
+	Model( "tiles/grassTile.obj" , "tiles/grassTexture.png" ),
+    Model( "tiles/mountain.obj" , "tiles/mountainTex.png" ),
+	Model( "tiles/forestTile.obj" , "tiles/forestTexture.png" )
+};
 
 bool Model::GenerateModel( const char * objFile) {
 	FILE * inFile= fopen(objFile,"r");
@@ -315,9 +362,8 @@ Camera::Camera()
 	radius = 10.0f;
 	pos( sin(yaw * PI / 180)*radius, 8.0f, 
 		cos(yaw * PI / 180)*radius);
-	front( 0, 0, 0);
-	up( 0, 1.0f, 0);	
-	pitch = 45.0f;
+	front( 0, 0, -1);
+	up( 0, 1.0f, 0);
 	view((pos.x + front.x),
 		(pos.y + front.y),
 		(pos.z + front.z));
@@ -331,9 +377,8 @@ Camera::Camera(float rot, int posx, int posz)
 	wPos.z = posz;
 	radius = 10.0f;
 	pos( sin(yaw * PI / 180)*radius, 8.0f, cos(yaw * PI / 180)*radius);
-	front( 0, 0, 0);
-	up( 0, 1.0f, 0);	
-	pitch = 45.0f;
+	front( 0, 0, -1);
+	up( 0, 1.0f, 0);
 	view((pos.x + front.x), (pos.y + front.y), (pos.z + front.z));
 	wPos(0,0,0);			
 }
@@ -354,17 +399,30 @@ void Camera::drawCamera(GLuint texture)
 	glPushMatrix();
 	glBegin(GL_QUADS);
 		glTexCoord2f(1, 1);
-		glVertex3f(view.x+1, 0.5f , view.z+1);	
+		glVertex3f(wPos.x+1, 0.5f , wPos.z+1);	
         	glTexCoord2f(1, 0);
-		glVertex3f(view.x+1, 0.5f , view.z-1);
+		glVertex3f(wPos.x+1, 0.5f , wPos.z-1);
         	glTexCoord2f(0, 0);
-		glVertex3f(view.x-1, 0.5f , view.z-1);
+		glVertex3f(wPos.x-1, 0.5f , wPos.z-1);
         	glTexCoord2f(0, 1);
-		glVertex3f(view.x-1, 0.5f , view.z+1);
+		glVertex3f(wPos.x-1, 0.5f , wPos.z+1);
 	glColor3f(1.0f,1.0f,1.0f);
 	glEnd();
 	glPopMatrix();
 	glBindTexture( GL_TEXTURE_2D, 0);
+
+	
+	glPushMatrix();
+	glBegin(GL_QUADS);
+	glColor3f(1.0f,0.0f,0.0f);
+		glVertex3f(pickPos.x+0.25f, 0.7f , pickPos.z+0.25f);
+		glVertex3f(pickPos.x+0.25f, 0.7f , pickPos.z-0.25f);
+		glVertex3f(pickPos.x-0.25f, 0.7f , pickPos.z-0.25f);
+		glVertex3f(pickPos.x-0.25f, 0.7f , pickPos.z+0.25f);
+    glColor3f(1.0f,1.0f,1.0f);
+    glEnd();
+    glPopMatrix();
+
 }
 
 void Camera::rotate(float direction)
@@ -378,8 +436,20 @@ void Camera::rotate(float direction)
 	pos.z = cos(yaw * PI / 180)*radius;
 	//printf("X: %f  Z: %f\n",pos.x, pos.z); 
 }
-void Camera::translate(vec2 direction)
+void Camera::translate(int key)
 {
+	vec3 direction(pos.x/radius, 0, pos.z/radius);
+	if( key == XK_w )
+		wPos -= direction * 0.8f;
+	else if( key == XK_s )
+		wPos += direction * 0.8f;
+	else if( key == XK_a )
+		wPos += vec3::Normalize(vec3::crossProd(direction, up)) * 0.8f;
+	else if( key == XK_d )
+		wPos -= vec3::Normalize(vec3::crossProd(direction, up)) * 0.8f;
+
+	printf("X:%f  Z:%f\n", wPos.x, wPos.z);
+	/*
 	if(direction.y) {
 		direction.x = (pos.x/radius)*direction.y;
 		direction.y = (pos.z/radius)*direction.y;
@@ -390,9 +460,31 @@ void Camera::translate(vec2 direction)
 	
 	wPos.x += direction.x;
 	wPos.z += direction.y;
-
+*/
 //	front.x += direction.x;
 //	front.z += direction.z;
+}
+
+void Camera::picking(int x, int y)
+{
+	vec3 ray(pos.x+wPos.x,  8.0f,  pos.z+wPos.z);
+	float yawDir = yaw - (((x-400)*0.0525));//this works to get starting positi
+	//ray = crossProd(ray, up);
+	//ray.y += cos(yawY * PI/180)*21;
+	while(ray.y > 0) {
+		/*ray.x -= sin(yawDir * PI / 180)/100;
+		ray.y -= 0.8f;
+		ray.z -= cos(yawDir * PI / 180)/100;*/
+		//three land were the camera is looking
+		ray.x += sin(yaw * PI / 180) / 100;
+		ray.y -= 0.8f;
+		ray.z += cos(yaw * PI / 180)/100 -0.01f;
+		printf("RX:%f  RY:%f  RZ:%f\n", ray.x, ray.y, ray.z);
+	}	
+	pickPos.x = ray.x - (sin(yaw * PI / 180) * radius);
+	pickPos.y = ray.y;
+	pickPos.z = ray.z -(cos(yaw/*Dir*/ * PI / 180) * radius);
+	printf("X:%f  Y:%f  Z:%f\n", pickPos.x, pickPos.y, pickPos.z);
 }
 
 /*=======================================*/
@@ -442,6 +534,9 @@ void WorldGS::initWGS_GL()
 }
 int WorldGS::procMouseInput(int x, int y)
 {
+	
+	printf("X:%d  Y:%d\n", x, y);
+	camera.picking(x,y);
 	return 0;
 	//picking/UI
 }
@@ -451,21 +546,8 @@ int WorldGS::procKeyInput(int key)
 		case XK_1:
 			//Key 1 was pressed
 			break;
-		case XK_a:
-			camera.translate(vec2(-1,0));
-			printf("MoveLeft\n");
-			break;
-		case XK_d:
-			camera.translate(vec2(1,0));
-			printf("MoveRight\n");
-			break;
-		case XK_w:
-			camera.translate(vec2(0,-1));
-			printf("MoveUp\n");
-			break;
-		case XK_s:
-			camera.translate(vec2(0,1));
-			printf("MoveDown\n");
+		case XK_a: case XK_d: case XK_w: case XK_s:
+			camera.translate(key);
 			break;
 		case XK_q:
 			camera.rotate(-4.0f);
