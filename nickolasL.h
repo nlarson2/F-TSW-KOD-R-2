@@ -21,11 +21,9 @@
 
 using namespace std;
 
-
 #define PI 3.14159265359
 
 class Image;
-
 
 class NLarsGlobal {
 public:
@@ -81,9 +79,11 @@ struct Model {
 	Model ();
 	Model ( const char * objFile, const char * texFile);
 	void draw(int x, int z);
-	private:
 	bool GenerateModel( const char * objFile );
 	bool GenerateTexture( const char * texFile );
+	private:
+	//bool GenerateModel( const char * objFile );
+	//bool GenerateTexture( const char * texFile );
 };
 
 struct Tile {
@@ -125,8 +125,6 @@ public:
 	void translate(int key);
 	void picking(int x, int y);
 };
-
-
 
 class GameState {
 private:

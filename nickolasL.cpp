@@ -7,8 +7,10 @@
 #define NICKOLAS_L_CPP
 
 #include "nickolasL.h"
+#include "nicholasJo.h"
 #include "iostream"
 extern int mainMap[0][25];
+extern NJordGlobal njG;
 NLarsGlobal nlG;
 /*============LARSON'S GLOBALS==========*/
 NLarsGlobal::NLarsGlobal()
@@ -576,6 +578,19 @@ void WorldGS::drawGameState()
 	glLoadIdentity();
 	camera.update();
 	map.draw();
+    njG.player = Player::getInstance();
+    if (njG.player->count != 0) {
+        njG.player->playerModel.draw(njG.player->wPos.x, njG.player->wPos.z);
+        njG.player->displayImage(5, 0, 5);
+            for (int i = 0; i < njG.player->allies->count; i++) {
+                njG.player->allies[i].displayImage(5*-i, 0, 5);
+            }
+    }
+    if (njG.enemies->count != 0) {
+        for (int i = 0; i < njG.enemies->count; i++) {
+            njG.enemies[i].playerModel.draw(1*-i, 1);
+        }
+    }
 	camera.drawCamera(0);
 
 	//set ortho

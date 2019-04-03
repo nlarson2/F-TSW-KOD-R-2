@@ -4,6 +4,7 @@
 
 extern BHglobal bhg;
 extern NLarsGlobal nlG;
+//extern NJordGlobal njG;
 Game::Game(int x, int y) 
 {
     xres = x;
@@ -33,7 +34,7 @@ void Game::procMouseInput(int x, int y)
         case 2:
             states.push(new PauseGS(bhg.pmenu,xres,yres));
             break;
-            }
+    }
 }
 
 void Game::procKeyInput(int key)
