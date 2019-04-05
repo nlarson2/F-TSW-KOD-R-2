@@ -9,7 +9,12 @@
 #include <GL/glx.h>
 #include "fonts.h"
 #include <iostream>
-#include <bits/stdc++.h>
+//#include <bits/stdc++.h>
+#include <stack>
+#include <math.h>
+#include <float.h>
+#include <set>
+#include <string.h>
 using namespace std;
 
 /*int Movement(int);
