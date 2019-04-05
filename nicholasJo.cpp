@@ -153,6 +153,11 @@ void Entity::resetStats()
     current_damage = default_damage;
 }
 
+void Entity::draw()
+{
+    pModel[this->modelID].draw(this->wPos.x, this->wPos.z, 0.3);
+}
+
 //==========================[ALLY CLASS]===============================
 //Inherits from Entity
 
@@ -232,16 +237,19 @@ void Ally::loadAllyCombatType(string c)
 {
     Log("Ally::loadAllyCombatType(string c), c = %s\n", c.c_str());
 	if (c == "archer") {
+        modelID = 0;
         combatType = c;
 		setMaxHealth(50.0);
 		setDefaultDefense(0.3);
 		setDefaultDamage(10.0);
 	} else if (c == "soldier") {
+        modelID = 0;
         combatType = c;
 		setMaxHealth(75.0);
 		setDefaultDefense(0.5);
 		setDefaultDamage(15.0);
 	} else if (c == "tank") {
+        modelID = 0;
         combatType = c;
 		setMaxHealth(100.0);
 		setDefaultDefense(0.70);
@@ -259,18 +267,21 @@ void Ally::setAllyCombatType()
     uniform_int_distribution<int> distribution(0, 2);
 	switch (distribution(generator)) {
 		case 0:
+            modelID = 0;
 			combatType = "archer";
 			setMaxHealth(50.0);
 			setDefaultDefense(0.3);
 			setDefaultDamage(10.0);
 			break;
 		case 1:
+            modelID = 0;
 			combatType = "soldier";
 			setMaxHealth(75.0);
 			setDefaultDefense(0.5);
 			setDefaultDamage(15.0);
 			break;
 		case 2:
+            modelID = 0;
 			combatType = "tank";
 			setMaxHealth(100);
 			setDefaultDefense(0.7);
@@ -312,6 +323,8 @@ Enemy::Enemy()
     current_health = getMaxHealth();
     current_defense = getDefaultDefense();
     current_damage = getDefaultDamage();
+    wPos.x = count;
+    wPos.z = 1;
     count++;
 }
 
@@ -323,18 +336,21 @@ void Enemy::setEnemyCombatType()
     uniform_int_distribution<int> distribution(0, 2);
     switch (distribution(generator)) {
 		case 0 :
+            modelID = 0;
 			combatType = "archer";
 			setMaxHealth(50.0);
 			setDefaultDefense(0.3);
 			setDefaultDamage(10.0);
 			break;
 		case 1:
+            modelID = 0;
 			combatType = "soldier";
 			setMaxHealth(75.0);
 			setDefaultDefense(0.5);
 			setDefaultDamage(15.0);
 			break;
 		case 2:
+            modelID = 0;
 			combatType = "tank";
 			setMaxHealth(100);
 			setDefaultDefense(0.7);
@@ -469,43 +485,25 @@ void Player::setPlayerCombatType(string c)
 {
     Log("Player::setPlayerCombatType(string c), c = %s\n", c.c_str());
 	if (c == "archer") {
-        if (!playerModel.GenerateModel("models/tank/Tank.obj"))
-            printf("Failed to generate model");
-        if (!playerModel.GenerateTexture("models/tank/TankTexture.png"))
-            printf("Failed to load texture\n");
+        modelID = 0;
         combatType = c;
 		setMaxHealth(75.0);
 		setDefaultDefense(0.60);
 		setDefaultDamage(15.0);
 	} else if (c == "soldier") {
-        if (!playerModel.GenerateModel("models/tank/Tank.obj")) {
-            printf("Failed to generate model");
-        }
-        if (!playerModel.GenerateTexture("models/tank/TankTexture.png")) {
-            printf("Failed to load texture\n");
-        }
+        modelID = 0;
         combatType = c;
 		setMaxHealth(100.0);
 		setDefaultDefense(0.70);
 		setDefaultDamage(20.0);
 	} else if (c == "tank") {
-        if (!playerModel.GenerateModel("models/tank/Tank.obj")) {
-            printf("Failed to generate model");
-        }
-        if (!playerModel.GenerateTexture("models/tank/TankTexture.png")) {
-            printf("Failed to load texture\n");
-        }
+        modelID = 0;
         combatType = c;
 		setMaxHealth(125.0);
 		setDefaultDefense(0.80);
 	    setDefaultDamage(22.0);
 	} else if (c == "nick") {
-        if (!playerModel.GenerateModel("models/tank/Tank.obj")) {
-            printf("Failed to generate model");
-        }
-        if (!playerModel.GenerateTexture("models/tank/TankTexture.png")) {
-            printf("Failed to load texture\n");
-        }
+        modelID = 0;
         combatType = c;
 		setMaxHealth(999);
 		setDefaultDefense(1);
