@@ -29,6 +29,11 @@ Ally* NJordGlobal::spawnAllies(int amount)
 }
 
 //==========================[ENTITY CLASS]===============================
+
+static Model pModel[1] = {
+	Model("models/tank/Tank.obj","models/tank/TankTexture.png")
+};
+
 //==========[Health Functions]=========
 float Entity::getMaxHealth()
 {

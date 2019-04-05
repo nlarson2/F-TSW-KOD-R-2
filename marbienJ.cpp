@@ -630,7 +630,7 @@ void displayMap(int map[ROW][COL])
 
 void Movement(int grid[][25], int sRow, int sCol, int dRow, int dCol) 
 {
-    int sRow, sCol, dRow, dCol;
+    //int sRow, sCol, dRow, dCol;
     bool error = false;
 
      // Source is selected
