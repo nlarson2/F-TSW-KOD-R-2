@@ -11,6 +11,7 @@
 #include "iostream"
 extern int mainMap[0][25];
 extern NJordGlobal njG;
+extern AOglobal aog;
 NLarsGlobal nlG;
 /*============LARSON'S GLOBALS==========*/
 NLarsGlobal::NLarsGlobal()
@@ -494,7 +495,7 @@ void Camera::picking(int x, int y)
 WorldGS::WorldGS(int ** mapArr,int sizex,int sizey,
 	float camRot, int posx, int posz,
 	float xres, float yres) :
-	map(mapArr, sizex, sizey), camera(camRot, posx, posz)
+	map(mapArr, sizex, sizey), camera(camRot, posx, posz), UI(aog.box, xres, yres)
 {	
 	this->xres = xres;
 	this->yres = yres;
@@ -596,8 +597,8 @@ void WorldGS::drawGameState()
 	//set ortho
 
 	//draw UI
-	//
-	//
+	UI.drawBoxes();
+    glColor3ub(255, 255, 255);
 }
 /*=======================================*/
 /*=======================================*/

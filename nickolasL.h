@@ -18,6 +18,8 @@
 
 #include "Image.h"
 //#include "Game.h"
+#include "adamO.h"
+
 
 using namespace std;
 
@@ -141,6 +143,7 @@ private:
 	Map map;
 	Camera camera;
 	float xres, yres;
+    uiboxes UI;
 public:
 	WorldGS(int ** mapArr,int sizex,int sizey,
 	float camRot, int posx, int posz,
