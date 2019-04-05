@@ -65,7 +65,7 @@ void tracePath(cell cellDetails[][COL], Pair dest)
     { 
         pair<int,int> p = Path.top(); 
         Path.pop(); 
-        printf("-> (%d,%d) \n",p.first,p.second); 
+        printf("-> (%d,%d) \n", p.first, p.second); 
     } 
   
     return; 
@@ -628,7 +628,7 @@ void displayMap(int map[ROW][COL])
 }
 
 
-void Movement(int grid[][25], int sRow, int sCol, int dRow, int dCol) 
+void Movement(int grid[][25], Entity entity, vec2 dest) 
 {
     //int sRow, sCol, dRow, dCol;
     bool error = false;
@@ -636,17 +636,17 @@ void Movement(int grid[][25], int sRow, int sCol, int dRow, int dCol)
      // Source is selected
     //cout << "Please pick source: ";
     ///cin >> sRow >> sCol;  
-    Pair src = make_pair(sRow, sCol); 
+    Pair source = make_pair(entity.wPos.x, entity.wPos.z); 
   
     // Destination is selected
     //cout << "Please pick destination: ";
     //cin >> dRow >> dCol;
-    Pair dest = make_pair(dRow, dCol);
+    Pair destination = make_pair(dest.x, dest.y);
  
     // Display Map
     //displayMap(grid);
  
-    aStarSearch(grid, src, dest); 
+    aStarSearch(grid, source, destination); 
 
 }
 
