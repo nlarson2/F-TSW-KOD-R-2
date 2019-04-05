@@ -8,7 +8,6 @@
 
 #include "nickolasL.h"
 #include "nicholasJo.h"
-#include "iostream"
 extern int mainMap[0][25];
 extern NJordGlobal njG;
 extern AOglobal aog;
@@ -219,29 +218,30 @@ Model::Model( const char * objFile, const char * texFile )
 	}
 }
 
-void Model::draw(int x, int z) 
+void Model::draw(int x, int z, float y) 
 {
 	glBindTexture(GL_TEXTURE_2D, texture);
 	glBegin(GL_TRIANGLES);
 	float posx = x * -2.0f;
 	float posz = z * -1.70710378118f;
+    float posy = y; 
 	if(z%2 == 0)
 		posx -= 1.0f;
 	for( unsigned int i = 0 ; i < vIndices.size() ; i+=3 ) {
 		glTexCoord2f(vertTex[vtIndices.at(i)-1].x,
 				vertTex[vtIndices.at(i)-1].y);
 		glVertex3f(vert[vIndices.at(i)-1].x + posx ,
-				vert[vIndices.at(i)-1].y + pos.y,
+				vert[vIndices.at(i)-1].y + posy,
 				vert[vIndices.at(i)-1].z + posz);
 		glTexCoord2f(vertTex[vtIndices.at(i+1)-1].x,
 				vertTex[vtIndices.at(i+1)-1].y);
 		glVertex3f(vert[vIndices.at(i+1)-1].x + posx,
-				vert[vIndices.at(i+1)-1].y + pos.y,
+				vert[vIndices.at(i+1)-1].y + posy,
 				vert[vIndices.at(i+1)-1].z + posz);
 		glTexCoord2f(vertTex[vtIndices.at(i+2)-1].x,
 				vertTex[vtIndices.at(i+2)-1].y);
 		glVertex3f(vert[vIndices.at(i+2)-1].x + posx,
-				vert[vIndices.at(i+2)-1].y + pos.y,
+				vert[vIndices.at(i+2)-1].y + posy,
 				vert[vIndices.at(i+2)-1].z + posz);
 	}
 	glEnd();
@@ -581,15 +581,16 @@ void WorldGS::drawGameState()
 	map.draw();
     njG.player = Player::getInstance();
     if (njG.player->count != 0) {
-        njG.player->playerModel.draw(njG.player->wPos.x, njG.player->wPos.z);
+        njG.player->draw();
         njG.player->displayImage(5, 0, 5);
             for (int i = 0; i < njG.player->allies->count; i++) {
-                njG.player->allies[i].displayImage(5*-i, 0, 5);
+                njG.player->allies[i].draw();
+                njG.player->allies[i].displayImage(5 * -i, 0, 5);
             }
     }
     if (njG.enemies->count != 0) {
         for (int i = 0; i < njG.enemies->count; i++) {
-            njG.enemies[i].playerModel.draw(1*-i, 1);
+            njG.enemies[i].draw();
         }
     }
 	camera.drawCamera(0);

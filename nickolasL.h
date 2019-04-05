@@ -80,7 +80,7 @@ struct Model {
 	vec3 pos; //moves along x and z
 	Model ();
 	Model ( const char * objFile, const char * texFile);
-	void draw(int x, int z);
+	void draw(int x, int z, float y=0);
 	bool GenerateModel( const char * objFile );
 	bool GenerateTexture( const char * texFile );
 	private:

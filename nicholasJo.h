@@ -73,6 +73,7 @@ class Entity {
 		//====[ETC]====
 		void resetStats();
         void displayImage(int,int,int);
+        void draw();
 
 		string combatType;
 		float current_health;
@@ -80,6 +81,7 @@ class Entity {
 		float current_damage;
 		GLuint image;
         Model playerModel;
+        int modelID;
         vec3 wPos; //world position
         vec3 bPos; //battle position
 };
