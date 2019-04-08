@@ -30,13 +30,16 @@ class Image;
 class NLarsGlobal {
 public:
 	int ** MainMap;
-        
+	static NLarsGlobal * GetInstance();
+private:
+	static NLarsGlobal * instance;
 	NLarsGlobal();
 	NLarsGlobal(NLarsGlobal const& copy);
 	NLarsGlobal& operator=(NLarsGlobal const& copy);
 
-	static NLarsGlobal& getInstance();
+	//static NLarsGlobal& getInstance();
 };
+
 
 
 struct vec2 {
@@ -46,6 +49,35 @@ struct vec2 {
 	vec2 operator = (const vec2& right);
 	vec2 operator +(const vec2& right);
 	vec2 operator +=(const vec2& right);
+};
+
+struct Matrix {
+	float* m_arr;
+	int m_size;
+	int N;
+	Matrix();
+	Matrix(int size);//identity matrix
+	Matrix(int size, float arr[]);
+	Matrix(const Matrix & temp);
+	~Matrix();
+	float operator ()(int row, int col);
+	Matrix operator =(Matrix right);
+	Matrix operator +(Matrix & right);
+	Matrix operator -(Matrix & right);
+	Matrix operator *(Matrix & right);
+	Matrix operator *(float num);
+	void transpose();
+	bool canMath(int lm_size, int rm_size);
+	void print();
+	Matrix matrixMinor(int row, int col);
+	static void matrixCofactor(Matrix & mat);
+	static float determinant(Matrix & mat);
+	static Matrix inverse(Matrix & mat);
+};
+struct vec4 {
+	float x, y, z, w;
+	vec4(float _x, float _y, float _z, float _w);
+	friend vec4 operator*(Matrix & mat, vec4 vec);
 };
 
 struct vec3 {
@@ -60,10 +92,14 @@ struct vec3 {
 	vec3 operator -=(const vec3& right);
 	vec3 operator*(float scale);
 	vec3 operator/(float scale);
+	vec3 operator=(const vec4& right);
+
 	static vec3 crossProd(const vec3& left, const vec3& right);
 	static float Magnitude(vec3& vec);
 	static vec3 Normalize(const vec3& vec);
 };
+
+
 
 
 void GenerateGLTexture(GLuint & texture, const char * dataSrc, bool inverted);
@@ -83,7 +119,7 @@ struct Model {
 	void draw(int x, int z, float y=0);
 	bool GenerateModel( const char * objFile );
 	bool GenerateTexture( const char * texFile );
-	private:
+private:
 	//bool GenerateModel( const char * objFile );
 	//bool GenerateTexture( const char * texFile );
 };
@@ -100,32 +136,53 @@ private:
 public:
 	Map(){}
 	Map(int ** map, int _width, int _height);
+	~Map();
 	void draw();
 };
+
 
 class Camera {
 private:
 	vec3 wPos;//world position
-	vec3 pos;
+	vec3 camPos;
 	vec3 front;
+	vec3 wUp;
 	vec3 up;
-	vec2 vel;
+	vec3 right;
+
+	//vec2 vel;
 	float radius;
 	float pitch;
-	float yaw;
-
-	vec3 pickPos;
+	
 public:
-        //view was private
+	float yaw;
+	//view was private
 	vec3 view;
 	Camera();
 	Camera(float rot, int posx, int posz);
 	void update();
-
+	
 	void drawCamera(GLuint);
 	void rotate(float direction);
 	void translate(int key);
-	void picking(int x, int y);
+	void updateVectors();
+	vec3 getPos();
+	Matrix getViewMatrix();
+};
+
+class Picker {
+private:
+	vec3 curRay;
+
+	Matrix projectionMatrix;
+	Matrix viewMatrix;
+
+public:
+	Picker();
+	void update(Matrix & projMatrix, Camera camera, float xres, float yres, float mousex, float mousey);
+	vec3 getCurrentRay();
+	void rotate(float deg);
+
 };
 
 class GameState {
@@ -144,11 +201,15 @@ private:
 	Camera camera;
 	float xres, yres;
     uiboxes UI;
+	Picker pkr;
+	vec3 pickPos;
+	Matrix projMatrix;
 public:
 	WorldGS(int ** mapArr,int sizex,int sizey,
 	float camRot, int posx, int posz,
 	float xres, float yres);
 	void initWGS_GL();
+	void pick(vec3 ray);
 	int procMouseInput(int x, int y);
 	int procKeyInput(int key);
 	void drawGameState();
