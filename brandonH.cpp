@@ -281,33 +281,41 @@ int MenuGS::procMouseInput(int x, int y)
         case SAVE1:
             {
                 Player *player = Player::getInstance();
-                player->loadInstance(1);
-                state = MAIN_MENU;
-                return 1;
+                if (player->loadInstance(1)) {
+                    state = MAIN_MENU;
+                    return 1;
+                }
+                return 0;
             }
             break;
         case SAVE2:
             {
                 Player *player = Player::getInstance();
-                player->loadInstance(2);
-                state = MAIN_MENU;
-                return 1;
+                if (player->loadInstance(2)) {
+                    state = MAIN_MENU;
+                    return 1;
+                }
+                return 0;
             }
             break;
         case SAVE3:
             {
                 Player *player = Player::getInstance();
-                player->loadInstance(3);
-                state = MAIN_MENU;
-                return 1;
+                if (player->loadInstance(3)) {
+                    state = MAIN_MENU;
+                    return 1;
+                }
+                return 0;
             }
             break;
         case SAVE4:
             {
                 Player *player = Player::getInstance();
-                player->loadInstance(4);
-                state = MAIN_MENU;
-                return 1;
+                if (player->loadInstance(4)) {
+                    state = MAIN_MENU;
+                    return 1;
+                }
+                return 0;
             }
             break;
     }
