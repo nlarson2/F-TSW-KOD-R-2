@@ -5,6 +5,7 @@
 
 #include "brandonH.h"
 
+extern NJordGlobal njG;
 //=================================================//
 //--------------- START OF BHglobal ---------------//
 //=================================================//
@@ -113,12 +114,12 @@ int PauseGS::procMouseInput(int x, int y)
             return -1;
             break;
         case SAVE_GAME:
-            {
-                Player *player = Player::getInstance();
-                player->saveInstance(1);
-            }
+            njG.player->saveInstance(1);
             break;
         case PMAIN_MENU:
+            njG.player->resetInstance();
+            njG.player->allies->resetAllies();
+            njG.enemies->resetEnemies();
             return -2;
             break;
     }

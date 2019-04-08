@@ -56,6 +56,9 @@ class Entity {
 		void setMaxHealth(float);
         void setDefaultDefense(float);
         void setDefaultDamage(float);
+		float current_health;
+        float current_defense;
+		float current_damage;
 	public:
 		//====[Health Functions]====
         float getMaxHealth();
@@ -76,9 +79,6 @@ class Entity {
         void draw();
 
 		string combatType;
-		float current_health;
-        float current_defense;
-		float current_damage;
 		GLuint image;
         Model playerModel;
         int modelID;
@@ -89,7 +89,7 @@ class Entity {
 class Enemy : public Entity {
 	public:
 		Enemy();
-        void resetEnemies(Enemy*);
+        void resetEnemies();
         static int count;
     private:
 		void setEnemyCombatType();
@@ -101,7 +101,7 @@ class Ally : public Entity {
 		Ally();
         void saveAllies(ofstream&);
         void loadAllies(ifstream&);
-        void resetAllies(Ally*);
+        void resetAllies();
         static int count;
     private:
 		void setAllyCombatType();

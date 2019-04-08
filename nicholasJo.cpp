@@ -302,10 +302,10 @@ void Ally::setAllyImage()
         GenerateGLTexture(image, "./images/brandonH.png", false);
 }
 
-void Ally::resetAllies(Ally *allies)
+void Ally::resetAllies()
 {
-    Log("Ally::resetAllies(Ally *allies), allies->count = %i\n", allies->count);
-    delete []allies;
+    Log("Ally::resetAllies(Ally *allies), allies->count = %i\n", count);
+    delete []this;
     count = 0;
     return;
 }
@@ -371,10 +371,10 @@ void Enemy::setEnemyImage()
         GenerateGLTexture(image, "./images/brandonH.png", false);
 }
 
-void Enemy::resetEnemies(Enemy *enemies)
+void Enemy::resetEnemies()
 {
-    Log("Enemy::resetEnemies(Enemy *enemies), enemies->count = %i\n", enemies->count);
-    delete []enemies;
+    Log("Enemy::resetEnemies(Enemy *enemies), enemies->count = %i\n", count);
+    delete []this;
     count = 0;
     return;
 }
