@@ -250,6 +250,8 @@ int MenuGS::procMouseInput(int x, int y)
                     Player::resetInstance();
                 }
                 Player *player = Player::setInstance("soldier");
+		njG.spawnAllies(3);
+		njG.spawnEnemies(3);
                 //stops 'unused variable' warning
                 (void)player;
                 state = MAIN_MENU;
@@ -262,6 +264,8 @@ int MenuGS::procMouseInput(int x, int y)
                     Player::resetInstance();
                 }
                 Player *player = Player::setInstance("tank");
+		njG.spawnAllies(3);
+		njG.spawnEnemies(3);
                 //stops 'unused variable' warning
                 (void)player;
                 state = MAIN_MENU;
@@ -274,6 +278,8 @@ int MenuGS::procMouseInput(int x, int y)
                     Player::resetInstance();
                 }
                 Player *player = Player::setInstance("nick");
+		njG.spawnAllies(3);
+		njG.spawnEnemies(3);
                 //stops 'unused variable' warning
                 (void)player;
                 state = MAIN_MENU;
