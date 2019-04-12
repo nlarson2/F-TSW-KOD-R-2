@@ -443,7 +443,7 @@ void Player::saveInstance(int save_number)
     file.close();
 }
 
-void Player::loadInstance(int save_number)
+bool Player::loadInstance(int save_number)
 {
     Log("Player::loadInstance(int save_number), save_number = %i\n", save_number);
     string file_name = "save" + to_string(save_number) + ".txt";
@@ -475,10 +475,12 @@ void Player::loadInstance(int save_number)
         player->count = 1;
     } else {
         printf("Could not locate file specified\n");
+        return false;
     }
     Player *player = getInstance();
     player->allies->loadAllies(file);
     file.close();
+    return true;
 }
 
 void Player::setPlayerCombatType(string c)

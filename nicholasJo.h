@@ -117,7 +117,7 @@ class Player : public Entity {
 		static Player* getInstance();
 		static Player* setInstance(string);
         void saveInstance(int);
-        void loadInstance(int);
+        bool loadInstance(int);
         static void resetInstance();
 		void setPlayerCombatType(string);
 		void setPlayerImage();
