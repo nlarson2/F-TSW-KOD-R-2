@@ -118,8 +118,8 @@ int PauseGS::procMouseInput(int x, int y)
             break;
         case PMAIN_MENU:
             njG.player->resetInstance();
-            njG.player->allies->resetAllies();
-            njG.enemies->resetEnemies();
+            njG.resetAllies();
+            njG.resetEnemies();
             return -2;
             break;
     }
@@ -236,6 +236,8 @@ int MenuGS::procMouseInput(int x, int y)
                     Player::resetInstance();
                 }
                 Player *player = Player::setInstance("archer");
+		njG.spawnAllies(3);
+		njG.spawnEnemies(3);
                 //stops 'unused variable' warning
                 (void)player;
                 state = MAIN_MENU;

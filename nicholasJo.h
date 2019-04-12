@@ -9,26 +9,26 @@
   -  The Player class is a singleton
 
   -  saveInstance and loadInstance from the Player class are 
-     called from brandonH.cpp.
- 
+  called from brandonH.cpp.
+
   -  saveAllies and loadAllies from the Ally class are called
-     in the saveInstance and loadInstance.
+  in the saveInstance and loadInstance.
 
   -  The save functions write to 'save(*number*).txt'.
-     The data is written line by line for the player as follows:
-        combatType
-        current_health
-        current_defense
-        current_damage
-        wPos.x
-        wPos.y
-        wPos.z
-     The data for the allies is written similarly; however the
-     amount of allies is written before anything else.
+  The data is written line by line for the player as follows:
+  combatType
+  current_health
+  current_defense
+  current_damage
+  wPos.x
+  wPos.y
+  wPos.z
+  The data for the allies is written similarly; however the
+  amount of allies is written before anything else.
 
   -  The load functions can then read from 'save(*number*).txt'
-     line by line to be saved into the correct object's variable
-      
+  line by line to be saved into the correct object's variable
+
 //=========================================================*/
 
 #include <GL/glx.h>
@@ -48,91 +48,91 @@ using namespace std;
 
 class Entity {
     private:
-		float max_health;
-		float default_defense;
-        float default_damage;
-		bool ally;
-	protected:
-		void setMaxHealth(float);
-        void setDefaultDefense(float);
-        void setDefaultDamage(float);
-		float current_health;
-        float current_defense;
-		float current_damage;
-	public:
-		//====[Health Functions]====
-        float getMaxHealth();
-		float getCurrentHealth();
-		//====[Defense Functions]====
-		float getDefaultDefense();
-		float getCurrentDefense();
-		//====[Damage Functions]====
-        float getDefaultDamage();
-        float getCurrentDamage();
-        void dealDamage(Entity &target);
-		//====[Ally Functions]====
-        void setAlly(bool);
-		bool getAlly();
-		//====[ETC]====
-		void resetStats();
-        void displayImage(int,int,int);
-        void draw();
+	float max_health;
+	float default_defense;
+	float default_damage;
+	bool ally;
+    protected:
+	void setMaxHealth(float);
+	void setDefaultDefense(float);
+	void setDefaultDamage(float);
+	float current_health;
+	float current_defense;
+	float current_damage;
+    public:
+	//====[Health Functions]====
+	float getMaxHealth();
+	float getCurrentHealth();
+	//====[Defense Functions]====
+	float getDefaultDefense();
+	float getCurrentDefense();
+	//====[Damage Functions]====
+	float getDefaultDamage();
+	float getCurrentDamage();
+	void dealDamage(Entity &target);
+	//====[Ally Functions]====
+	void setAlly(bool);
+	bool getAlly();
+	//====[ETC]====
+	void resetStats();
+	void displayImage(int,int,int);
+	void draw();
 
-		string combatType;
-		GLuint image;
-        Model playerModel;
-        int modelID;
-        vec3 wPos; //world position
-        vec3 bPos; //battle position
+	string combatType;
+	GLuint image;
+	Model playerModel;
+	int modelID;
+	vec3 wPos; //world position
+	vec3 bPos; //battle position
 };
 
 class Enemy : public Entity {
-	public:
-		Enemy();
-        void resetEnemies();
-        static int count;
+    public:
+	Enemy();
+	static int count;
     private:
-		void setEnemyCombatType();
-		void setEnemyImage();
+	void setEnemyCombatType();
+	void setEnemyImage();
 };
 
 class Ally : public Entity {
-	public:
-		Ally();
-        void saveAllies(ofstream&);
-        void loadAllies(ifstream&);
-        void resetAllies();
-        static int count;
+    public:
+	Ally();
+	void saveAllies(ofstream&);
+	void loadAllies(ifstream&);
+	static int count;
     private:
-		void setAllyCombatType();
-		void loadAllyCombatType(string);
-		void setAllyImage();
+	void setAllyCombatType();
+	void loadAllyCombatType(string);
+	void setAllyImage();
 };
 
 //singleton class
 class Player : public Entity {
-	public:
-        Ally *allies;
-		static int count;
-		static Player* getInstance();
-		static Player* setInstance(string);
-        void saveInstance(int);
-        bool loadInstance(int);
-        static void resetInstance();
-		void setPlayerCombatType(string);
-		void setPlayerImage();
-	private:
-		static Player* instance;
-		Player(string);
+    public:
+	static int count;
+	static Player* getInstance();
+	static Player* setInstance(string);
+	void saveInstance(int);
+	bool loadInstance(int);
+	static void resetInstance();
+	void setPlayerCombatType(string);
+	void setPlayerImage();
+    private:
+	static Player* instance;
+	Player(string);
 };
 
 class NJordGlobal {
     public:
-        Player *player;
-        Enemy *enemies;
-        NJordGlobal();
-        Enemy* spawnEnemies(int);
-        Ally* spawnAllies(int);
+	Player *player;
+	Enemy *enemies;
+	Ally *allies;
+	NJordGlobal();
+	void spawnEnemies(int);
+	void spawnAllies(int);
+	void resetAllies();
+	void resetEnemies();
 };
 
 void Display_NicholasJordan(int, int, GLuint);
