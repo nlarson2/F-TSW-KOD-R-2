@@ -78,14 +78,14 @@ stack<Pair> aStarSearch(int grid[][COL], Pair src, Pair dest)
     if (isValid (src.first, src.second) == false) 
     { 
         printf ("Source is invalid\n"); 
-        return; 
+        exit(1); 
     } 
   
     // destination is out of range? 
     if (isValid (dest.first, dest.second) == false) 
     { 
         printf ("Destination is invalid\n"); 
-        return; 
+        exit(1); 
     } 
   
     // source or the destination is blocked? 
@@ -93,14 +93,14 @@ stack<Pair> aStarSearch(int grid[][COL], Pair src, Pair dest)
             isUnBlocked(grid, dest.first, dest.second) == false) 
     { 
         printf ("Source or the destination is blocked\n"); 
-        return; 
+        exit(1); 
     } 
   
     // destination cell = source cell? 
     if (isDestination(src.first, src.second, dest) == true) 
     { 
         printf ("We are already at the destination\n"); 
-        return; 
+        exit(1);
     } 
   
     // closed list and initialise false 
@@ -596,7 +596,7 @@ stack<Pair> aStarSearch(int grid[][COL], Pair src, Pair dest)
     if (foundDest == false) 
         printf("Failed to find the Destination Cell\n"); 
   
-    return; 
+    exit(1); 
 } 
 
 stack<Pair> Movement(int grid[][25], Entity entity, vec2 dest) 
