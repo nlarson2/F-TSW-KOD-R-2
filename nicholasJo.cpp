@@ -11,9 +11,6 @@
 NJordGlobal njG;
 NJordGlobal::NJordGlobal()
 {
-    player = Player::getInstance();
-    //spawnAllies(3);
-    //spawnEnemies(3);
 }
 
 void NJordGlobal::spawnEnemies(int amount)
