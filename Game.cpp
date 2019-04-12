@@ -4,6 +4,7 @@
 
 extern BHglobal bhg;
 extern NLarsGlobal nlG;
+//extern NJordGlobal njG;
 Game::Game(int x, int y) 
 {
     xres = x;
@@ -20,21 +21,38 @@ void Game::procMouseInput(int x, int y)
 	int changeState = states.top()->procMouseInput(x,y);
 
     switch (changeState) {
+        case -2:
+            for (int i=0; i<2; i++)
+            states.pop();
+            break;
         case -1:
             states.pop();
             break;
         case 1:
             states.push(new WorldGS(nlG.MainMap, 25 ,25, 180, 0, 0, xres, yres));
             break;
-            }
+        case 2:
+            states.push(new PauseGS(bhg.pmenu,xres,yres));
+            break;
+    }
 }
 
 void Game::procKeyInput(int key)
 {
 	int changeState = states.top()->procKeyInput(key);
     switch(changeState) {
+        case -2:
+            for (int i=0; i<2; i++)
+            states.pop();
+            break;
         case -1:
             states.pop();
+            break;
+        case 1:
+            states.push(new WorldGS(nlG.MainMap,25 ,25, 180, 0, 0, xres, yres));
+            break;
+        case 2:
+            states.push(new PauseGS(bhg.pmenu,xres,yres));
             break;
     }
 }

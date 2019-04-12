@@ -599,25 +599,25 @@ stack<Pair> aStarSearch(int grid[][COL], Pair src, Pair dest)
     return; 
 } 
 
-stack<Pair> Movement(int grid[][25], int sRow, int sCol, int dRow, int dCol) 
+stack<Pair> Movement(int grid[][25], Entity entity, vec2 dest) 
 {
-    int sRow, sCol, dRow, dCol;
+    //int sRow, sCol, dRow, dCol;
     bool error = false;
 
      // Source is selected
     //cout << "Please pick source: ";
     ///cin >> sRow >> sCol;  
-    Pair src = make_pair(sRow, sCol); 
+    Pair source = make_pair(entity.wPos.x, entity.wPos.z); 
   
     // Destination is selected
     //cout << "Please pick destination: ";
     //cin >> dRow >> dCol;
-    Pair dest = make_pair(dRow, dCol);
+    Pair destination = make_pair(dest.x, dest.y);
  
     // Display Map
     //displayMap(grid);
  
-    return (aStarSearch(grid, src, dest)); 
+    return (aStarSearch(grid, source, destination)); 
 
 }
 

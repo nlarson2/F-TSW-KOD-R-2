@@ -9,6 +9,7 @@
 #include <GL/glu.h>
 #include <GL/glx.h>
 #include "fonts.h"
+#include "log.h"
 #include <unistd.h>
 #include <stack>
 #include <string>
@@ -173,6 +174,8 @@ Game game(g.xres, g.yres);
 //=====================================
 int main()
 {
+    logOpen();
+    Log("main()\n");
     game.init(); 
     srand(time(NULL));
     init_opengl();
@@ -188,11 +191,13 @@ int main()
         render();
         x11.swapBuffers();
     }
+    logClose();
     return 0;
 }
 
 void init_opengl(void)
 {
+    Log("init_opengl()\n");
     //OpenGL initialization
     glViewport(0, 0, g.xres, g.yres);
     //Initialize matrices
@@ -287,10 +292,4 @@ return 0;
 void render()
 {
     game.drawGameState();
-    if (Player::count != 0) {
-        Player *player = Player::getInstance();
-        player->playerModel.draw(0,0);
-        player->displayImage(5,0,5);
-     }
-
 }

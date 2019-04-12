@@ -1,7 +1,7 @@
 //Author: Nickolas Larson
 //Date: 2/14/2019
 //Modified By: Nickolas Larson
-//Modified 3/08/2019
+//Modified 3/20/2019
 
 #ifndef NICKOLAS_L_H
 #define NICKOLAS_L_H
@@ -18,31 +18,28 @@
 
 #include "Image.h"
 //#include "Game.h"
+#include "adamO.h"
+
 
 using namespace std;
-
 
 #define PI 3.14159265359
 
 class Image;
 
-
-class NLarsGlobal
-{
+class NLarsGlobal {
 public:
-        int ** MainMap;
+	int ** MainMap;
         
-        NLarsGlobal();
-        NLarsGlobal(NLarsGlobal const& copy);
-        NLarsGlobal& operator=(NLarsGlobal const& copy);
+	NLarsGlobal();
+	NLarsGlobal(NLarsGlobal const& copy);
+	NLarsGlobal& operator=(NLarsGlobal const& copy);
 
-        static NLarsGlobal& getInstance();
-
+	static NLarsGlobal& getInstance();
 };
 
 
-struct vec2
-{
+struct vec2 {
 	float x, y;
 	vec2();
 	vec2(float x, float z);
@@ -51,8 +48,7 @@ struct vec2
 	vec2 operator +=(const vec2& right);
 };
 
-struct vec3
-{
+struct vec3 {
 	float x, y, z;
 	vec3();
 	vec3(float x, float y, float z);
@@ -60,6 +56,13 @@ struct vec3
 	vec3 operator = (const vec3& right);
 	vec3 operator +(const vec3& right);
 	vec3 operator +=(const vec3& right);
+	vec3 operator -(const vec3& right);
+	vec3 operator -=(const vec3& right);
+	vec3 operator*(float scale);
+	vec3 operator/(float scale);
+	static vec3 crossProd(const vec3& left, const vec3& right);
+	static float Magnitude(vec3& vec);
+	static vec3 Normalize(const vec3& vec);
 };
 
 
@@ -67,8 +70,7 @@ void GenerateGLTexture(GLuint & texture, const char * dataSrc, bool inverted);
 
 void draw_nickLCredit(int x, int y, GLuint texture);
 
-struct Model
-{	
+struct Model {
 	GLuint texture;
 	vector<vec3> vert;
 	vector<vec2> vertTex;
@@ -78,85 +80,78 @@ struct Model
 	vec3 pos; //moves along x and z
 	Model ();
 	Model ( const char * objFile, const char * texFile);
-	void draw(int x, int z);
-	private:
+	void draw(int x, int z, float y=0);
 	bool GenerateModel( const char * objFile );
 	bool GenerateTexture( const char * texFile );
+	private:
+	//bool GenerateModel( const char * objFile );
+	//bool GenerateTexture( const char * texFile );
 };
 
-struct Tile
-{
+struct Tile {
 	int modelID;
 	int x,z;
 };
 
-class Map
-{
-	private:
-		int mapW, mapH;
-		Tile ** tile;
-
-	public:
-		Map(){}
-		Map(int ** map, int _width, int _height);
-		void draw();
+class Map {
+private:
+	int mapW, mapH;
+	Tile ** tile;
+public:
+	Map(){}
+	Map(int ** map, int _width, int _height);
+	void draw();
 };
 
+class Camera {
+private:
+	vec3 wPos;//world position
+	vec3 pos;
+	vec3 front;
+	vec3 up;
+	vec2 vel;
+	float radius;
+	float pitch;
+	float yaw;
 
-
-
-
-class Camera{
-	private:
-		vec3 wPos;//world position
-		vec3 pos;
-		vec3 front;
-		vec3 up;
-		vec2 vel;
-		float radius;
-		float pitch;
-		float yaw;
-	public:
+	vec3 pickPos;
+public:
         //view was private
-		vec3 view;
-		Camera();
-		Camera(float rot, int posx, int posz);
-		void update();
-		
-		void drawCamera(GLuint);
-		void rotate(float direction);
-		void translate(vec2 direction);
+	vec3 view;
+	Camera();
+	Camera(float rot, int posx, int posz);
+	void update();
 
+	void drawCamera(GLuint);
+	void rotate(float direction);
+	void translate(int key);
+	void picking(int x, int y);
 };
 
+class GameState {
+private:
 
-
-class GameState
-{
-    private:
-		
-	public:
-		GameState() {};
-		virtual int procMouseInput(int x, int y) = 0;
-		virtual int procKeyInput(int key) = 0;
-		virtual void drawGameState() = 0;
-
+public:
+	GameState() {};
+	virtual int procMouseInput(int x, int y) = 0;
+	virtual int procKeyInput(int key) = 0;
+	virtual void drawGameState() = 0;
 };
 
 class WorldGS : public GameState {
-
-    private:
-        Map map;
-		Camera camera;
-		float xres, yres;
-    public:
-        WorldGS(int ** mapArr,int sizex,int sizey,
-			float camRot, int posx, int posz,
-			float xres, float yres);
-		  void initWGS_GL();
-      int procMouseInput(int x, int y);
-		  int procKeyInput(int key);
-		  void drawGameState();
+private:
+	Map map;
+	Camera camera;
+	float xres, yres;
+    uiboxes UI;
+public:
+	WorldGS(int ** mapArr,int sizex,int sizey,
+	float camRot, int posx, int posz,
+	float xres, float yres);
+	void initWGS_GL();
+	int procMouseInput(int x, int y);
+	int procKeyInput(int key);
+	void drawGameState();
 };
 
 #endif

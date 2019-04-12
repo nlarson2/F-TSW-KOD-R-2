@@ -8,25 +8,17 @@
 
 using namespace std;
 
-/*struct GameState
-{
-    bool mainMenu, newGame, loadGame, highScores, options, board, battle, credits;
-    GameState();
-    int set_gameState();
-    void set_mm();
-    void set_ng();
-    void set_lg();
-    void set_hs();
-    void set_op();
-    void set_board();
-};*/
 
 enum ButtonID
 {
     MAIN_MENU,NEW_GAME,LOAD_GAME,HIGH_SCORES,CONTROLS,
     EXIT,ARCHER,SOLDIER,TANK,NICK,
     SAVE1, SAVE2, SAVE3, SAVE4,
-    SAVE_GAME
+};
+
+enum pButtonID
+{
+    RESUME,SAVE_GAME,PMAIN_MENU
 };
 
 struct vec
@@ -39,33 +31,34 @@ struct Button
     float height, width;
     vec center;
     string name;
-    ButtonID bid;
+    ButtonID bid; pButtonID pbid;
     Button();
     Button(string,ButtonID);
+    Button(string,pButtonID);
     ~Button();
 };
 
 struct BHglobal
 {
     Button menus[5][5];
-    //Button btn[5], btn1[5];
+    Button pmenu[3];
     BHglobal();
 };
-
-class Menu
-{
-    public:
-        int size;
+// Done During Lab hours
+// Creates pause functionality by pressing esc while in game.
+// Additionally added save game functionality
+class PauseGS : public GameState {
+    private:
         Button * buttons;
-        Menu(int,Button*);
-        int state;
-        ~Menu();
-        void drawNames(int);
-        void posButtons();
-        void drawButtons();
-        void check_mouse(int,int,int);
+        float xres, yres;
+    public:
+        PauseGS(Button[3],int,int);
+        ~PauseGS();
+        int procMouseInput(int, int);
+        int procKeyInput(int);
+        void drawGameState();
 };
-
+// Updated During lab hours
 class MenuGS : public GameState {
     private:
         int state;
@@ -76,8 +69,7 @@ class MenuGS : public GameState {
         MenuGS(int, Button[5][5],int, int);
         ~MenuGS();
         int procMouseInput(int, int);
-		int procKeyInput(int key);
+		int procKeyInput(int);
 		void drawGameState();
 };
-//void brandonH(int x, int y, GLuint textid);
 #endif
