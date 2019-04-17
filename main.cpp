@@ -99,8 +99,8 @@ class Global {
         int n;
         int count;
         Global() {
-            xres = 800;
-            yres = 600;
+            xres = 1200;
+            yres = 900;
             count = 0;
         }
 }g;

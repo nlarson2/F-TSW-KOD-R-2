@@ -11,23 +11,35 @@
 NJordGlobal njG;
 NJordGlobal::NJordGlobal()
 {
-    player = Player::getInstance();
 }
 
-Enemy* NJordGlobal::spawnEnemies(int amount)
+void NJordGlobal::spawnEnemies(int amount)
 {
     Log("spawnEnemies(int amount), amount = %i\n", amount);
-    Enemy *baddies = new Enemy[amount];
-    return baddies;
+    enemies = new Enemy[amount];
 }
 
-Ally* NJordGlobal::spawnAllies(int amount)
+void NJordGlobal::spawnAllies(int amount)
 {
     Log("spawnAllies(int amount), amount = %i\n", amount);
-    Ally *goodies = new Ally[amount];
-    return goodies;
+    allies = new Ally[amount];
 }
 
+void NJordGlobal::resetAllies()
+{
+    Log("Ally::resetAllies(), allies->count = %i\n", allies->count);
+    delete []allies;
+    allies->count = 0;
+    return;
+}
+
+void NJordGlobal::resetEnemies()
+{
+    Log("Enemy::resetEnemies(), enemies->count = %i\n", enemies->count);
+    delete []enemies;
+    enemies->count = 0;
+    return;
+}
 //==========================[ENTITY CLASS]===============================
 
 static Model pModel[1] = {
@@ -302,13 +314,6 @@ void Ally::setAllyImage()
         GenerateGLTexture(image, "./images/brandonH.png", false);
 }
 
-void Ally::resetAllies(Ally *allies)
-{
-    Log("Ally::resetAllies(Ally *allies), allies->count = %i\n", allies->count);
-    delete []allies;
-    count = 0;
-    return;
-}
 
 //==========================[ENEMY CLASS]===============================
 //Inherits from Entity
@@ -371,13 +376,6 @@ void Enemy::setEnemyImage()
         GenerateGLTexture(image, "./images/brandonH.png", false);
 }
 
-void Enemy::resetEnemies(Enemy *enemies)
-{
-    Log("Enemy::resetEnemies(Enemy *enemies), enemies->count = %i\n", enemies->count);
-    delete []enemies;
-    count = 0;
-    return;
-}
 
 //==========================[PLAYER CLASS]===============================
 //Inherits from Entity
@@ -395,7 +393,6 @@ Player::Player(string c)
     current_health = getMaxHealth();
     current_defense = getDefaultDefense();
     current_damage = getDefaultDamage();
-    allies = njG.spawnAllies(3);
     count++;
 }
 
@@ -439,11 +436,11 @@ void Player::saveInstance(int save_number)
     } else {
         printf("Could not locate file specified\n");
     }
-    this->allies->saveAllies(file);
+    njG.allies->saveAllies(file);
     file.close();
 }
 
-void Player::loadInstance(int save_number)
+bool Player::loadInstance(int save_number)
 {
     Log("Player::loadInstance(int save_number), save_number = %i\n", save_number);
     string file_name = "save" + to_string(save_number) + ".txt";
@@ -475,10 +472,12 @@ void Player::loadInstance(int save_number)
         player->count = 1;
     } else {
         printf("Could not locate file specified\n");
+        return false;
     }
     Player *player = getInstance();
-    player->allies->loadAllies(file);
+    njG.allies->loadAllies(file);
     file.close();
+    return true;
 }
 
 void Player::setPlayerCombatType(string c)

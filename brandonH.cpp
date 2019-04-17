@@ -5,6 +5,7 @@
 
 #include "brandonH.h"
 
+extern NJordGlobal njG;
 //=================================================//
 //--------------- START OF BHglobal ---------------//
 //=================================================//
@@ -113,12 +114,12 @@ int PauseGS::procMouseInput(int x, int y)
             return -1;
             break;
         case SAVE_GAME:
-            {
-                Player *player = Player::getInstance();
-                player->saveInstance(1);
-            }
+            njG.player->saveInstance(1);
             break;
         case PMAIN_MENU:
+            njG.player->resetInstance();
+            njG.resetAllies();
+            njG.resetEnemies();
             return -2;
             break;
     }
@@ -235,6 +236,8 @@ int MenuGS::procMouseInput(int x, int y)
                     Player::resetInstance();
                 }
                 Player *player = Player::setInstance("archer");
+		njG.spawnAllies(3);
+		njG.spawnEnemies(3);
                 //stops 'unused variable' warning
                 (void)player;
                 state = MAIN_MENU;
@@ -247,6 +250,8 @@ int MenuGS::procMouseInput(int x, int y)
                     Player::resetInstance();
                 }
                 Player *player = Player::setInstance("soldier");
+		njG.spawnAllies(3);
+		njG.spawnEnemies(3);
                 //stops 'unused variable' warning
                 (void)player;
                 state = MAIN_MENU;
@@ -259,6 +264,8 @@ int MenuGS::procMouseInput(int x, int y)
                     Player::resetInstance();
                 }
                 Player *player = Player::setInstance("tank");
+		njG.spawnAllies(3);
+		njG.spawnEnemies(3);
                 //stops 'unused variable' warning
                 (void)player;
                 state = MAIN_MENU;
@@ -271,6 +278,8 @@ int MenuGS::procMouseInput(int x, int y)
                     Player::resetInstance();
                 }
                 Player *player = Player::setInstance("nick");
+		njG.spawnAllies(3);
+		njG.spawnEnemies(3);
                 //stops 'unused variable' warning
                 (void)player;
                 state = MAIN_MENU;
@@ -280,33 +289,41 @@ int MenuGS::procMouseInput(int x, int y)
         case SAVE1:
             {
                 Player *player = Player::getInstance();
-                player->loadInstance(1);
-                state = MAIN_MENU;
-                return 1;
+                if (player->loadInstance(1)) {
+                    state = MAIN_MENU;
+                    return 1;
+                }
+                return 0;
             }
             break;
         case SAVE2:
             {
                 Player *player = Player::getInstance();
-                player->loadInstance(2);
-                state = MAIN_MENU;
-                return 1;
+                if (player->loadInstance(2)) {
+                    state = MAIN_MENU;
+                    return 1;
+                }
+                return 0;
             }
             break;
         case SAVE3:
             {
                 Player *player = Player::getInstance();
-                player->loadInstance(3);
-                state = MAIN_MENU;
-                return 1;
+                if (player->loadInstance(3)) {
+                    state = MAIN_MENU;
+                    return 1;
+                }
+                return 0;
             }
             break;
         case SAVE4:
             {
                 Player *player = Player::getInstance();
-                player->loadInstance(4);
-                state = MAIN_MENU;
-                return 1;
+                if (player->loadInstance(4)) {
+                    state = MAIN_MENU;
+                    return 1;
+                }
+                return 0;
             }
             break;
     }
