@@ -28,18 +28,133 @@ void NJordGlobal::spawnAllies(int amount)
 void NJordGlobal::resetAllies()
 {
     Log("Ally::resetAllies(), allies->count = %i\n", allies->count);
-    delete []allies;
-    allies->count = 0;
+    if (allies->count != 0) {
+        delete []allies;
+        allies->count = 0;
+    }
     return;
 }
 
 void NJordGlobal::resetEnemies()
 {
     Log("Enemy::resetEnemies(), enemies->count = %i\n", enemies->count);
-    delete []enemies;
-    enemies->count = 0;
+    if (enemies->count != 0) {
+        delete []enemies;
+        enemies->count = 0;
+    }
     return;
 }
+
+void NJordGlobal::saveEntities(int save_number)
+{
+    Log("NJordGlobal::saveEntities(int save_number), save_number = %i\n", save_number);
+    string file_name = "save" + to_string(save_number) + ".txt";
+    ofstream file(file_name);
+    if (file) {
+        player->saveInstance(file);
+        allies->saveAllies(file);
+        enemies->saveEnemies(file);
+    } else {
+        printf("Could not locate file specified\n");
+    }
+    file.close();
+    return;
+}
+
+bool NJordGlobal::loadEntities(int save_number)
+{
+    Log("NJordGlobal::loadEntities(int save_number), save_number = %i\n", save_number);
+    string file_name = "save" + to_string(save_number) + ".txt";
+    ifstream file(file_name);
+    if (file) {
+        player->loadInstance(file);
+        loadAllies(file);
+        loadEnemies(file);
+    } else {
+        printf("Could not locate file specified\n");
+        return false;
+    }
+    file.close();
+    return true;
+}
+
+void NJordGlobal::loadAllies(ifstream& file)
+{
+    Log("NJordGlobal::loadAllies(ifstream& file)\n");
+    string line;
+    if (file) {
+        //load count - line 8
+        getline(file, line);
+        spawnAllies(atoi(line.c_str()));
+        if (allies->count > 0) {
+            for (int i = 0; i < allies->count; i++) {
+                //load combatType - line 9+7ii
+                getline(file, line);
+                allies[i].loadAllyCombatType(line);
+                //load current_health - line 10+7i
+                getline(file, line);
+                //strtof = string to float
+                allies[i].current_health = strtof(line.c_str(), NULL); 
+                //load current_defense - line 11+7i
+                getline(file, line);
+                allies[i].current_defense = strtof(line.c_str(), NULL);
+                //load current_damage - line 12+7i
+                getline(file, line);
+                allies[i].current_damage = strtof(line.c_str(), NULL);
+                //load wPos.x - line 13+7i
+                getline(file, line);
+                allies[i].wPos.x = strtof(line.c_str(), NULL);
+                //load wPos.y - line 14+7i
+                getline(file, line);
+                allies[i].wPos.y = strtof(line.c_str(), NULL);
+                //load wPos.z - line 15+7i
+                getline(file, line);
+                allies[i].wPos.z = strtof(line.c_str(), NULL);
+            }
+        }
+    } else {
+        printf("Could not locate file specified\n");
+    }
+}
+
+void NJordGlobal::loadEnemies(ifstream& file)
+{
+    Log("NJordGlobal::loadEnemies(ifstream& file)\n");
+    string line;
+    if (file) {
+        getline(file, line);
+        spawnEnemies(atoi(line.c_str()));
+        if (enemies->count > 0) {
+            for (int i = 0; i < enemies->count; i++) {
+                //load combatType
+                getline(file, line);
+                enemies[i].loadEnemyCombatType(line);
+                //load current_health
+                getline(file, line);
+                //strtof = string to float
+                enemies[i].current_health = strtof(line.c_str(), NULL); 
+                //load current_defense
+                getline(file, line);
+                enemies[i].current_defense = strtof(line.c_str(), NULL);
+                //load current_damage
+                getline(file, line);
+                enemies[i].current_damage = strtof(line.c_str(), NULL);
+                //load wPos.x
+                getline(file, line);
+                enemies[i].wPos.x = strtof(line.c_str(), NULL);
+                //load wPos.y
+                getline(file, line);
+                enemies[i].wPos.y = strtof(line.c_str(), NULL);
+                //load wPos.z
+                getline(file, line);
+                enemies[i].wPos.z = strtof(line.c_str(), NULL);
+            }
+        }
+    } else {
+        printf("Could not locate file specified\n");
+    }
+}
+
 //==========================[ENTITY CLASS]===============================
 
 static Model pModel[1] = {
@@ -184,6 +299,8 @@ Ally::Ally()
     current_health = getMaxHealth();
     current_defense = getDefaultDefense();
     current_damage = getDefaultDamage();
+    wPos.x = count;
+    wPos.z = 1;
     count++;
 }
 
@@ -206,44 +323,6 @@ void Ally::saveAllies(ofstream& file)
     }
 }
 
-void Ally::loadAllies(ifstream& file)
-{
-    Log("Ally::loadAllies(ifstream& file)\n");
-    string line;
-    if (file) {
-        //load count - line 8
-        getline(file, line);
-        this->count = atoi(line.c_str());
-        if (count > 0) {
-            for (int i = 0; i < count; i++) {
-                //load combatType - line 9+7i
-                getline(file, line);
-                this[i].loadAllyCombatType(line);
-                //load current_health - line 10+7i
-                getline(file, line);
-                //strtof = string to float
-                this[i].current_health = strtof(line.c_str(), NULL); 
-                //load current_defense - line 11+7i
-                getline(file, line);
-                this[i].current_defense = strtof(line.c_str(), NULL);
-                //load current_damage - line 12+7i
-                getline(file, line);
-                this[i].current_damage = strtof(line.c_str(), NULL);
-                //load wPos.x - line 13+7i
-                getline(file, line);
-                this[i].wPos.x = strtof(line.c_str(), NULL);
-                //load wPos.y - line 14+7i
-                getline(file, line);
-                this[i].wPos.y = strtof(line.c_str(), NULL);
-                //load wPos.z - line 15+7i
-                getline(file, line);
-                this[i].wPos.z = strtof(line.c_str(), NULL);
-            }
-        }
-    } else {
-        printf("Could not locate file specified\n");
-    }
-}
 
 void Ally::loadAllyCombatType(string c)
 {
@@ -329,8 +408,53 @@ Enemy::Enemy()
     current_defense = getDefaultDefense();
     current_damage = getDefaultDamage();
     wPos.x = count;
-    wPos.z = 1;
+    wPos.z = 3;
     count++;
+}
+
+void Enemy::saveEnemies(ofstream& file)
+{
+    Log("Enemy::saveEnemies(ostream& file)\n");
+    if (file) {
+        file << Enemy::count << endl;
+        for (int i = 0; i < Enemy::count; i++) {
+            file << this[i].combatType << endl;
+            file << this[i].current_health << endl;
+            file << this[i].current_defense << endl;
+            file << this[i].current_damage << endl;
+            file << this[i].wPos.x << endl;
+            file << this[i].wPos.y << endl;
+            file << this[i].wPos.z << endl;
+        }
+    } else {
+        printf("Could not locate file specified\n");
+    }
+}
+
+void Enemy::loadEnemyCombatType(string c)
+{
+    Log("Enemy::loadEnemyCombatType(string c), c = %s\n", c.c_str());
+	if (c == "archer") {
+        modelID = 0;
+        combatType = c;
+		setMaxHealth(50.0);
+		setDefaultDefense(0.3);
+		setDefaultDamage(10.0);
+	} else if (c == "soldier") {
+        modelID = 0;
+        combatType = c;
+		setMaxHealth(75.0);
+		setDefaultDefense(0.5);
+		setDefaultDamage(15.0);
+	} else if (c == "tank") {
+        modelID = 0;
+        combatType = c;
+		setMaxHealth(100.0);
+		setDefaultDefense(0.70);
+	    setDefaultDamage(12.0);
+    }
+    setEnemyImage();
+	return;
 }
 
 void Enemy::setEnemyCombatType()
@@ -419,33 +543,28 @@ void Player::resetInstance()
     count--;
 }
 
-void Player::saveInstance(int save_number)
+void Player::saveInstance(ofstream &file)
 {
-    Log("Player::saveInstance(int save_number), save_number = %i\n", save_number);
-    string file_name = "save" + to_string(save_number) + ".txt";
-    ofstream file(file_name);
-    if (file.is_open()) {
-        file << instance->combatType << endl;           //line 1
-        file << instance->current_health << endl;       //line 2
-        file << instance->current_defense << endl;      //line 3
-        file << instance->current_damage << endl;       //line 4
-        file << instance->wPos.x << endl;               //line 5
-        file << instance->wPos.y << endl;               //line 6
-        file << instance->wPos.z << endl;               //line 7
+    Log("Player::saveInstance(ofstream &file)\n");
+    if (file) {
+        file << instance->combatType << endl;
+        file << instance->current_health << endl;
+        file << instance->current_defense << endl;
+        file << instance->current_damage << endl;
+        file << instance->wPos.x << endl;
+        file << instance->wPos.y << endl;
+        file << instance->wPos.z << endl;
 
     } else {
         printf("Could not locate file specified\n");
     }
-    njG.allies->saveAllies(file);
-    file.close();
+    return;
 }
 
-bool Player::loadInstance(int save_number)
+void Player::loadInstance(ifstream &file)
 {
-    Log("Player::loadInstance(int save_number), save_number = %i\n", save_number);
-    string file_name = "save" + to_string(save_number) + ".txt";
+    Log("Player::loadInstance()\n");
     string line;
-    ifstream file(file_name);
     if (file) {
         //load combatType - line 1
         getline(file, line);
@@ -472,12 +591,8 @@ bool Player::loadInstance(int save_number)
         player->count = 1;
     } else {
         printf("Could not locate file specified\n");
-        return false;
     }
-    Player *player = getInstance();
-    njG.allies->loadAllies(file);
-    file.close();
-    return true;
+    return;
 }
 
 void Player::setPlayerCombatType(string c)

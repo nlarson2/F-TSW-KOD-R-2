@@ -115,7 +115,7 @@ int PauseGS::procMouseInput(int x, int y)
             return -1;
             break;
         case SAVE_GAME:
-            njG.player->saveInstance(1);
+            njG.saveEntities(1);
             break;
         case PMAIN_MENU:
             njG.player->resetInstance();
@@ -291,8 +291,7 @@ int MenuGS::procMouseInput(int x, int y)
             break;
         case SAVE1:
             {
-                Player *player = Player::getInstance();
-                if (player->loadInstance(1)) {
+                if (njG.loadEntities(1)) {
                     state = MAIN_MENU;
                     return 1;
                 }
@@ -301,8 +300,7 @@ int MenuGS::procMouseInput(int x, int y)
             break;
         case SAVE2:
             {
-                Player *player = Player::getInstance();
-                if (player->loadInstance(2)) {
+                if (njG.loadEntities(2)) {
                     state = MAIN_MENU;
                     return 1;
                 }
@@ -311,8 +309,7 @@ int MenuGS::procMouseInput(int x, int y)
             break;
         case SAVE3:
             {
-                Player *player = Player::getInstance();
-                if (player->loadInstance(3)) {
+                if (njG.loadEntities(3)) {
                     state = MAIN_MENU;
                     return 1;
                 }
@@ -321,8 +318,7 @@ int MenuGS::procMouseInput(int x, int y)
             break;
         case SAVE4:
             {
-                Player *player = Player::getInstance();
-                if (player->loadInstance(4)) {
+                if (njG.loadEntities(4)) {
                     state = MAIN_MENU;
                     return 1;
                 }
