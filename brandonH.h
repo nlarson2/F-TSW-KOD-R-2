@@ -72,4 +72,17 @@ class MenuGS : public GameState {
 		int procKeyInput(int);
 		void drawGameState();
 };
+
+class TownGS : public GameState {
+    private:
+        Button * buttons;
+        float xres, yres;
+    public:
+        TownGS(int, Button[3], int, int);
+        ~TownGS();
+        int procMouseInput(int, int);
+        int procKeyInput(int);
+        void drawGameState();
+};
+
 #endif
