@@ -8,11 +8,25 @@
 
 #include "nickolasL.h"
 #include "nicholasJo.h"
+
+#define RAD(degree) degree * PI / 180
+
+
+
 extern int mainMap[0][25];
 extern NJordGlobal njG;
 extern AOglobal aog;
-NLarsGlobal nlG;
+
 /*============LARSON'S GLOBALS==========*/
+NLarsGlobal* NLarsGlobal::instance = 0;
+NLarsGlobal* NLarsGlobal::GetInstance()
+{
+	if( !instance )
+		instance = new NLarsGlobal();
+	return instance;
+	
+}
+NLarsGlobal * nlG = NLarsGlobal::GetInstance();
 NLarsGlobal::NLarsGlobal()
 {
 	MainMap = new int*[25];
@@ -22,14 +36,14 @@ NLarsGlobal::NLarsGlobal()
 			MainMap[i][j] = mainMap[i][j];
 		}
 	}
-  
-}
 
+}
+/*
 NLarsGlobal& NLarsGlobal::getInstance()
 {
 	static NLarsGlobal instance;
 	return instance;
-}
+}*/
 /*=======================================*/
 /*========VECTORE MATH(vec2/vec3)========*/
 //vec2-----------------------------------
@@ -60,7 +74,7 @@ vec2 vec2::operator +(const vec2& right)
 vec2 vec2::operator +=(const vec2& right)
 {
 	return *this + right;
-	
+
 }
 //---------------------------------------
 //vec3-----------------------------------
@@ -85,17 +99,17 @@ void vec3::operator()(float _x, float _y, float _z)
 vec3 vec3::operator = (const vec3& right)
 {	
 	x = right.x;
-        y = right.y;
+	y = right.y;
 	z = right.z;
-        return *this;
+	return *this;
 }
 vec3 vec3::operator +(const vec3& right)
 {
 	vec3 ret;
-        ret.x = x + right.x;
-        ret.y = y + right.y;
+	ret.x = x + right.x;
+	ret.y = y + right.y;
 	ret.z = z + right.z;
-        return ret;
+	return ret;
 }
 vec3 vec3::operator +=(const vec3& right)
 {
@@ -107,10 +121,10 @@ vec3 vec3::operator +=(const vec3& right)
 vec3 vec3::operator -(const vec3& right)
 {
 	vec3 ret;
-        ret.x = x - right.x;
-        ret.y = y - right.y;
+	ret.x = x - right.x;
+	ret.y = y - right.y;
 	ret.z = z - right.z;
-        return ret;
+	return ret;
 }
 vec3 vec3::operator -=(const vec3& right)
 {
@@ -126,6 +140,10 @@ vec3 vec3::operator*(float scale)
 vec3 vec3::operator/(float scale)
 {
 	return vec3(x/scale, y/scale, z/scale);
+}
+vec3 vec3::operator=(const vec4 & right)
+{
+	return vec3(right.x, right.y, right.z);
 }
 vec3 vec3::crossProd(const vec3& left, const vec3& right)
 {
@@ -145,6 +163,268 @@ vec3 vec3::Normalize(const vec3& vec)
 	return (ret/Magnitude(ret));
 }
 //---------------------------------------
+//----------------vec4-------------------
+vec4::vec4(float _x, float _y, float _z, float _w)
+{
+	x = _x; y = _y; z = _z; w = _w;
+}
+vec4 operator*(Matrix & mat, vec4 vec)
+{
+	if(mat.N != 4)
+		return vec4(0,0,0,0);
+
+	return vec4(
+			mat(0,0)*vec.x + mat(0,1)*vec.y + mat(0,2)*vec.z + mat(0,3)*vec.w,
+			mat(1,0)*vec.x + mat(1,1)*vec.y + mat(1,2)*vec.z + mat(1,3)*vec.w,
+			mat(2,0)*vec.x + mat(2,1)*vec.y + mat(2,2)*vec.z + mat(2,3)*vec.w,
+			mat(3,0)*vec.x + mat(3,1)*vec.y + mat(3,2)*vec.z + mat(3,3)*vec.w
+	);
+}
+
+/*=======================================*/
+
+/*==============MATRIX===================*/
+
+Matrix::Matrix()
+{
+	m_arr = NULL;
+	m_size = 0;
+	std::cout << "Created Matrix" << std::endl;
+}
+//identity
+Matrix::Matrix(int size)
+{
+	if(size == 1) throw -1;
+	N = size;
+	m_size = size*size;
+	m_arr = new float[m_size];
+	for (int i = 0; i < m_size; i++)
+		m_arr[i] = i/size == i%size ? 1 : 0;
+}
+
+Matrix::Matrix(int size, float  arr[])
+{
+	if(size == 1) throw -1;
+	N = size;
+	m_size = size*size;
+	m_arr = new float[m_size];
+	if (arr)
+	{
+		for (int i = 0; i < m_size; i++)
+			m_arr[i] = arr[i];
+	}
+}
+
+//copy constructor
+Matrix::Matrix(const Matrix & temp)
+{
+	N = temp.N;
+	m_size = temp.m_size;
+	m_arr = new float[m_size];
+
+	for (int i = 0; i < m_size; i++)
+		m_arr[i] = temp.m_arr[i];
+}
+
+Matrix::~Matrix()
+{
+	delete[] m_arr;
+}
+float Matrix::operator()(int row, int col)
+{
+	if(row > m_size - 1 || col > m_size -1 ) throw -1;
+	if(row < 0 || col < 0) throw -1;
+	return m_arr[(N * row) + col];
+}
+Matrix Matrix::operator =(Matrix right)
+{
+	if (m_arr)
+		delete[] m_arr;
+	N = right.N;
+	m_size = right.m_size;
+	m_arr = new float[m_size];
+	for (int i = 0; i < m_size; i++)
+		m_arr[i] = right.m_arr[i];
+	return right;
+}
+Matrix Matrix::operator+(Matrix & right)
+{
+	float * newArr = new float[m_size];
+	if (canMath(m_size, right.m_size))
+	{
+		for (int i = 0; i < m_size; i++)
+		{
+			newArr[i] = m_arr[i] + right.m_arr[i];
+		}
+		Matrix newMatrix(N, newArr);
+		delete[] newArr;
+		return newMatrix;
+	}
+	// handle error
+	return Matrix();
+}
+Matrix Matrix::operator -(Matrix & right)
+{
+	float * newArr = new float[m_size];
+	if (canMath(m_size, right.m_size))
+	{
+		for (int i = 0; i < m_size; i++)
+		{
+			newArr[i] = m_arr[i] - right.m_arr[i];
+		}
+		Matrix newMatrix(N, newArr);
+		delete[] newArr;
+		return newMatrix;
+	}
+	return Matrix();
+}
+Matrix Matrix::operator *(Matrix & right)
+{
+	if (canMath(m_size, right.m_size))
+	{
+		float * newArr = new float[m_size];
+		float elementHold;
+		int pos1, pos2;
+		int index = 0;
+		//loop to run through each row of the left matrix
+		for (int y1 = 0; y1 < m_size; y1++)
+		{
+			//loop to run through each col of the right matrix
+			for (int x2 = 0; x2 < m_size; x2++)
+			{
+				elementHold = 0;
+				//loop through each of the col for left matrix and rows for right matrix
+				for (int x1 = 0; x1 < m_size; x1++)
+				{
+					pos1 = x1 + (y1*m_size);
+					pos2 = x2 + (x1*m_size);
+					elementHold += m_arr[pos1] * right.m_arr[pos2];
+				}
+				newArr[index++] = elementHold;
+			}
+		}
+		Matrix newMatrix(N, newArr);
+		delete[] newArr;
+		return newMatrix;
+	}
+	return Matrix();
+}
+Matrix Matrix::operator *(float num)
+{
+	float * newArr = new float[m_size];
+
+	for (int i = 0; i < m_size; i++)
+		newArr[i] = num * m_arr[i];
+
+	Matrix newMatrix(N, newArr);
+	delete[] newArr;
+	return newMatrix;
+}
+void Matrix::transpose()
+{
+	float * transpose = new float[m_size];
+	int col = 0, row = 0;
+	for (int i = 0; i < m_size; i++)
+	{
+		transpose[i] = m_arr[(N * row++) + col];
+		if(row == N) {
+			row = 0;
+			col++;
+		}
+	}
+	delete[] m_arr;
+	m_arr = transpose;
+};
+Matrix Matrix::matrixMinor(int col, int row)
+{
+	
+	if(row >= N || row < 0) throw -1;
+	if(col >= N || col < 0) throw -1;
+
+	float * matVals;
+	//number of elements of n-1 x n-1 matrix
+	int newMatSize = (N - 1) * (N - 1);
+	matVals = new float[ newMatSize ];
+	int matInd = 0;
+	for(int j = 0 ; j < m_size ; j++ ) {
+			//(nxn) columns   && skip first row(Just in case)
+			if(  j/N != col && j%N != row) {
+				matVals[matInd++] = m_arr[j];
+			}
+	}
+	
+	Matrix ret( N-1 , matVals);
+	delete[] matVals;
+	return ret;
+}
+void Matrix::matrixCofactor(Matrix & mat)
+{
+	bool neg = false;
+	for ( int i = 0 ; i < mat.m_size ; i++ ) {
+		
+		//even rows = false
+		if(i%mat.N == 0) {
+			if((i/mat.N) % 2 == 0 )
+				neg = false;
+			else
+				neg = true;
+		}
+		
+		mat.m_arr[i] *= neg? -1 : 1 ;
+		neg = !neg;
+	}
+}
+float Matrix::determinant(Matrix & mat)
+{
+	//mat.print();
+	if(mat.N < 2 ) throw -1;
+	// determinant of a 2x2 matrix
+	if(mat.N == 2)
+		return mat(0,0)*mat(1,1) - mat(1,0)*mat(0,1);
+	
+	//det of nxn | n > 2
+	float det = 0;
+	Matrix * minorMat;
+	for ( int i = 0; i < mat.N ; i++ ) {
+		minorMat = new Matrix(mat.matrixMinor(0,i));
+		det += mat.m_arr[i]*determinant(*minorMat) * (i%2 == 0 ? 1 : -1);
+		delete minorMat;
+	}
+
+	return det;
+}
+
+Matrix Matrix::inverse(Matrix & mat)
+{
+	Matrix inverse(mat.N);
+	for (int i = 0 ; i < mat.m_size ; i++) {
+		Matrix matMinor( mat.matrixMinor(i/mat.N, i%mat.N));
+		inverse.m_arr[i] = determinant(matMinor);
+	}
+	matrixCofactor(inverse);
+	inverse.transpose();
+	inverse = inverse * (1.0f/determinant(mat));
+	return inverse;
+}
+
+bool Matrix::canMath(int lm_size, int rm_size)
+{
+	return (lm_size == rm_size);
+}
+
+void Matrix::print()
+{
+	int index = 0;
+	for (int i = 0; i < N; i++)
+	{
+		for (int j = 0; j < N; j++)
+		{
+			std::cout << m_arr[index++] << "  ";
+		}
+		std::cout << std::endl;
+	}
+}
+
 /*=======================================*/
 /*=====Function added to Image Class=====*/
 void Image::invertY()
@@ -198,8 +478,8 @@ void draw_nickLCredit(int x, int y, GLuint texture)
 /*=======================================*/
 /*============MODEL STUCTURE=============*/
 Model::Model() {
-    const char * objFile = "models/tank/Tank.obj";
-    const char * texFile = "models/tank/TankTexture.png";
+	const char * objFile = "models/tank/Tank.obj";
+	const char * texFile = "models/tank/TankTexture.png";
 	if(!GenerateModel(objFile)) {
 		printf("Failed to generate model\n");
 	}
@@ -224,7 +504,7 @@ void Model::draw(int x, int z, float y)
 	glBegin(GL_TRIANGLES);
 	float posx = x * -2.0f;
 	float posz = z * -1.70710378118f;
-    float posy = y; 
+	float posy = y; 
 	if(z%2 == 0)
 		posx -= 1.0f;
 	for( unsigned int i = 0 ; i < vIndices.size() ; i+=3 ) {
@@ -251,7 +531,7 @@ void Model::draw(int x, int z, float y)
 static Model tiles[4] = {  
 	Model( "tiles/waterTile.obj" , "tiles/waterTexture.png" ),
 	Model( "tiles/grassTile.obj" , "tiles/grassTexture.png" ),
-    Model( "tiles/mountain.obj" , "tiles/mountainTex.png" ),
+	Model( "tiles/mountain.obj" , "tiles/mountainTex.png" ),
 	Model( "tiles/forestTile.obj" , "tiles/forestTexture.png" )
 };
 
@@ -321,30 +601,35 @@ bool Model::GenerateTexture ( const char * texFile ) {
 /*=======================================*/
 /*=======================================*/
 Map::Map(int ** map, int _width, int _height){
-		mapW = _width;
-		mapH = _height;
-		tile = new Tile *[mapW];
-		for(int i = 0; i<25;i++){
-				tile[i] = new Tile[mapH];
-		}
-		int count = 0;
-		for(int i = 0; i < 25; i++){
+	mapW = _width;
+	mapH = _height;
+	tile = new Tile *[mapW];
+	for(int i = 0; i<25;i++){
+		tile[i] = new Tile[mapH];
+	}
+	int count = 0;
+	for(int i = 0; i < 25; i++){
 
-				for(int j = 0; j < 25 ; j++){
-					//printf("%d\n",count);
-					tile[i][j].modelID = map[i][j];
-					tile[i][j].x = i;
-          			tile[i][j].z = j;
-          
-         			 //tile[i][j].x = 2.0*j;
-					//tile[i][j].z = 1.70710378118f*i;
-					/*if(i%2 == 0)
-						tile[i][j].x -= 1.0f;*/
-					count++;
-				}
+		for(int j = 0; j < 25 ; j++){
+			//printf("%d\n",count);
+			tile[i][j].modelID = map[i][j];
+			tile[i][j].x = i;
+			tile[i][j].z = j;
+
+			//tile[i][j].x = 2.0*j;
+			//tile[i][j].z = 1.70710378118f*i;
+			/*if(i%2 == 0)
+			  tile[i][j].x -= 1.0f;*/
+			count++;
 		}
+	}
 }
-
+Map::~Map()
+{
+	for(int i = 0 ; i < mapW ; i++)
+		delete[] tile[i];
+	delete[] tile;
+}
 void Map::draw(){
 	for(int i = 0; i < 25; i++){
 		for(int j = 0; j< 25; j++){
@@ -362,139 +647,187 @@ void Map::draw(){
 Camera::Camera()
 {	
 	yaw = 180.0f;
+	pitch = 180 - 51.34019175;
 	radius = 10.0f;
-	pos( sin(yaw * PI / 180)*radius, 8.0f, 
-		cos(yaw * PI / 180)*radius);
+	camPos(
+		sin(yaw * PI / 180)*radius,
+		8.0f, 
+		cos(yaw * PI / 180)*radius
+	);
 	front( 0, 0, -1);
-	up( 0, 1.0f, 0);
-	view((pos.x + front.x),
-		(pos.y + front.y),
-		(pos.z + front.z));
+	wUp( 0, 1.0f, 0);
+	view((camPos.x + front.x),
+			(camPos.y + front.y),
+			(camPos.z + front.z));
 	wPos(0,0,0);			
 }
 
-Camera::Camera(float rot, int posx, int posz)
-{		
-	yaw = rot;
-	wPos.x = posx;
-	wPos.z = posz;
+Camera::Camera(float rot, int posx, int posz):
+	wPos(posx, 0.0f, posz), wUp(0, 1.0f, 0)
+{	
 	radius = 10.0f;
-	pos( sin(yaw * PI / 180)*radius, 8.0f, cos(yaw * PI / 180)*radius);
-	front( 0, 0, -1);
-	up( 0, 1.0f, 0);
-	view((pos.x + front.x), (pos.y + front.y), (pos.z + front.z));
-	wPos(0,0,0);			
+	yaw = 0;//rot;
+	pitch = 180-51.34019175;
+	updateVectors();
 }
 
 void Camera::update()
 {
-	view((wPos.x + front.x), (wPos.y + front.y), (wPos.z + front.z));
-	
-	gluLookAt(pos.x+wPos.x,  pos.y+wPos.y,  pos.z+wPos.z,
-			view.x, view.y, view.z,
-			up.x,   up.y,   up.z);
+	updateVectors();
+	//printf("UP::: X: %f Y: %f Z: %f\n", up.x, up.y, up.z);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	gluLookAt(
+		wPos.x - camPos.x,  8.0f,  wPos.z - camPos.z,
+		wPos.x, wPos.y, wPos.z,
+		wUp.x, wUp.y, wUp.z
+	);
 }
 
 void Camera::drawCamera(GLuint texture)
 {	
-
+	/*
 	glBindTexture( GL_TEXTURE_2D, texture);
 	glPushMatrix();
 	glBegin(GL_QUADS);
-		glTexCoord2f(1, 1);
-		glVertex3f(wPos.x+1, 0.5f , wPos.z+1);	
-        	glTexCoord2f(1, 0);
-		glVertex3f(wPos.x+1, 0.5f , wPos.z-1);
-        	glTexCoord2f(0, 0);
-		glVertex3f(wPos.x-1, 0.5f , wPos.z-1);
-        	glTexCoord2f(0, 1);
-		glVertex3f(wPos.x-1, 0.5f , wPos.z+1);
+	glTexCoord2f(1, 1);
+	glVertex3f(wPos.x+1, 0.5f , wPos.z+1);	
+	glTexCoord2f(1, 0);
+	glVertex3f(wPos.x+1, 0.5f , wPos.z-1);
+	glTexCoord2f(0, 0);
+	glVertex3f(wPos.x-1, 0.5f , wPos.z-1);
+	glTexCoord2f(0, 1);
+	glVertex3f(wPos.x-1, 0.5f , wPos.z+1);
 	glColor3f(1.0f,1.0f,1.0f);
 	glEnd();
 	glPopMatrix();
 	glBindTexture( GL_TEXTURE_2D, 0);
-
-	
-	glPushMatrix();
-	glBegin(GL_QUADS);
-	glColor3f(1.0f,0.0f,0.0f);
-		glVertex3f(pickPos.x+0.25f, 0.7f , pickPos.z+0.25f);
-		glVertex3f(pickPos.x+0.25f, 0.7f , pickPos.z-0.25f);
-		glVertex3f(pickPos.x-0.25f, 0.7f , pickPos.z-0.25f);
-		glVertex3f(pickPos.x-0.25f, 0.7f , pickPos.z+0.25f);
-    glColor3f(1.0f,1.0f,1.0f);
-    glEnd();
-    glPopMatrix();
-
+	*/
 }
 
 void Camera::rotate(float direction)
 {
 	yaw -= direction;
-	if(yaw < -180)
-		yaw = 180;
-	else if(yaw > 180)
-		yaw = -180;
-	pos.x = sin(yaw * PI / 180)*radius;	
-	pos.z = cos(yaw * PI / 180)*radius;
-	//printf("X: %f  Z: %f\n",pos.x, pos.z); 
+	if(yaw < 0)
+		yaw = 360;
+	else if(yaw > 360)
+		yaw = 0;
+	camPos.x = sin(yaw * PI / 180)*radius;	
+	camPos.z = cos(yaw * PI / 180)*radius;
 }
 void Camera::translate(int key)
 {
-	vec3 direction(pos.x/radius, 0, pos.z/radius);
+	vec3 direction(camPos.x/radius, 0, camPos.z/radius);
 	if( key == XK_w )
-		wPos -= direction * 0.8f;
-	else if( key == XK_s )
 		wPos += direction * 0.8f;
+	else if( key == XK_s )
+		wPos -= direction * 0.8f;
 	else if( key == XK_a )
-		wPos += vec3::Normalize(vec3::crossProd(direction, up)) * 0.8f;
+		wPos -= vec3::Normalize(vec3::crossProd(direction, wUp)) * 0.8f;
 	else if( key == XK_d )
-		wPos -= vec3::Normalize(vec3::crossProd(direction, up)) * 0.8f;
-
-	printf("X:%f  Z:%f\n", wPos.x, wPos.z);
-	/*
-	if(direction.y) {
-		direction.x = (pos.x/radius)*direction.y;
-		direction.y = (pos.z/radius)*direction.y;
-	} else {	
-		direction.x = (pos.z/radius) * direction.x;
-		direction.y = -(pos.x/radius) * direction.x;
-	}
-	
-	wPos.x += direction.x;
-	wPos.z += direction.y;
-*/
-//	front.x += direction.x;
-//	front.z += direction.z;
+		wPos += vec3::Normalize(vec3::crossProd(direction, wUp)) * 0.8f;
 }
-
-void Camera::picking(int x, int y)
+void Camera::updateVectors()
 {
-	vec3 ray(pos.x+wPos.x,  8.0f,  pos.z+wPos.z);
-	float yawDir = yaw - (((x-400)*0.0525));//this works to get starting positi
-	//ray = crossProd(ray, up);
-	//ray.y += cos(yawY * PI/180)*21;
-	while(ray.y > 0) {
-		/*ray.x -= sin(yawDir * PI / 180)/100;
-		ray.y -= 0.8f;
-		ray.z -= cos(yawDir * PI / 180)/100;*/
-		//three land were the camera is looking
-		ray.x += sin(yaw * PI / 180) / 100;
-		ray.y -= 0.8f;
-		ray.z += cos(yaw * PI / 180)/100 -0.01f;
-		printf("RX:%f  RY:%f  RZ:%f\n", ray.x, ray.y, ray.z);
-	}	
-	pickPos.x = ray.x - (sin(yaw * PI / 180) * radius);
-	pickPos.y = ray.y;
-	pickPos.z = ray.z -(cos(yaw/*Dir*/ * PI / 180) * radius);
-	printf("X:%f  Y:%f  Z:%f\n", pickPos.x, pickPos.y, pickPos.z);
+	vec3 direction(camPos.x/radius, 0, camPos.z/radius);
+	//camPos
+	camPos(
+		sin(yaw * PI / 180)*radius,
+		8.0f, 
+		cos(yaw * PI / 180)*radius
+	);
+	//front
+	front = vec3(
+		camPos + direction
+		/*cos(RAD(yaw)) * cos(RAD(pitch)),
+		sin(RAD(pitch)),
+		sin(RAD(yaw)) * cos(RAD(pitch))*/
+	
+	);
+	//view
+	vec3::Normalize(front);
+	view = vec3(front+wPos);
+	//view = vec3::Normalized(vec3((camPos+wPos) - wPos));
+	//vec3::Normalize(view);
+	//right
+	right = vec3(vec3::Normalize(vec3::crossProd(view, wUp)));
+	//up
+	up = vec3(vec3::Normalize(vec3::crossProd(right, view)));
+	
+
+	
+}
+vec3 Camera::getPos()
+{
+	return vec3(
+		wPos.x - camPos.x,
+		8.0f,
+		wPos.z - camPos.z
+	);
+}
+Matrix Camera::getViewMatrix()
+{
+	
+	float viewMat2[16];
+	glGetFloatv(GL_MODELVIEW_MATRIX, viewMat2);
+	return Matrix(4, viewMat2);
+
 }
 
 /*=======================================*/
+/*===============PICKER==================*/
+
+Picker::Picker(){}
+
+void Picker::update(Matrix & projMatrix, Camera camera, float xres, float yres, float mousex, float mousey)
+{
+	projectionMatrix = projMatrix;
+	vec4 ray(
+		(2.0f * mousex) / xres - 1.0f,
+		1.0f - (2.0f * mousey) / yres,
+		1.0f,
+		1.0f
+	);
+	
+	vec4 ray_clip = vec4(ray.x, ray.y, -1.0f, 1.0f);
+	Matrix invProj = Matrix::inverse(projectionMatrix);
+	vec4 ray_eye = invProj * ray_clip;
+	ray_eye.z = -1.0f; ray_eye.w = 0;
+
+	viewMatrix = camera.getViewMatrix();
+	/*viewMatrix.m_arr[5] = 0.780869;
+	viewMatrix.m_arr[6] = 0.624695;
+	viewMatrix.m_arr[9] = 0.624695;
+	viewMatrix.m_arr[10] = -0.780869;*/
+	Matrix invView = Matrix::inverse(viewMatrix);
+	vec4 ray_world = invView * ray_eye;
+	
+	
+	curRay = vec3(ray_world.x, ray_world.y, ray_world.z);
+	
+	curRay = vec3::Normalize(curRay);
+	//rotate(camera.yaw+180);
+	
+
+}
+vec3 Picker::getCurrentRay()
+{
+	return curRay;
+}
+void Picker::rotate(float deg)
+{
+	curRay = vec3(
+		cos(RAD(deg)) * curRay.x + sin(RAD(deg) * curRay.z),
+		curRay.y,
+		-sin(RAD(deg)) * curRay.x + cos(RAD(deg)) * curRay.z
+
+	);
+}
+/*=======================================*/
 /*===============WORLDGS=================*/
 WorldGS::WorldGS(int ** mapArr,int sizex,int sizey,
-	float camRot, int posx, int posz,
-	float xres, float yres) :
+		float camRot, int posx, int posz,
+		float xres, float yres) :
 	map(mapArr, sizex, sizey), camera(camRot, posx, posz), UI(aog.box, xres, yres)
 {	
 	this->xres = xres;
@@ -512,6 +845,7 @@ void WorldGS::initWGS_GL()
 	glMatrixMode(GL_PROJECTION); glLoadIdentity();
 	gluPerspective(45.0f,(GLfloat)xres/(GLfloat)yres,0.1f,100.0f);
 
+	glMatrixMode(GL_MODELVIEW); glLoadIdentity();
 	//discussed futher in later tutorial
 	glShadeModel(GL_SMOOTH);//enables smooth shading
 
@@ -521,10 +855,10 @@ void WorldGS::initWGS_GL()
 	glDepthFunc(GL_LEQUAL);//The type of depth test to do
 
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);//??makes the perspective view better??
+	
+	
+	
 
-
-
-	glMatrixMode(GL_MODELVIEW); glLoadIdentity();
 	//Set 2D mode (no perspective)
 	//COMMENT OUT LINE BELOW BEFORE TYRING TO MAKE IT 3D
 	//glOrtho(0, g.xres, 0, g.yres, -1, 1);
@@ -534,12 +868,35 @@ void WorldGS::initWGS_GL()
 	glClearColor(0.1, 0.1, 0.1, 1.0);
 	//Insert Fonts
 	glEnable(GL_TEXTURE_2D);
+
+	
+
+}
+void WorldGS::pick(vec3 ray)
+{
+	int count = 0;
+	//printf("X: %f Y: %f Z: %f\n", ray.x, ray.y, ray.z);
+	//ray.x -= 1;
+	//ray.z -= 1;
+	ray.y -= 0.01f;
+	vec3 pos = camera.getPos();
+	while(pos.y > 0.2f  && ++count != 1000) {
+		
+		pos.x += ray.x;
+		pos.y += ray.y;// > 0 ? -ray.y : ray.y;
+		pos.z += ray.z;
+		//printf("Y: %f\n", ray.y);
+	}
+	//vec3 direction(pos.x/10, 0, pos.z/10);
+	pickPos = vec3(pos.x, 0, pos.z);
+	//pickPos -= direction;
 }
 int WorldGS::procMouseInput(int x, int y)
 {
-	
-	printf("X:%d  Y:%d\n", x, y);
-	camera.picking(x,y);
+	glMatrixMode(GL_MODELVIEW);
+	pkr.update(projMatrix, camera, xres, yres, x, y);
+	pick(pkr.getCurrentRay());
+	printf("X: %f  Z: %f\n", pickPos.x/2.0f, pickPos.z/1.70710378118f);
 	return 0;
 	//picking/UI
 }
@@ -554,11 +911,9 @@ int WorldGS::procKeyInput(int key)
 			break;
 		case XK_q:
 			camera.rotate(-4.0f);
-			printf("RotateLeft\n");
 			break;
 		case XK_e:
 			camera.rotate(4.0f);
-			printf("RotateRight\n");
 			break;
 		case XK_Escape:
 			return 2;
@@ -568,17 +923,19 @@ int WorldGS::procKeyInput(int key)
 void WorldGS::drawGameState()
 {
 	initWGS_GL();
-	// set perspective
-	//draw map
-	//
-	//
 	//gluPerspective(45.0f, xres/yres, 0.1f, 100.0f);
 	// glMatrixMode(GL_MODELVIEW); glLoadIdentity();
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
+	float  projMat[16];
+	glGetFloatv(GL_PROJECTION_MATRIX, projMat);
+	projMatrix = Matrix( 4, projMat);
+
+
 	glLoadIdentity();
 	camera.update();
 	map.draw();
+	
     njG.player = Player::getInstance();
     if (njG.player->count != 0) {
         njG.player->draw();
@@ -595,11 +952,34 @@ void WorldGS::drawGameState()
     }
 	camera.drawCamera(0);
 
+	glPushMatrix();/*
+	glBegin(GL_QUADS);
+		glColor3f(1.0f, 0, 0);
+		glTexCoord2f(1, 1);
+		glVertex3f(pickPos.x+1, 0.5f , pickPos.z+1);	
+		glTexCoord2f(1, 0);
+		glVertex3f(pickPos.x+1, 0.5f , pickPos.z-1);
+		glTexCoord2f(0, 0);
+		glVertex3f(pickPos.x-1, 0.5f , pickPos.z-1);
+		glTexCoord2f(0, 1);
+		glVertex3f(pickPos.x-1, 0.5f , pickPos.z+1);
+		glColor3f(1.0f,1.0f,1.0f);
+	glEnd();*/
+	glBegin(GL_LINES);
+		glColor3f(1.0f, 0, 0);
+		vec3 pos = camera.getPos();
+		glVertex3f(pickPos.x, 5.0f, pickPos.z);
+		
+		glVertex3f(pickPos.x, pickPos.y, pickPos.z);
+		glColor3f(1.0f, 0, 0);
+		glEnd();
+	glPopMatrix();
+
 	//set ortho
 
 	//draw UI
 	UI.drawBoxes();
-    glColor3ub(255, 255, 255);
+	glColor3ub(255, 255, 255);
 }
 /*=======================================*/
 /*=======================================*/
