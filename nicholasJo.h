@@ -82,6 +82,7 @@ class Entity {
 	float current_health;
 	float current_defense;
 	float current_damage;
+    float yaw;
 	vec3 wPos; //world position
 	vec3 bPos; //battle position
 };
