@@ -155,6 +155,36 @@ void NJordGlobal::loadEnemies(ifstream& file)
     }
 }
 
+bool NJordGlobal::checkWorldCollision(int x, int z)
+{
+    if (x == njG.player->wPos.x && z == njG.player->wPos.z)
+        return false;
+    for (int i = 0; i < njG.allies->count; i++) {
+        if (x == njG.allies[i].wPos.x && z == njG.allies[i].wPos.z)
+            return false;
+    }
+    for (int i = 0; i < njG.enemies->count; i++) {
+        if (x == njG.enemies[i].wPos.x && z == njG.enemies[i].wPos.z)
+            return false;
+    }
+    return true;
+}
+
+bool NJordGlobal::checkBattleCollision(int x, int z)
+{
+    if (x == njG.player->bPos.x && z == njG.player->bPos.z)
+        return false;
+    for (int i = 0; i < njG.allies->count; i++) {
+        if (x == njG.allies[i].bPos.x && z == njG.allies[i].bPos.z)
+            return false;
+    }
+    for (int i = 0; i < njG.enemies->count; i++) {
+        if (x == njG.enemies[i].bPos.x && z == njG.enemies[i].bPos.z)
+            return false;
+    }
+    return true;
+}
+
 //==========================[ENTITY CLASS]===============================
 
 static Model pModel[1] = {
@@ -284,6 +314,7 @@ void Entity::draw()
 {
     pModel[this->modelID].draw(this->wPos.x, this->wPos.z, 0.3);
 }
+
 
 //==========================[ALLY CLASS]===============================
 //Inherits from Entity
