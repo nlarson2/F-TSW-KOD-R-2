@@ -86,8 +86,9 @@ PauseGS::PauseGS(Button b[3],int xres, int yres)
         buttons[i] = b[i];
         buttons[i].width = 100;
         buttons[i].height = 20;
-        buttons[i].center.x = 200;
-        buttons[i].center.y = 500 - (i+1)*60;
+        buttons[i].center.x = xres/4;
+        buttons[i].center.y = yres/1.4 - (i+1)*60;
+        //buttons[i].center.y = 500 - (i+1)*60;
     }
 }
 
@@ -160,8 +161,10 @@ void PauseGS::drawGameState()
         //Draw Names
         int yres = 600;
         Rect r;
-        r.bot = yres - (170 +(i*60));
-        r.left = 200 ;
+        //r.bot = yres - (170 +(i*60));
+        //r.left = 200 ;
+        r.bot = yres/.95 - (i+1)*60;
+        r.left = xres/4 ;
         ggprint16(&r, 16, 0x00ffff00, buttons[i].name.c_str());
     }
 }
@@ -185,8 +188,8 @@ MenuGS::MenuGS(int s, Button b[5][5], int xres, int yres)
             //Position Buttons
             buttons[j][i].width = 100;
             buttons[j][i].height = 20;
-            buttons[j][i].center.x = 200;
-            buttons[j][i].center.y = 500 - (i+1)*60;
+            buttons[j][i].center.x = xres/2;
+            buttons[j][i].center.y = yres/1.4 - (i+1)*60;
         }
     }
 }
@@ -360,8 +363,11 @@ void MenuGS::drawGameState()
         //Draw Names
         int yres = 600;
         Rect r;
-        r.bot = yres - (170 +(i*60));
-        r.left = 200 ;
+        //r.bot = yres - (170 +(i*60));
+        r.bot = yres/.95 - (i+1)*60;
+        r.left = xres/2 ;
         ggprint16(&r, 16, 0x00ffff00, buttons[state][i].name.c_str());
+            //buttons[j][i].center.x = xres/2;
+            //buttons[j][i].center.y = yres/1.4 - (i+1)*60;
     }
 }
