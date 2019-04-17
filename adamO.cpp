@@ -60,19 +60,19 @@ void uiboxes::posBoxes() {
     boxes[0].center.x = 75;
     boxes[0].center.y = 100;
     //
-
+    
     // Turn Change Box
-    boxes[1].width = 50;
-    boxes[1].height = 50;
-    boxes[1].center.x = 2480;
-    boxes[1].center.y = 75;
+    boxes[1].width = xres/16;
+    boxes[1].height = yres/12;
+    boxes[1].center.x = xres-(xres/16);
+    boxes[1].center.y = yres/12;
     //
 
     // Battle Mode Box
-    boxes[2].width = 250;
-    boxes[2].height = 75;
-    boxes[2].center.x = 2310;
-    boxes[2].center.y = 1365;
+    boxes[2].width = xres*0.2;
+    boxes[2].height = yres/20;
+    boxes[2].center.x = xres-(xres*0.2);
+    boxes[2].center.y = yres-(yres/20);
     //
 
     // Character Image Box
@@ -124,8 +124,16 @@ void uiboxes::posBoxes() {
 }
 
 void uiboxes::drawBoxes() {
+        
 
-    for (int i = 0; i < size; i++) {
+    
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        glOrtho(0, xres, 0, yres, -1, 1);
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
+
+    for (int i = 0; i < 8; i++) {
         Boxes *s;
         glColor3ub(90, 140, 90);
         if (i == 3 || i > 4)
@@ -134,15 +142,11 @@ void uiboxes::drawBoxes() {
             glColor3ub(250,250,0);
         s = &boxes[i];
         glPushMatrix();
+        glLoadIdentity();
         glTranslatef(s->center.x, s->center.y, 0);
         float w, h;
         w = s->width;
         h = s->height;
-        glMatrixMode(GL_PROJECTION);
-        glLoadIdentity();
-        glOrtho(0, xres, 0, yres, -1, 1);
-        glMatrixMode(GL_MODELVIEW);
-        glLoadIdentity();
         glBegin(GL_QUADS);
         glVertex2i(-w, -h);
         glVertex2i(-w,  h);
