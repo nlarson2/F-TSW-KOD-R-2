@@ -138,6 +138,8 @@ class NJordGlobal {
     bool loadEntities(int);
 	void loadAllies(ifstream&);
     void loadEnemies(ifstream&);
+    bool checkWorldCollision(int, int);
+    bool checkBattleCollision(int, int);
 };
 
 void Display_NicholasJordan(int, int, GLuint);
