@@ -44,11 +44,11 @@ bool isValid(int, int);
 bool isUnBlocked(int[][25], int, int);
 bool isDestination(int, int, Pair);
 double calculateHValue(int, int, Pair);
-void tracePath(cell[][25], Pair dest);
-void aStarSearch(int[][25], Pair src, Pair dest);
+stack<Pair> tracePath(cell[][25], Pair dest);
+stack<Pair> aStarSearch(int[][25], Pair src, Pair dest);
 void displayMap(int[][25]);
 
-void Movement(int[][25], Entity, vec2); 
+stack<Pair> Movement(int[][25], Entity, vec2); 
 void showMarbienPicture(int x, int y, GLuint textid);
 
 #endif

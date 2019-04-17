@@ -3,7 +3,7 @@
 #include "Game.h"
 
 extern BHglobal bhg;
-extern NLarsGlobal nlG;
+extern NLarsGlobal * nlG;// = NLarsGlobal::GetInstance();
 //extern NJordGlobal njG;
 Game::Game(int x, int y) 
 {
@@ -29,7 +29,7 @@ void Game::procMouseInput(int x, int y)
             states.pop();
             break;
         case 1:
-            states.push(new WorldGS(nlG.MainMap, 25 ,25, 180, 0, 0, xres, yres));
+            states.push(new WorldGS(nlG->MainMap, 25 ,25, 180, 0, 0, xres, yres));
             break;
         case 2:
             states.push(new PauseGS(bhg.pmenu,xres,yres));
@@ -49,7 +49,7 @@ void Game::procKeyInput(int key)
             states.pop();
             break;
         case 1:
-            states.push(new WorldGS(nlG.MainMap,25 ,25, 180, 0, 0, xres, yres));
+            states.push(new WorldGS(nlG->MainMap,25 ,25, 180, 0, 0, xres, yres));
             break;
         case 2:
             states.push(new PauseGS(bhg.pmenu,xres,yres));
