@@ -56,9 +56,6 @@ class Entity {
 	void setMaxHealth(float);
 	void setDefaultDefense(float);
 	void setDefaultDamage(float);
-	float current_health;
-	float current_defense;
-	float current_damage;
     public:
 	//====[Health Functions]====
 	float getMaxHealth();
@@ -82,6 +79,9 @@ class Entity {
 	GLuint image;
 	Model playerModel;
 	int modelID;
+	float current_health;
+	float current_defense;
+	float current_damage;
 	vec3 wPos; //world position
 	vec3 bPos; //battle position
 };
@@ -90,6 +90,8 @@ class Enemy : public Entity {
     public:
 	Enemy();
 	static int count;
+	void saveEnemies(ofstream&);
+	void loadEnemyCombatType(string);
     private:
 	void setEnemyCombatType();
 	void setEnemyImage();
@@ -99,11 +101,10 @@ class Ally : public Entity {
     public:
 	Ally();
 	void saveAllies(ofstream&);
-	void loadAllies(ifstream&);
 	static int count;
+	void loadAllyCombatType(string);
     private:
 	void setAllyCombatType();
-	void loadAllyCombatType(string);
 	void setAllyImage();
 };
 
@@ -113,8 +114,8 @@ class Player : public Entity {
 	static int count;
 	static Player* getInstance();
 	static Player* setInstance(string);
-	void saveInstance(int);
-	bool loadInstance(int);
+	void saveInstance(ofstream&);
+	void loadInstance(ifstream&);
 	static void resetInstance();
 	void setPlayerCombatType(string);
 	void setPlayerImage();
@@ -133,6 +134,10 @@ class NJordGlobal {
 	void spawnAllies(int);
 	void resetAllies();
 	void resetEnemies();
+    void saveEntities(int);
+    bool loadEntities(int);
+	void loadAllies(ifstream&);
+    void loadEnemies(ifstream&);
 };
 
 void Display_NicholasJordan(int, int, GLuint);
