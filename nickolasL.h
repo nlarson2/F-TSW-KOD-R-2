@@ -11,6 +11,8 @@
 #include <iostream>
 #include <string.h>
 #include <vector>
+#include <stack>
+#include <set>
 #include <cmath>
 #include <GL/glx.h>
 #include <GL/glu.h>
@@ -141,7 +143,7 @@ public:
 	Map(int ** map, int _width, int _height);
 	~Map();
 	void draw();
-	bool checkCollision( float x, float z);
+	vec2 checkCollision( float x, float z);
 };
 
 
@@ -208,6 +210,7 @@ private:
 	Picker pkr;
 	vec3 pickPos;
 	Matrix projMatrix;
+	vector<pair<int,int>> path;
 public:
 	WorldGS(int ** mapArr,int sizex,int sizey,
 	float camRot, int posx, int posz,
@@ -216,6 +219,7 @@ public:
 	void pick(vec3 ray);
 	int procMouseInput(int x, int y);
 	int procKeyInput(int key);
+	void drawPath();
 	void drawGameState();
 };
 

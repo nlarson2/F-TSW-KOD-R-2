@@ -85,6 +85,10 @@ class Entity {
     float yaw;
 	vec3 wPos; //world position
 	vec3 bPos; //battle position
+
+	/*NickolasL additions*/
+	int moveRange = 3;
+	int attackRange = 1;
 };
 
 class Enemy : public Entity {

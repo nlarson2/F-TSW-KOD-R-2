@@ -8,10 +8,13 @@
 
 #include "nickolasL.h"
 #include "nicholasJo.h"
+#include "marbienJ.h"
+
 
 #define RAD(degree) degree * PI / 180
 
-
+#define XOFFSET -2.0f
+#define ZOFFSET -1.70710378118f
 
 extern int mainMap[0][25];
 extern NJordGlobal njG;
@@ -613,7 +616,7 @@ bool Tile::collisionDetect(float x, float z) {
 	height -= z;
 	float distance = sqrt((width*width) + (height*height));
 	//printf("ThisX:%f X:%f Y:%f");
-	printf("distance: %f thisX:%d thisZ:%d\n",distance, this->x, this->z);
+	//printf("distance: %f thisX:%d thisZ:%d\n",distance, this->x, this->z);
 	return distance > radius ? false : true;
 }
 
@@ -658,26 +661,27 @@ void Map::draw(){
 		}
 	}
 }
-bool Map::checkCollision( float x, float z) {
+vec2 Map::checkCollision( float x, float z) {
 	int xPos, yPos;
-	
+	vec2 ret(-1,-1);
 	yPos = abs(z / 1.70710378118f);
 	if(yPos%2 == 0)
 		xPos -= 1.0f;
 	xPos = abs(x / 2);
-	printf("X:%d Y:%d\n", xPos , yPos);
+	//printf("X:%d Y:%d\n", xPos , yPos);
 	for (int i = -1; i < 2 ; i++) {
 		for (int j = -1; j < 2 ; j++) {
 			if( xPos+i >= 0 && xPos+i < mapH && yPos+j >= 0 && yPos+j < mapW) {
 				//printf("i:%d j:%d\n", i , j);
 				if(tile[xPos+i][yPos+j].collisionDetect( x, z)) {
-					printf("Collided with x:%d y:%d\n",xPos+i,yPos+j);
-					return true;
+					ret = vec2(xPos+i, yPos+j);
+					//printf("Collided with x:%d y:%d\n",xPos+i,yPos+j);
+					return ret;
 				}
 			}
 		}
 	}
-	return false;
+	return ret;
 }
 
 
@@ -913,15 +917,25 @@ void WorldGS::pick(vec3 ray)
 	pickPos = vec3(pos.x, 0, pos.z);
 	//pickPos -= direction;
 }
+
 int WorldGS::procMouseInput(int x, int y)
 {
 	glMatrixMode(GL_MODELVIEW);
 	pkr.update(projMatrix, camera, xres, yres, x, y);
 	pick(pkr.getCurrentRay());
-	if ( map.checkCollision(pickPos.x, pickPos.z) ) {
-	
+	vec2 chkPath = map.checkCollision(pickPos.x, pickPos.z);
+	//printf("chkPath %f %f\n", chkPath.x, chkPath.y);
+	pair<int,int> size(25,25);
+	if ( chkPath.x > -1 && chkPath.y > -1) {
+		stack<pair<int,int>> pathStack = Movement(size, nlG->MainMap, njG.player, chkPath);
+		path.clear();
+		while (!pathStack.empty()) {
+			//pair<int,int> temp = pathStack.pop();
+			path.push_back(pathStack.top());
+			pathStack.pop();
+		}
 	}
-	printf("X: %f  Z: %f\n", pickPos.x, pickPos.z);
+	//printf("X: %f  Z: %f\n", pickPos.x, pickPos.z);
 	return 0;
 	//picking/UI
 }
@@ -945,6 +959,25 @@ int WorldGS::procKeyInput(int key)
 	}
 	return 0;
 }
+void WorldGS::drawPath() {
+	if(path.empty()) return;
+
+	for (int i = 0; i < path.size(); i++) {
+		printf("X: %d  Z: %d\n", path[i].first, path[i].second);
+		float posx = path[i].first * XOFFSET;
+		float posy = path[i].second * ZOFFSET;
+		if(path[i].second%2 == 0)
+			posx -= 1.0f;
+		glBegin(GL_QUADS);
+		glColor3f(1.0f, 0, 0);
+		glVertex3f(posx + 0.25f, 0.5f , posy + 0.25f);
+		glVertex3f(posx + 0.25f, 0.5f , posy - 0.25f);
+		glVertex3f(posx - 0.25f, 0.5f , posy - 0.25f);
+		glVertex3f(posx - 0.25f, 0.5f , posy + 0.25f);
+		glColor3f(1.0f,1.0f,1.0f);
+		glEnd();
+	}
+}
 void WorldGS::drawGameState()
 {
 	initWGS_GL();
@@ -960,7 +993,7 @@ void WorldGS::drawGameState()
 	glLoadIdentity();
 	camera.update();
 	map.draw();
-	
+	drawPath();
     njG.player = Player::getInstance();
     if (njG.player->count != 0) {
         njG.player->draw();
