@@ -74,46 +74,8 @@ stack<Pair> tracePath(Pair size, CellGroup cellDetails, Pair dest)
 // A* Search Algorithm 
 stack<Pair> aStarSearch(Pair size, int ** grid, Pair src, Pair dest) 
 { 
-    // source is out of range? 
-    if (isValid (src.first, src.second) == false) 
-    { 
-        printf ("Source is invalid\n"); 
-        exit(1); 
-    } 
-  
-    // destination is out of range? 
-    if (isValid (dest.first, dest.second) == false) 
-    { 
-        printf ("Destination is invalid\n"); 
-        exit(1); 
-    } 
-  
-    // source or the destination is blocked? 
-    if (isUnBlocked(size, grid, src.first, src.second) == false || 
-            isUnBlocked(size, grid, dest.first, dest.second) == false) 
-    { 
-        printf ("Source or the destination is blocked\n"); 
-        exit(1); 
-    } 
-  
-    // destination cell = source cell? 
-    if (isDestination(src.first, src.second, dest) == true) 
-    { 
-        printf ("We are already at the destination\n"); 
-        exit(1);
-    } 
-  
-    // closed list and initialise false 
-    // no cell included yet 
-    // closed list implemented as boolean 2D array 
-    bool closedList[ROW][COL]; 
-    memset(closedList, false, sizeof (closedList)); 
-  
-    // 2D array structure to hold details of cell 
-    //cell cellDetails[ROW][COL]; 
     CellGroup cellDetails;
-    //cellDetails = new cell*[size.first];
-   for(int i = 0; i < size.first ; i++) {
+    for(int i = 0; i < size.first ; i++) {
         cellDetails.push_back(vector<cell>());
         for (int j = 0; j < size.second; j++) {
             cellDetails[i].push_back(cell());
@@ -142,6 +104,45 @@ stack<Pair> aStarSearch(Pair size, int ** grid, Pair src, Pair dest)
     cellDetails[i][j].h = 0.0; 
     cellDetails[i][j].parent_i = i; 
     cellDetails[i][j].parent_j = j; 
+    
+    // source is out of range? 
+    if (isValid (src.first, src.second) == false) 
+    { 
+        printf ("Source is invalid\n"); 
+        return(tracePath(size, cellDetails, src)); 
+    } 
+  
+    // destination is out of range? 
+    if (isValid (dest.first, dest.second) == false) 
+    { 
+        printf ("Destination is invalid\n"); 
+        return(tracePath(size, cellDetails, src)); 
+    } 
+  
+    // source or the destination is blocked? 
+    if (isUnBlocked(size, grid, src.first, src.second) == false || 
+            isUnBlocked(size, grid, dest.first, dest.second) == false) 
+    { 
+        printf ("Source or the destination is blocked\n"); 
+        return(tracePath(size, cellDetails, src)); 
+    } 
+  
+    // destination cell = source cell? 
+    if (isDestination(src.first, src.second, dest) == true) 
+    { 
+        printf ("We are already at the destination\n"); 
+        return(tracePath(size, cellDetails, src)); 
+    } 
+  
+    // closed list and initialise false 
+    // no cell included yet 
+    // closed list implemented as boolean 2D array 
+    bool closedList[ROW][COL]; 
+    memset(closedList, false, sizeof (closedList)); 
+  
+    // 2D array structure to hold details of cell 
+    //cell cellDetails[ROW][COL]; 
+    //cellDetails = new cell*[size.first];
   
     /* 
      open list 

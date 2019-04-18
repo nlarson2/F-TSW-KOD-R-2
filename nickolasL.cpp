@@ -934,6 +934,15 @@ int WorldGS::procMouseInput(int x, int y)
 			path.push_back(pathStack.top());
 			pathStack.pop();
 		}
+        /*********NicholasJ addition************/
+        while (path.size() > njG.player->moveRange) {
+            path.pop_back();
+        }
+        if (njG.checkWorldCollision(path.back().first, path.back().second)) {
+            njG.player->wPos.x = path.back().first;
+            njG.player->wPos.z = path.back().second;
+        }
+        /***************************************/
 	}
 	//printf("X: %f  Z: %f\n", pickPos.x, pickPos.z);
 	return 0;

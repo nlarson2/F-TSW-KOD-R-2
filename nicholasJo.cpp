@@ -157,30 +157,34 @@ void NJordGlobal::loadEnemies(ifstream& file)
 
 bool NJordGlobal::checkWorldCollision(int x, int z)
 {
-    if (x == njG.player->wPos.x && z == njG.player->wPos.z)
+    if (x == player->wPos.x && z == player->wPos.z)
         return false;
-    for (int i = 0; i < njG.allies->count; i++) {
-        if (x == njG.allies[i].wPos.x && z == njG.allies[i].wPos.z)
+    for (int i = 0; i < allies->count; i++) {
+        if (x == allies[i].wPos.x && z == allies[i].wPos.z)
             return false;
     }
-    for (int i = 0; i < njG.enemies->count; i++) {
-        if (x == njG.enemies[i].wPos.x && z == njG.enemies[i].wPos.z)
+    for (int i = 0; i < enemies->count; i++) {
+        if (x == enemies[i].wPos.x && z == enemies[i].wPos.z) {
+            player->dealDamage(enemies[i]);
             return false;
+        }
     }
     return true;
 }
 
 bool NJordGlobal::checkBattleCollision(int x, int z)
 {
-    if (x == njG.player->bPos.x && z == njG.player->bPos.z)
+    if (x == player->bPos.x && z == player->bPos.z)
         return false;
-    for (int i = 0; i < njG.allies->count; i++) {
-        if (x == njG.allies[i].bPos.x && z == njG.allies[i].bPos.z)
+    for (int i = 0; i < allies->count; i++) {
+        if (x == allies[i].bPos.x && z == allies[i].bPos.z)
             return false;
     }
     for (int i = 0; i < njG.enemies->count; i++) {
-        if (x == njG.enemies[i].bPos.x && z == njG.enemies[i].bPos.z)
+        if (x == enemies[i].bPos.x && z == enemies[i].bPos.z) {
+            player->dealDamage(enemies[i]);
             return false;
+        }
     }
     return true;
 }
@@ -263,7 +267,8 @@ void Entity::dealDamage(Entity &target)
 {
     Log("Entity::dealDamage(Entity &target), target.ally = %i\n", target.getAlly());
     if (this->getAlly() != target.getAlly() && target.current_health > 0 &&
-        this->current_health > 0)
+        this->current_health > 0 && 
+        (this->inWorldRange(target) || this->inBattleRange(target)))
         target.current_health -= target.current_defense * this->current_damage;
     else
         cout << "Cannot damage an ally!\n";
@@ -315,6 +320,21 @@ void Entity::draw()
     pModel[this->modelID].draw(this->wPos.x, this->wPos.z, 0.3);
 }
 
+bool Entity::inWorldRange(Entity target)
+{
+    if (abs(this->wPos.x - target.wPos.x) <= this->attackRange ||
+        abs(this->wPos.z - target.wPos.z) <= this->attackRange)
+        return true;
+    return false;
+}
+
+bool Entity::inBattleRange(Entity target)
+{
+    if (abs(this->bPos.x - target.bPos.x) <= this->attackRange ||
+        abs(this->bPos.z - target.bPos.z) <= this->attackRange)
+        return true;
+    return false;
+}
 
 //==========================[ALLY CLASS]===============================
 //Inherits from Entity
@@ -365,18 +385,24 @@ void Ally::loadAllyCombatType(string c)
 		setMaxHealth(50.0);
 		setDefaultDefense(0.3);
 		setDefaultDamage(10.0);
+        moveRange = 3;
+        attackRange = 3;
 	} else if (c == "soldier") {
         modelID = 0;
         combatType = c;
 		setMaxHealth(75.0);
 		setDefaultDefense(0.5);
 		setDefaultDamage(15.0);
+        moveRange = 5;
+        attackRange = 1;
 	} else if (c == "tank") {
         modelID = 0;
         combatType = c;
 		setMaxHealth(100.0);
 		setDefaultDefense(0.70);
 	    setDefaultDamage(12.0);
+        moveRange = 5;
+        attackRange = 1;
     }
     setAllyImage();
 	return;
@@ -395,6 +421,8 @@ void Ally::setAllyCombatType()
 			setMaxHealth(50.0);
 			setDefaultDefense(0.3);
 			setDefaultDamage(10.0);
+            moveRange = 3;
+            attackRange = 3;
 			break;
 		case 1:
             modelID = 0;
@@ -402,6 +430,8 @@ void Ally::setAllyCombatType()
 			setMaxHealth(75.0);
 			setDefaultDefense(0.5);
 			setDefaultDamage(15.0);
+            moveRange = 5;
+            attackRange = 1;
 			break;
 		case 2:
             modelID = 0;
@@ -409,6 +439,8 @@ void Ally::setAllyCombatType()
 			setMaxHealth(100);
 			setDefaultDefense(0.7);
 		    setDefaultDamage(12.0);
+            moveRange = 5;
+            attackRange = 1;
 			break;
 	}
 	return;
@@ -473,18 +505,24 @@ void Enemy::loadEnemyCombatType(string c)
 		setMaxHealth(50.0);
 		setDefaultDefense(0.3);
 		setDefaultDamage(10.0);
+        moveRange = 3;
+        attackRange = 3;
 	} else if (c == "soldier") {
         modelID = 0;
         combatType = c;
 		setMaxHealth(75.0);
 		setDefaultDefense(0.5);
 		setDefaultDamage(15.0);
+        moveRange = 5;
+        attackRange = 1;
 	} else if (c == "tank") {
         modelID = 0;
         combatType = c;
 		setMaxHealth(100.0);
 		setDefaultDefense(0.70);
 	    setDefaultDamage(12.0);
+        moveRange = 5;
+        attackRange = 1;
     }
     setEnemyImage();
 	return;
@@ -503,6 +541,8 @@ void Enemy::setEnemyCombatType()
 			setMaxHealth(50.0);
 			setDefaultDefense(0.3);
 			setDefaultDamage(10.0);
+            moveRange = 5;
+            attackRange = 1;
 			break;
 		case 1:
             modelID = 0;
@@ -510,6 +550,8 @@ void Enemy::setEnemyCombatType()
 			setMaxHealth(75.0);
 			setDefaultDefense(0.5);
 			setDefaultDamage(15.0);
+            moveRange = 5;
+            attackRange = 1;
 			break;
 		case 2:
             modelID = 0;
@@ -517,6 +559,8 @@ void Enemy::setEnemyCombatType()
 			setMaxHealth(100);
 			setDefaultDefense(0.7);
 			setDefaultDamage(12.0);
+            moveRange = 5;
+            attackRange = 1;
 			break;
 	}
 	return;
@@ -638,24 +682,32 @@ void Player::setPlayerCombatType(string c)
 		setMaxHealth(75.0);
 		setDefaultDefense(0.60);
 		setDefaultDamage(15.0);
+        moveRange = 3;
+        attackRange = 3;
 	} else if (c == "soldier") {
         modelID = 0;
         combatType = c;
 		setMaxHealth(100.0);
 		setDefaultDefense(0.70);
 		setDefaultDamage(20.0);
+        moveRange = 5;
+        attackRange = 1;
 	} else if (c == "tank") {
         modelID = 0;
         combatType = c;
 		setMaxHealth(125.0);
 		setDefaultDefense(0.80);
 	    setDefaultDamage(22.0);
+        moveRange = 5;
+        attackRange = 1;
 	} else if (c == "nick") {
         modelID = 0;
         combatType = c;
 		setMaxHealth(999);
 		setDefaultDefense(1);
 	    setDefaultDamage(999);
+        moveRange = 999;
+        attackRange = 999;
     }
 	return;
 }

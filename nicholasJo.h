@@ -40,6 +40,7 @@
 #include "nickolasL.h"
 #include "log.h"
 #include <random>
+#include <cmath>
 
 using namespace std;
 
@@ -74,6 +75,8 @@ class Entity {
 	void resetStats();
 	void displayImage(int,int,int);
 	void draw();
+    bool inWorldRange(Entity target);
+    bool inBattleRange(Entity target);
 
 	string combatType;
 	GLuint image;
@@ -87,8 +90,8 @@ class Entity {
 	vec3 bPos; //battle position
 
 	/*NickolasL additions*/
-	int moveRange = 3;
-	int attackRange = 1;
+	int moveRange;
+	int attackRange;
 };
 
 class Enemy : public Entity {
