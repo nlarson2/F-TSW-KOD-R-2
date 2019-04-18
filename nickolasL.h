@@ -116,7 +116,7 @@ struct Model {
 	vec3 pos; //moves along x and z
 	Model ();
 	Model ( const char * objFile, const char * texFile);
-	void draw(int x, int z, float y=0);
+	void draw(int x, int z, float y=0, float yaw = 0);
 	bool GenerateModel( const char * objFile );
 	bool GenerateTexture( const char * texFile );
 private:
@@ -127,6 +127,9 @@ private:
 struct Tile {
 	int modelID;
 	int x,z;
+	float radius = 1;
+	bool collisionDetect(float x, float z);
+	
 };
 
 class Map {
@@ -138,6 +141,7 @@ public:
 	Map(int ** map, int _width, int _height);
 	~Map();
 	void draw();
+	bool checkCollision( float x, float z);
 };
 
 
