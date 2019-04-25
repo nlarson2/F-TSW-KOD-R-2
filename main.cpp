@@ -98,7 +98,7 @@ class Global {
 		int xres, yres;
 		int n;
 		int count;
-        bool ctrls = true;
+	        bool ctrls = true;
 		Global() {
 			xres = 1200;
 			yres = 900;
@@ -296,6 +296,7 @@ void render()
     // Placeholder control display while in testing
 	if(g.ctrls) {
         Rect r;
+	glPushMatrix();
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
 		glOrtho(0, g.xres, 0, g.yres, -1, 1);
@@ -314,5 +315,6 @@ void render()
 		ggprint8b(&r, 16, 0xFFFFFFFF, "E - Rotate Right");
 		ggprint8b(&r, 16, 0xFFFFFFFF, "Esc - Pause Game");
 		ggprint8b(&r, 16, 0xFFFFFFFF, "");
+		glPopMatrix();
 	}
 }
