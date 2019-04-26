@@ -34,7 +34,7 @@ using namespace std;
 
 enum stateID
 {
-    END_TURN, CHAR_MENU, BOX
+    END_TURN, CHAR_MENU, BATTLE, BOX
 };
 
 struct vec9
