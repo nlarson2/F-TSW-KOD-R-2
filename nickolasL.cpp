@@ -941,7 +941,9 @@ int WorldGS::procMouseInput(int x, int y)
         if (njG.checkWorldCollision(path.back().first, path.back().second)) {
             njG.player->wPos.x = path.back().first;
             njG.player->wPos.z = path.back().second;
+        #ifdef SOUND
             alSourcePlay(njG.sound.moveSound);
+        #endif
         }
         /***************************************/
 	}
