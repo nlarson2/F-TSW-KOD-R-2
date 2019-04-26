@@ -163,10 +163,13 @@ void uiboxes::drawBoxes() {
         glPopMatrix();
     }
     Rect r;
+    Player *player = Player::getInstance();
+
+    
     r.bot = 78;
     r.left = 110;
-    Player *player = Player::getInstance();
     ggprint16(&r, 16, 0xffffffff, player->combatType.c_str());
+    
     r.bot = 53;
     r.left = 90;
     string hc;
@@ -175,6 +178,7 @@ void uiboxes::drawBoxes() {
         ggprint16(&r, 16, 0xfff00000, hc.c_str());
     else
         ggprint16(&r, 16, 0xffffffff, hc.c_str());
+    
     r.bot = 53;
     r.left = 130;
     string hm;
@@ -183,9 +187,17 @@ void uiboxes::drawBoxes() {
         ggprint16(&r, 16, 0xfff00000, hm.c_str());
     else 
         ggprint16(&r, 16, 0xffffffff, hm.c_str());
+    
     r.bot = 53;
     r.left = 110;
     ggprint16(&r, 16, 0xffffffff, "/");
+    
+    r.bot = 28;
+    r.left = 110;
+    string mv = to_string(player->moveRange);
+    string mv2 = mv;
+    ggprint16(&r, 16, 0xffffffff, mv2.c_str());
+    
     
     glPushMatrix();
     glTranslatef(boxes[4].center.x, boxes[4].center.y, 0);
@@ -197,6 +209,7 @@ void uiboxes::drawBoxes() {
         glTexCoord2f(1.0f, 0.0f); glVertex2i( boxes[4].width-5, boxes[4].width-5);
         glTexCoord2f(1.0f, 1.0f); glVertex2i( boxes[4].width-5,-boxes[4].width+5);
     glEnd();
+
     glPopMatrix();
     glPopMatrix();
 }
