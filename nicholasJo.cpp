@@ -332,6 +332,7 @@ Ally::Ally()
     current_damage = getDefaultDamage();
     wPos.x = count;
     wPos.z = 1;
+    yaw = 0.0;
     count++;
 }
 
@@ -442,6 +443,7 @@ Enemy::Enemy()
     current_damage = getDefaultDamage();
     wPos.x = count;
     wPos.z = 3;
+    yaw = 0.0;
     count++;
 }
 
@@ -552,6 +554,7 @@ Player::Player(string c)
     current_health = getMaxHealth();
     current_defense = getDefaultDefense();
     current_damage = getDefaultDamage();
+    yaw = 0.0;
     count++;
 }
 
