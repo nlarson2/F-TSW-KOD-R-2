@@ -238,7 +238,7 @@ int MenuGS::procMouseInput(int x, int y)
                 if (Player::count != 0) {
                     Player::resetInstance();
                 }
-                Player *player = Player::setInstance("archer");
+                Player *player = Player::setInstance("Archer");
 		njG.spawnAllies(3);
 		njG.spawnEnemies(3);
                 //stops 'unused variable' warning
@@ -252,7 +252,7 @@ int MenuGS::procMouseInput(int x, int y)
                 if (Player::count != 0) {
                     Player::resetInstance();
                 }
-                Player *player = Player::setInstance("soldier");
+                Player *player = Player::setInstance("Soldier");
 		njG.spawnAllies(3);
 		njG.spawnEnemies(3);
                 //stops 'unused variable' warning
@@ -266,7 +266,7 @@ int MenuGS::procMouseInput(int x, int y)
                 if (Player::count != 0) {
                     Player::resetInstance();
                 }
-                Player *player = Player::setInstance("tank");
+                Player *player = Player::setInstance("Tank");
 		njG.spawnAllies(3);
 		njG.spawnEnemies(3);
                 //stops 'unused variable' warning
@@ -280,7 +280,7 @@ int MenuGS::procMouseInput(int x, int y)
                 if (Player::count != 0) {
                     Player::resetInstance();
                 }
-                Player *player = Player::setInstance("nick");
+                Player *player = Player::setInstance("Nick");
 		njG.spawnAllies(3);
 		njG.spawnEnemies(3);
                 //stops 'unused variable' warning

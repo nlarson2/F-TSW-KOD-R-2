@@ -358,19 +358,19 @@ void Ally::saveAllies(ofstream& file)
 void Ally::loadAllyCombatType(string c)
 {
     Log("Ally::loadAllyCombatType(string c), c = %s\n", c.c_str());
-	if (c == "archer") {
+	if (c == "Archer") {
         modelID = 0;
         combatType = c;
 		setMaxHealth(50.0);
 		setDefaultDefense(0.3);
 		setDefaultDamage(10.0);
-	} else if (c == "soldier") {
+	} else if (c == "Soldier") {
         modelID = 0;
         combatType = c;
 		setMaxHealth(75.0);
 		setDefaultDefense(0.5);
 		setDefaultDamage(15.0);
-	} else if (c == "tank") {
+	} else if (c == "Tank") {
         modelID = 0;
         combatType = c;
 		setMaxHealth(100.0);
@@ -390,21 +390,21 @@ void Ally::setAllyCombatType()
 	switch (distribution(generator)) {
 		case 0:
             modelID = 0;
-			combatType = "archer";
+			combatType = "Archer";
 			setMaxHealth(50.0);
 			setDefaultDefense(0.3);
 			setDefaultDamage(10.0);
 			break;
 		case 1:
             modelID = 0;
-			combatType = "soldier";
+			combatType = "Soldier";
 			setMaxHealth(75.0);
 			setDefaultDefense(0.5);
 			setDefaultDamage(15.0);
 			break;
 		case 2:
             modelID = 0;
-			combatType = "tank";
+			combatType = "Tank";
 			setMaxHealth(100);
 			setDefaultDefense(0.7);
 		    setDefaultDamage(12.0);
@@ -416,11 +416,13 @@ void Ally::setAllyCombatType()
 void Ally::setAllyImage()
 {
     Log("Ally::setAllyImage()\n");
-    if (combatType == "archer" || combatType == "nick")
+    if (combatType == "Archer" ) 
+        GenerateGLTexture(image, "./images/aopic.png", false);
+    else if (combatType == "Nick")
         GenerateGLTexture(image, "./images/nickLCreditPic.jpg", false);
-    else if (combatType == "soldier")
+    else if (combatType == "Soldier")
         GenerateGLTexture(image, "./images/nicholasJo.png", false);
-    else if (combatType == "tank")
+    else if (combatType == "Tank")
         GenerateGLTexture(image, "./images/brandonH.png", false);
 }
 
@@ -465,19 +467,19 @@ void Enemy::saveEnemies(ofstream& file)
 void Enemy::loadEnemyCombatType(string c)
 {
     Log("Enemy::loadEnemyCombatType(string c), c = %s\n", c.c_str());
-	if (c == "archer") {
+	if (c == "Archer") {
         modelID = 0;
         combatType = c;
 		setMaxHealth(50.0);
 		setDefaultDefense(0.3);
 		setDefaultDamage(10.0);
-	} else if (c == "soldier") {
+	} else if (c == "Soldier") {
         modelID = 0;
         combatType = c;
 		setMaxHealth(75.0);
 		setDefaultDefense(0.5);
 		setDefaultDamage(15.0);
-	} else if (c == "tank") {
+	} else if (c == "Tank") {
         modelID = 0;
         combatType = c;
 		setMaxHealth(100.0);
@@ -497,21 +499,21 @@ void Enemy::setEnemyCombatType()
     switch (distribution(generator)) {
 		case 0 :
             modelID = 0;
-			combatType = "archer";
+			combatType = "Archer";
 			setMaxHealth(50.0);
 			setDefaultDefense(0.3);
 			setDefaultDamage(10.0);
 			break;
 		case 1:
             modelID = 0;
-			combatType = "soldier";
+			combatType = "Soldier";
 			setMaxHealth(75.0);
 			setDefaultDefense(0.5);
 			setDefaultDamage(15.0);
 			break;
 		case 2:
             modelID = 0;
-			combatType = "tank";
+			combatType = "Tank";
 			setMaxHealth(100);
 			setDefaultDefense(0.7);
 			setDefaultDamage(12.0);
@@ -523,11 +525,13 @@ void Enemy::setEnemyCombatType()
 void Enemy::setEnemyImage()
 {
     Log("Enemy::setEnemyImage()\n");
-    if (combatType == "archer" || combatType == "nick")
+    if (combatType == "Archer")
+        GenerateGLTexture(image, "./images/aopic.png", false);
+    else if (combatType == "Nick")
         GenerateGLTexture(image, "./images/nickLCreditPic.jpg", false);
-    else if (combatType == "soldier")
+    else if (combatType == "Soldier")
         GenerateGLTexture(image, "./images/nicholasJo.png", false);
-    else if (combatType == "tank")
+    else if (combatType == "Tank")
         GenerateGLTexture(image, "./images/brandonH.png", false);
 }
 
@@ -629,25 +633,25 @@ void Player::loadInstance(ifstream &file)
 void Player::setPlayerCombatType(string c)
 {
     Log("Player::setPlayerCombatType(string c), c = %s\n", c.c_str());
-	if (c == "archer") {
+	if (c == "Archer") {
         modelID = 0;
         combatType = c;
 		setMaxHealth(75.0);
 		setDefaultDefense(0.60);
 		setDefaultDamage(15.0);
-	} else if (c == "soldier") {
+	} else if (c == "Soldier") {
         modelID = 0;
         combatType = c;
 		setMaxHealth(100.0);
 		setDefaultDefense(0.70);
 		setDefaultDamage(20.0);
-	} else if (c == "tank") {
+	} else if (c == "Tank") {
         modelID = 0;
         combatType = c;
 		setMaxHealth(125.0);
 		setDefaultDefense(0.80);
 	    setDefaultDamage(22.0);
-	} else if (c == "nick") {
+	} else if (c == "Nick") {
         modelID = 0;
         combatType = c;
 		setMaxHealth(999);
@@ -660,11 +664,13 @@ void Player::setPlayerCombatType(string c)
 void Player::setPlayerImage()
 {
     Log("Player::setPlayerImage()\n");
-    if (combatType == "archer" || combatType == "nick")
+    if (combatType == "Archer") 
+        GenerateGLTexture(image, "./images/aopic.png", false);
+    else if (combatType == "Nick")
         GenerateGLTexture(image, "./images/nickLCreditPic.jpg", false);
-    else if (combatType == "soldier")
+    else if (combatType == "Soldier")
         GenerateGLTexture(image, "./images/nicholasJo.png", false);
-    else if (combatType == "tank")
+    else if (combatType == "Tank")
         GenerateGLTexture(image, "./images/brandonH.png", false);
 }
 
