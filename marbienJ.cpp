@@ -16,10 +16,10 @@ bool isValid(int row, int col)
            (col >= 0) && (col < COL); 
 } 
   
-bool isUnBlocked(int grid[][COL], int row, int col) 
+bool isUnBlocked(Pair size, int ** grid, int row, int col) 
 { 
     // true if blocked else false 
-    if (grid[row][col] == 0) 
+    if (grid[row][col] == 0 || grid[row][col] == 1) 
         return (true); 
     else
         return (false); 
@@ -42,7 +42,7 @@ double calculateHValue(int row, int col, Pair dest)
 } 
   
 // trace path from the source to destination
-stack<Pair> tracePath(cell cellDetails[][COL], Pair dest) 
+stack<Pair> tracePath(Pair size, CellGroup cellDetails, Pair dest) 
 { 
     printf ("\nThe Path is: \n"); 
     int row = dest.first; 
@@ -72,52 +72,23 @@ stack<Pair> tracePath(cell cellDetails[][COL], Pair dest)
 } 
 
 // A* Search Algorithm 
-stack<Pair> aStarSearch(int grid[][COL], Pair src, Pair dest) 
+stack<Pair> aStarSearch(Pair size, int ** grid, Pair src, Pair dest) 
 { 
-    // source is out of range? 
-    if (isValid (src.first, src.second) == false) 
-    { 
-        printf ("Source is invalid\n"); 
-        exit(1); 
-    } 
-  
-    // destination is out of range? 
-    if (isValid (dest.first, dest.second) == false) 
-    { 
-        printf ("Destination is invalid\n"); 
-        exit(1); 
-    } 
-  
-    // source or the destination is blocked? 
-    if (isUnBlocked(grid, src.first, src.second) == false || 
-            isUnBlocked(grid, dest.first, dest.second) == false) 
-    { 
-        printf ("Source or the destination is blocked\n"); 
-        exit(1); 
-    } 
-  
-    // destination cell = source cell? 
-    if (isDestination(src.first, src.second, dest) == true) 
-    { 
-        printf ("We are already at the destination\n"); 
-        exit(1);
-    } 
-  
-    // closed list and initialise false 
-    // no cell included yet 
-    // closed list implemented as boolean 2D array 
-    bool closedList[ROW][COL]; 
-    memset(closedList, false, sizeof (closedList)); 
-  
-    // 2D array structure to hold details of cell 
-    cell cellDetails[ROW][COL]; 
+    CellGroup cellDetails;
+    for(int i = 0; i < size.first ; i++) {
+        cellDetails.push_back(vector<cell>());
+        for (int j = 0; j < size.second; j++) {
+            cellDetails[i].push_back(cell());
+        }
+    }
   
     int i, j; 
   
-    for (i=0; i<ROW; i++) 
+    for (i=0; i<size.first; i++) 
     { 
-        for (j=0; j<COL; j++) 
+        for (j=0; j<size.second; j++) 
         { 
+            ///cellDetails[i][j] = cell();
             cellDetails[i][j].f = FLT_MAX; 
             cellDetails[i][j].g = FLT_MAX; 
             cellDetails[i][j].h = FLT_MAX; 
@@ -133,6 +104,45 @@ stack<Pair> aStarSearch(int grid[][COL], Pair src, Pair dest)
     cellDetails[i][j].h = 0.0; 
     cellDetails[i][j].parent_i = i; 
     cellDetails[i][j].parent_j = j; 
+    
+    // source is out of range? 
+    if (isValid (src.first, src.second) == false) 
+    { 
+        printf ("Source is invalid\n"); 
+        return(tracePath(size, cellDetails, src)); 
+    } 
+  
+    // destination is out of range? 
+    if (isValid (dest.first, dest.second) == false) 
+    { 
+        printf ("Destination is invalid\n"); 
+        return(tracePath(size, cellDetails, src)); 
+    } 
+  
+    // source or the destination is blocked? 
+    if (isUnBlocked(size, grid, src.first, src.second) == false || 
+            isUnBlocked(size, grid, dest.first, dest.second) == false) 
+    { 
+        printf ("Source or the destination is blocked\n"); 
+        return(tracePath(size, cellDetails, src)); 
+    } 
+  
+    // destination cell = source cell? 
+    if (isDestination(src.first, src.second, dest) == true) 
+    { 
+        printf ("We are already at the destination\n"); 
+        return(tracePath(size, cellDetails, src)); 
+    } 
+  
+    // closed list and initialise false 
+    // no cell included yet 
+    // closed list implemented as boolean 2D array 
+    bool closedList[ROW][COL]; 
+    memset(closedList, false, sizeof (closedList)); 
+  
+    // 2D array structure to hold details of cell 
+    //cell cellDetails[ROW][COL]; 
+    //cellDetails = new cell*[size.first];
   
     /* 
      open list 
@@ -170,10 +180,10 @@ stack<Pair> aStarSearch(int grid[][COL], Pair src, Pair dest)
                     printf ("The destination cell is found\n"); 
                     //tracePath (cellDetails, dest); 
                     foundDest = true; 
-                    return(tracePath (cellDetails, dest)); 
+                    return(tracePath (size, cellDetails, dest)); 
                 }  
                 else if (closedList[i-1][j-1] == false && 
-                         isUnBlocked(grid, i-1, j-1) == true) { 
+                         isUnBlocked(size, grid, i-1, j-1) == true) { 
                     gNew = cellDetails[i][j].g + 1.0; 
                     hNew = calculateHValue (i-1, j-1, dest); 
                     fNew = gNew + hNew; 
@@ -210,10 +220,10 @@ stack<Pair> aStarSearch(int grid[][COL], Pair src, Pair dest)
                     printf ("The destination cell is found\n"); 
                     //tracePath (cellDetails, dest); 
                     foundDest = true; 
-                    return(tracePath (cellDetails, dest)); 
+                    return(tracePath (size, cellDetails, dest)); 
                 } 
                 else if (closedList[i-1][j+1] == false && 
-                         isUnBlocked(grid, i-1, j+1) == true) { 
+                         isUnBlocked(size, grid, i-1, j+1) == true) { 
                     gNew = cellDetails[i][j].g + 1.0; 
                     hNew = calculateHValue (i-1, j+1, dest); 
                     fNew = gNew + hNew; 
@@ -250,10 +260,10 @@ stack<Pair> aStarSearch(int grid[][COL], Pair src, Pair dest)
                     printf("The destination cell is found\n"); 
                     //tracePath(cellDetails, dest); 
                     foundDest = true; 
-                    return(tracePath (cellDetails, dest)); 
+                    return(tracePath (size, cellDetails, dest)); 
                 } 
                 else if (closedList[i+1][j-1] == false && 
-                         isUnBlocked(grid, i+1, j-1) == true) { 
+                         isUnBlocked(size, grid, i+1, j-1) == true) { 
                     gNew = cellDetails[i][j].g + 1.0; 
                     hNew = calculateHValue(i+1, j-1, dest); 
                     fNew = gNew + hNew; 
@@ -277,10 +287,10 @@ stack<Pair> aStarSearch(int grid[][COL], Pair src, Pair dest)
                     printf("The destination cell is found\n"); 
                     //tracePath(cellDetails, dest); 
                     foundDest = true; 
-                    return(tracePath (cellDetails, dest)); 
+                    return(tracePath (size, cellDetails, dest)); 
                 } 
                 else if (closedList[i+1][j+1] == false && 
-                         isUnBlocked(grid, i+1, j+1) == true) { 
+                         isUnBlocked(size, grid, i+1, j+1) == true) { 
                     gNew = cellDetails[i][j].g + 1.0; 
                     hNew = calculateHValue(i+1, j+1, dest); 
                     fNew = gNew + hNew; 
@@ -307,10 +317,10 @@ stack<Pair> aStarSearch(int grid[][COL], Pair src, Pair dest)
                 printf("The destination cell is found\n"); 
                 //tracePath(cellDetails, dest); 
                 foundDest = true; 
-                return(tracePath (cellDetails, dest)); 
+                return(tracePath (size, cellDetails, dest)); 
             } 
             else if (closedList[i][j+1] == false && 
-                     isUnBlocked (grid, i, j+1) == true) 
+                     isUnBlocked (size, grid, i, j+1) == true) 
             { 
                 gNew = cellDetails[i][j].g + 1.0; 
                 hNew = calculateHValue (i, j+1, dest); 
@@ -339,10 +349,10 @@ stack<Pair> aStarSearch(int grid[][COL], Pair src, Pair dest)
                 printf("The destination cell is found\n"); 
                 //tracePath(cellDetails, dest); 
                 foundDest = true; 
-                return(tracePath (cellDetails, dest)); 
+                return(tracePath (size, cellDetails, dest)); 
             } 
             else if (closedList[i][j-1] == false && 
-                     isUnBlocked(grid, i, j-1) == true) 
+                     isUnBlocked(size, grid, i, j-1) == true) 
             { 
                 gNew = cellDetails[i][j].g + 1.0; 
                 hNew = calculateHValue(i, j-1, dest); 
@@ -370,10 +380,10 @@ stack<Pair> aStarSearch(int grid[][COL], Pair src, Pair dest)
                     printf ("The destination cell is found\n"); 
                     //tracePath (cellDetails, dest); 
                     foundDest = true; 
-                    return(tracePath (cellDetails, dest)); 
+                    return(tracePath (size, cellDetails, dest)); 
                 } 
                 else if (closedList[i-1][j] == false && 
-                         isUnBlocked(grid, i-1, j) == true) { 
+                         isUnBlocked(size, grid, i-1, j) == true) { 
                     gNew = cellDetails[i][j].g + 1.414; 
                     hNew = calculateHValue(i-1, j, dest); 
                     fNew = gNew + hNew; 
@@ -398,10 +408,10 @@ stack<Pair> aStarSearch(int grid[][COL], Pair src, Pair dest)
                     printf ("The destination cell is found\n"); 
                     //tracePath (cellDetails, dest); 
                     foundDest = true; 
-                    return(tracePath (cellDetails, dest)); 
+                    return(tracePath (size, cellDetails, dest)); 
                 } 
                 else if (closedList[i-1][j+2] == false && 
-                         isUnBlocked(grid, i-1, j+2) == true) { 
+                         isUnBlocked(size, grid, i-1, j+2) == true) { 
                     gNew = cellDetails[i][j].g + 1.414; 
                     hNew = calculateHValue(i-1, j+2, dest); 
                     fNew = gNew + hNew; 
@@ -427,10 +437,10 @@ stack<Pair> aStarSearch(int grid[][COL], Pair src, Pair dest)
                     printf ("The destination cell is found\n"); 
                     //tracePath (cellDetails, dest); 
                     foundDest = true; 
-                    return(tracePath (cellDetails, dest)); 
+                    return(tracePath (size, cellDetails, dest)); 
                 } 
                 else if (closedList[i-1][j-2] == false && 
-                        isUnBlocked(grid, i-1, j-2) == true) { 
+                        isUnBlocked(size, grid, i-1, j-2) == true) { 
                     gNew = cellDetails[i][j].g + 1.414; 
                     hNew = calculateHValue(i-1, j-2, dest); 
                     fNew = gNew + hNew; 
@@ -454,10 +464,10 @@ stack<Pair> aStarSearch(int grid[][COL], Pair src, Pair dest)
                     printf ("The destination cell is found\n"); 
                     //tracePath (cellDetails, dest); 
                     foundDest = true; 
-                    return(tracePath (cellDetails, dest)); 
+                    return(tracePath (size, cellDetails, dest)); 
                 } 
                 else if (closedList[i-1][j] == false && 
-                        isUnBlocked(grid, i-1, j) == true) { 
+                        isUnBlocked(size, grid, i-1, j) == true) { 
                     gNew = cellDetails[i][j].g + 1.414; 
                     hNew = calculateHValue(i-1, j, dest); 
                     fNew = gNew + hNew; 
@@ -483,10 +493,10 @@ stack<Pair> aStarSearch(int grid[][COL], Pair src, Pair dest)
                     printf ("The destination cell is found\n"); 
                     //tracePath (cellDetails, dest); 
                     foundDest = true; 
-                    return(tracePath (cellDetails, dest)); 
+                    return(tracePath (size, cellDetails, dest)); 
                 } 
                 else if (closedList[i+1][j] == false && 
-                        isUnBlocked(grid, i+1, j) == true) { 
+                        isUnBlocked(size, grid, i+1, j) == true) { 
                     gNew = cellDetails[i][j].g + 1.414; 
                     hNew = calculateHValue(i+1, j, dest); 
                     fNew = gNew + hNew; 
@@ -512,10 +522,10 @@ stack<Pair> aStarSearch(int grid[][COL], Pair src, Pair dest)
                     printf ("The destination cell is found\n"); 
                     //tracePath (cellDetails, dest); 
                     foundDest = true; 
-                    return(tracePath (cellDetails, dest)); 
+                    return(tracePath (size, cellDetails, dest)); 
                 } 
                 else if (closedList[i+1][j+2] == false && 
-                        isUnBlocked(grid, i+1, j+2) == true) { 
+                        isUnBlocked(size, grid, i+1, j+2) == true) { 
                     gNew = cellDetails[i][j].g + 1.414; 
                     hNew = calculateHValue(i+1, j+2, dest); 
                     fNew = gNew + hNew; 
@@ -542,10 +552,10 @@ stack<Pair> aStarSearch(int grid[][COL], Pair src, Pair dest)
                     printf("The destination cell is found\n"); 
                     //tracePath(cellDetails, dest); 
                     foundDest = true; 
-                    return(tracePath (cellDetails, dest)); 
+                    return(tracePath (size, cellDetails, dest)); 
                 } 
                 else if (closedList[i+1][j-2] == false && 
-                         isUnBlocked(grid, i+1, j-2) == true) { 
+                         isUnBlocked(size, grid, i+1, j-2) == true) { 
                     gNew = cellDetails[i][j].g + 1.414; 
                     hNew = calculateHValue(i+1, j-2, dest); 
                     fNew = gNew + hNew; 
@@ -571,10 +581,10 @@ stack<Pair> aStarSearch(int grid[][COL], Pair src, Pair dest)
                     printf("The destination cell is found\n"); 
                     //tracePath(cellDetails, dest); 
                     foundDest = true; 
-                    return(tracePath (cellDetails, dest)); 
+                    return(tracePath (size, cellDetails, dest)); 
                 } 
                 else if (closedList[i+1][j] == false && 
-                         isUnBlocked(grid, i+1, j) == true) { 
+                         isUnBlocked(size, grid, i+1, j) == true) { 
                     gNew = cellDetails[i][j].g + 1.414; 
                     hNew = calculateHValue(i+1, j, dest); 
                     fNew = gNew + hNew; 
@@ -599,15 +609,15 @@ stack<Pair> aStarSearch(int grid[][COL], Pair src, Pair dest)
     exit(1); 
 } 
 
-stack<Pair> Movement(int grid[][25], Entity entity, vec2 dest) 
+stack<Pair> Movement(Pair size, int ** grid, Entity * entity, vec2 dest) 
 {
     //int sRow, sCol, dRow, dCol;
     bool error = false;
-
+    (void)error;
      // Source is selected
     //cout << "Please pick source: ";
     ///cin >> sRow >> sCol;  
-    Pair source = make_pair(entity.wPos.x, entity.wPos.z); 
+    Pair source = make_pair(entity->wPos.x, entity->wPos.z); 
   
     // Destination is selected
     //cout << "Please pick destination: ";
@@ -617,7 +627,7 @@ stack<Pair> Movement(int grid[][25], Entity entity, vec2 dest)
     // Display Map
     //displayMap(grid);
  
-    return (aStarSearch(grid, source, destination)); 
+    return (aStarSearch(size, grid, source, destination)); 
 
 }
 

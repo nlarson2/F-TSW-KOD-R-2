@@ -112,12 +112,21 @@ int PauseGS::procMouseInput(int x, int y)
     }
     switch(btn) {
         case RESUME:
+        #ifdef SOUND
+            alSourcePlay(njG.sound.menuSound); 
+        #endif
             return -1;
             break;
         case SAVE_GAME:
+        #ifdef SOUND
+            alSourcePlay(njG.sound.menuSound); 
+        #endif
             njG.saveEntities(1);
             break;
         case PMAIN_MENU:
+        #ifdef SOUND
+            alSourcePlay(njG.sound.menuSound); 
+        #endif
             njG.player->resetInstance();
             njG.resetAllies();
             njG.resetEnemies();
@@ -216,25 +225,47 @@ int MenuGS::procMouseInput(int x, int y)
     }
     switch(btn) {
         case MAIN_MENU:
+        #ifdef SOUND
+            alSourcePlay(njG.sound.menuSound);
+        #endif
             state = MAIN_MENU;
             break;
         case NEW_GAME:
+        #ifdef SOUND
+            alSourcePlay(njG.sound.menuSound); 
+        #endif
             state = NEW_GAME;
             break;
         case LOAD_GAME:
+        #ifdef SOUND
+            alSourcePlay(njG.sound.menuSound); 
+        #endif
             state = LOAD_GAME;
             break;
         case HIGH_SCORES:
+        #ifdef SOUND
+            alSourcePlay(njG.sound.menuSound); 
+        #endif
             //state = HIGH_SCORES;
             break;
         case CONTROLS:
+        #ifdef SOUND
+            alSourcePlay(njG.sound.menuSound); 
+        #endif
             //state = CONTROLS;
             break;
         case EXIT:
+        #ifdef SOUND
+            alSourcePlay(njG.sound.menuSound); 
+            njG.sound.clearSounds();
+        #endif
             exit(0);
             break;
         case ARCHER:
             {
+            #ifdef SOUND
+                alSourcePlay(njG.sound.menuSound); 
+            #endif
                 if (Player::count != 0) {
                     Player::resetInstance();
                 }
@@ -249,6 +280,9 @@ int MenuGS::procMouseInput(int x, int y)
             break;
         case SOLDIER:
             {
+            #ifdef SOUND
+                alSourcePlay(njG.sound.menuSound); 
+            #endif
                 if (Player::count != 0) {
                     Player::resetInstance();
                 }
@@ -263,6 +297,9 @@ int MenuGS::procMouseInput(int x, int y)
             break;
         case TANK:
             {
+            #ifdef SOUND
+                alSourcePlay(njG.sound.menuSound); 
+            #endif
                 if (Player::count != 0) {
                     Player::resetInstance();
                 }
@@ -277,6 +314,9 @@ int MenuGS::procMouseInput(int x, int y)
             break;
         case NICK:
             {
+            #ifdef SOUND
+                alSourcePlay(njG.sound.menuSound); 
+            #endif
                 if (Player::count != 0) {
                     Player::resetInstance();
                 }
@@ -291,6 +331,9 @@ int MenuGS::procMouseInput(int x, int y)
             break;
         case SAVE1:
             {
+            #ifdef SOUND
+                alSourcePlay(njG.sound.menuSound); 
+            #endif
                 if (njG.loadEntities(1)) {
                     state = MAIN_MENU;
                     return 1;
@@ -300,6 +343,9 @@ int MenuGS::procMouseInput(int x, int y)
             break;
         case SAVE2:
             {
+            #ifdef SOUND
+                alSourcePlay(njG.sound.menuSound); 
+            #endif
                 if (njG.loadEntities(2)) {
                     state = MAIN_MENU;
                     return 1;
@@ -309,6 +355,9 @@ int MenuGS::procMouseInput(int x, int y)
             break;
         case SAVE3:
             {
+            #ifdef SOUND
+                alSourcePlay(njG.sound.menuSound); 
+            #endif
                 if (njG.loadEntities(3)) {
                     state = MAIN_MENU;
                     return 1;
@@ -318,6 +367,9 @@ int MenuGS::procMouseInput(int x, int y)
             break;
         case SAVE4:
             {
+            #ifdef SOUND
+                alSourcePlay(njG.sound.menuSound); 
+            #endif
                 if (njG.loadEntities(4)) {
                     state = MAIN_MENU;
                     return 1;

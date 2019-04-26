@@ -11,6 +11,8 @@
 #include <iostream>
 #include <string.h>
 #include <vector>
+#include <stack>
+#include <set>
 #include <cmath>
 #include <GL/glx.h>
 #include <GL/glu.h>
@@ -116,7 +118,7 @@ struct Model {
 	vec3 pos; //moves along x and z
 	Model ();
 	Model ( const char * objFile, const char * texFile);
-	void draw(int x, int z, float y=0);
+	void draw(int x, int z, float y=0, float yaw = 0);
 	bool GenerateModel( const char * objFile );
 	bool GenerateTexture( const char * texFile );
 private:
@@ -127,6 +129,9 @@ private:
 struct Tile {
 	int modelID;
 	int x,z;
+	float radius = 1;
+	bool collisionDetect(float x, float z);
+	
 };
 
 class Map {
@@ -138,6 +143,7 @@ public:
 	Map(int ** map, int _width, int _height);
 	~Map();
 	void draw();
+	vec2 checkCollision( float x, float z);
 };
 
 
@@ -204,6 +210,7 @@ private:
 	Picker pkr;
 	vec3 pickPos;
 	Matrix projMatrix;
+	vector<pair<int,int>> path;
 public:
 	WorldGS(int ** mapArr,int sizex,int sizey,
 	float camRot, int posx, int posz,
@@ -212,6 +219,7 @@ public:
 	void pick(vec3 ray);
 	int procMouseInput(int x, int y);
 	int procKeyInput(int key);
+	void drawPath();
 	void drawGameState();
 };
 

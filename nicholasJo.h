@@ -40,11 +40,28 @@
 #include "nickolasL.h"
 #include "log.h"
 #include <random>
+#include <cmath>
+#ifdef SOUND
+#include </usr/include/AL/alut.h>
+#endif
 
 using namespace std;
 
 #ifndef NICHOLAS_JO_H
 #define NICHOLAS_JO_H
+
+#ifdef SOUND
+class Sound {
+    public:
+        ALuint alBuffer[2];
+        ALuint menuSound;
+        ALuint moveSound;
+        Sound();
+        void clearSounds();
+        void initializeSounds();
+        void loadSounds();
+};
+#endif
 
 class Entity {
     private:
@@ -74,6 +91,8 @@ class Entity {
 	void resetStats();
 	void displayImage(int,int,int);
 	void draw();
+    bool inWorldRange(Entity target);
+    bool inBattleRange(Entity target);
 
 	string combatType;
 	GLuint image;
@@ -85,6 +104,10 @@ class Entity {
     float yaw;
 	vec3 wPos; //world position
 	vec3 bPos; //battle position
+
+	/*NickolasL additions*/
+	int moveRange;
+	int attackRange;
 };
 
 class Enemy : public Entity {
@@ -127,6 +150,9 @@ class Player : public Entity {
 
 class NJordGlobal {
     public:
+#ifdef SOUND
+    Sound sound;
+#endif
 	Player *player;
 	Enemy *enemies;
 	Ally *allies;

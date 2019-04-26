@@ -8,10 +8,13 @@
 
 #include "nickolasL.h"
 #include "nicholasJo.h"
+#include "marbienJ.h"
+
 
 #define RAD(degree) degree * PI / 180
 
-
+#define XOFFSET -2.0f
+#define ZOFFSET -1.70710378118f
 
 extern int mainMap[0][25];
 extern NJordGlobal njG;
@@ -287,17 +290,16 @@ Matrix Matrix::operator *(Matrix & right)
 		int pos1, pos2;
 		int index = 0;
 		//loop to run through each row of the left matrix
-		for (int y1 = 0; y1 < m_size; y1++)
+		for (int y1 = 0; y1 < N; y1++)
 		{
 			//loop to run through each col of the right matrix
-			for (int x2 = 0; x2 < m_size; x2++)
+			for (int x2 = 0; x2 < N; x2++)
 			{
 				elementHold = 0;
 				//loop through each of the col for left matrix and rows for right matrix
-				for (int x1 = 0; x1 < m_size; x1++)
-				{
-					pos1 = x1 + (y1*m_size);
-					pos2 = x2 + (x1*m_size);
+				for (int x1 = 0; x1 < N; x1++) {
+					pos1 = x1 + (y1*N);
+					pos2 = x2 + (x1*N);
 					elementHold += m_arr[pos1] * right.m_arr[pos2];
 				}
 				newArr[index++] = elementHold;
@@ -415,10 +417,8 @@ bool Matrix::canMath(int lm_size, int rm_size)
 void Matrix::print()
 {
 	int index = 0;
-	for (int i = 0; i < N; i++)
-	{
-		for (int j = 0; j < N; j++)
-		{
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < N; j++) {
 			std::cout << m_arr[index++] << "  ";
 		}
 		std::cout << std::endl;
@@ -498,33 +498,41 @@ Model::Model( const char * objFile, const char * texFile )
 	}
 }
 
-void Model::draw(int x, int z, float y) 
+void Model::draw(int x, int z, float y, float yaw) 
 {
 	glBindTexture(GL_TEXTURE_2D, texture);
-	glBegin(GL_TRIANGLES);
+	glPushMatrix();
+	
 	float posx = x * -2.0f;
 	float posz = z * -1.70710378118f;
 	float posy = y; 
+	
 	if(z%2 == 0)
 		posx -= 1.0f;
+	glTranslatef(posx, posy, posz);
+	glBegin(GL_TRIANGLES);
+	
+
 	for( unsigned int i = 0 ; i < vIndices.size() ; i+=3 ) {
 		glTexCoord2f(vertTex[vtIndices.at(i)-1].x,
 				vertTex[vtIndices.at(i)-1].y);
-		glVertex3f(vert[vIndices.at(i)-1].x + posx ,
-				vert[vIndices.at(i)-1].y + posy,
-				vert[vIndices.at(i)-1].z + posz);
+		glVertex3f(vert[vIndices.at(i)-1].x ,
+				vert[vIndices.at(i)-1].y,
+				vert[vIndices.at(i)-1].z);
 		glTexCoord2f(vertTex[vtIndices.at(i+1)-1].x,
 				vertTex[vtIndices.at(i+1)-1].y);
-		glVertex3f(vert[vIndices.at(i+1)-1].x + posx,
-				vert[vIndices.at(i+1)-1].y + posy,
-				vert[vIndices.at(i+1)-1].z + posz);
+		glVertex3f(vert[vIndices.at(i+1)-1].x,
+				vert[vIndices.at(i+1)-1].y,
+				vert[vIndices.at(i+1)-1].z);
 		glTexCoord2f(vertTex[vtIndices.at(i+2)-1].x,
 				vertTex[vtIndices.at(i+2)-1].y);
-		glVertex3f(vert[vIndices.at(i+2)-1].x + posx,
-				vert[vIndices.at(i+2)-1].y + posy,
-				vert[vIndices.at(i+2)-1].z + posz);
+		glVertex3f(vert[vIndices.at(i+2)-1].x,
+				vert[vIndices.at(i+2)-1].y,
+				vert[vIndices.at(i+2)-1].z);
 	}
+	
 	glEnd();
+	glPopMatrix();
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
@@ -599,6 +607,20 @@ bool Model::GenerateTexture ( const char * texFile ) {
 	return glIsTexture(texture);
 }
 /*=======================================*/
+
+bool Tile::collisionDetect(float x, float z) {
+	float width = (this->x * -2.0f);
+	float height = (this->z * -1.70710378118f);
+	if(this->z%2 == 0) width -= 1.0f;
+	width -= x;
+	height -= z;
+	float distance = sqrt((width*width) + (height*height));
+	//printf("ThisX:%f X:%f Y:%f");
+	//printf("distance: %f thisX:%d thisZ:%d\n",distance, this->x, this->z);
+	return distance > radius ? false : true;
+}
+
+
 /*=======================================*/
 Map::Map(int ** map, int _width, int _height){
 	mapW = _width;
@@ -638,6 +660,28 @@ void Map::draw(){
 			tiles[tile[i][j].modelID].draw(i,j);
 		}
 	}
+}
+vec2 Map::checkCollision( float x, float z) {
+	int xPos, yPos;
+	vec2 ret(-1,-1);
+	yPos = abs(z / 1.70710378118f);
+	if(yPos%2 == 0)
+		xPos -= 1.0f;
+	xPos = abs(x / 2);
+	//printf("X:%d Y:%d\n", xPos , yPos);
+	for (int i = -1; i < 2 ; i++) {
+		for (int j = -1; j < 2 ; j++) {
+			if( xPos+i >= 0 && xPos+i < mapH && yPos+j >= 0 && yPos+j < mapW) {
+				//printf("i:%d j:%d\n", i , j);
+				if(tile[xPos+i][yPos+j].collisionDetect( x, z)) {
+					ret = vec2(xPos+i, yPos+j);
+					//printf("Collided with x:%d y:%d\n",xPos+i,yPos+j);
+					return ret;
+				}
+			}
+		}
+	}
+	return ret;
 }
 
 
@@ -691,9 +735,9 @@ void Camera::drawCamera(GLuint texture)
 	glPushMatrix();
 	glBegin(GL_QUADS);
 	glTexCoord2f(1, 1);
-	glVertex3f(wPos.x+1, 0.5f , wPos.z+1);	
+	glVertex3f(wPos.x+1, 0.5f , wPos.z+1);display
 	glTexCoord2f(1, 0);
-	glVertex3f(wPos.x+1, 0.5f , wPos.z-1);
+	glVertex3f(wPos.x+1, 0.5f , wPos.z-1);display
 	glTexCoord2f(0, 0);
 	glVertex3f(wPos.x-1, 0.5f , wPos.z-1);
 	glTexCoord2f(0, 1);
@@ -795,10 +839,6 @@ void Picker::update(Matrix & projMatrix, Camera camera, float xres, float yres, 
 	ray_eye.z = -1.0f; ray_eye.w = 0;
 
 	viewMatrix = camera.getViewMatrix();
-	/*viewMatrix.m_arr[5] = 0.780869;
-	viewMatrix.m_arr[6] = 0.624695;
-	viewMatrix.m_arr[9] = 0.624695;
-	viewMatrix.m_arr[10] = -0.780869;*/
 	Matrix invView = Matrix::inverse(viewMatrix);
 	vec4 ray_world = invView * ray_eye;
 	
@@ -806,7 +846,6 @@ void Picker::update(Matrix & projMatrix, Camera camera, float xres, float yres, 
 	curRay = vec3(ray_world.x, ray_world.y, ray_world.z);
 	
 	curRay = vec3::Normalize(curRay);
-	//rotate(camera.yaw+180);
 	
 
 }
@@ -856,17 +895,7 @@ void WorldGS::initWGS_GL()
 
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);//??makes the perspective view better??
 	
-	
-	
-
-	//Set 2D mode (no perspective)
-	//COMMENT OUT LINE BELOW BEFORE TYRING TO MAKE IT 3D
-	//glOrtho(0, g.xres, 0, g.yres, -1, 1);
-
-
-	//Set the screen background color
 	glClearColor(0.1, 0.1, 0.1, 1.0);
-	//Insert Fonts
 	glEnable(GL_TEXTURE_2D);
 
 	
@@ -875,12 +904,9 @@ void WorldGS::initWGS_GL()
 void WorldGS::pick(vec3 ray)
 {
 	int count = 0;
-	//printf("X: %f Y: %f Z: %f\n", ray.x, ray.y, ray.z);
-	//ray.x -= 1;
-	//ray.z -= 1;
 	ray.y -= 0.01f;
 	vec3 pos = camera.getPos();
-	while(pos.y > 0.2f  && ++count != 1000) {
+	while(pos.y > 0.5f  && ++count != 1000) {
 		
 		pos.x += ray.x;
 		pos.y += ray.y;// > 0 ? -ray.y : ray.y;
@@ -891,12 +917,37 @@ void WorldGS::pick(vec3 ray)
 	pickPos = vec3(pos.x, 0, pos.z);
 	//pickPos -= direction;
 }
+
 int WorldGS::procMouseInput(int x, int y)
 {
 	glMatrixMode(GL_MODELVIEW);
 	pkr.update(projMatrix, camera, xres, yres, x, y);
 	pick(pkr.getCurrentRay());
-	printf("X: %f  Z: %f\n", pickPos.x/2.0f, pickPos.z/1.70710378118f);
+	vec2 chkPath = map.checkCollision(pickPos.x, pickPos.z);
+	//printf("chkPath %f %f\n", chkPath.x, chkPath.y);
+	pair<int,int> size(25,25);
+	if ( chkPath.x > -1 && chkPath.y > -1) {
+		stack<pair<int,int>> pathStack = Movement(size, nlG->MainMap, njG.player, chkPath);
+		path.clear();
+		while (!pathStack.empty()) {
+			//pair<int,int> temp = pathStack.pop();
+			path.push_back(pathStack.top());
+			pathStack.pop();
+		}
+        /*********NicholasJ addition************/
+        while (path.size() > njG.player->moveRange) {
+            path.pop_back();
+        }
+        if (njG.checkWorldCollision(path.back().first, path.back().second)) {
+            njG.player->wPos.x = path.back().first;
+            njG.player->wPos.z = path.back().second;
+        #ifdef SOUND
+            alSourcePlay(njG.sound.moveSound);
+        #endif
+        }
+        /***************************************/
+	}
+	//printf("X: %f  Z: %f\n", pickPos.x, pickPos.z);
 	return 0;
 	//picking/UI
 }
@@ -920,6 +971,25 @@ int WorldGS::procKeyInput(int key)
 	}
 	return 0;
 }
+void WorldGS::drawPath() {
+	if(path.empty()) return;
+
+	for (int i = 0; i < path.size(); i++) {
+		printf("X: %d  Z: %d\n", path[i].first, path[i].second);
+		float posx = path[i].first * XOFFSET;
+		float posy = path[i].second * ZOFFSET;
+		if(path[i].second%2 == 0)
+			posx -= 1.0f;
+		glBegin(GL_QUADS);
+		glColor3f(1.0f, 0, 0);
+		glVertex3f(posx + 0.25f, 0.5f , posy + 0.25f);
+		glVertex3f(posx + 0.25f, 0.5f , posy - 0.25f);
+		glVertex3f(posx - 0.25f, 0.5f , posy - 0.25f);
+		glVertex3f(posx - 0.25f, 0.5f , posy + 0.25f);
+		glColor3f(1.0f,1.0f,1.0f);
+		glEnd();
+	}
+}
 void WorldGS::drawGameState()
 {
 	initWGS_GL();
@@ -935,7 +1005,7 @@ void WorldGS::drawGameState()
 	glLoadIdentity();
 	camera.update();
 	map.draw();
-	
+	drawPath();
     njG.player = Player::getInstance();
     if (njG.player->count != 0) {
         njG.player->draw();
@@ -947,7 +1017,7 @@ void WorldGS::drawGameState()
     }
     if (njG.enemies->count != 0) {
         for (int i = 0; i < njG.enemies->count; i++) {
-            njG.enemies[i].draw();
+			njG.enemies[i].draw();
         }
     }
 	camera.drawCamera(0);
