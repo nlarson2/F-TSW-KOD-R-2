@@ -41,11 +41,27 @@
 #include "log.h"
 #include <random>
 #include <cmath>
+#ifdef SOUND
+#include </usr/include/AL/alut.h>
+#endif
 
 using namespace std;
 
 #ifndef NICHOLAS_JO_H
 #define NICHOLAS_JO_H
+
+#ifdef SOUND
+class Sound {
+    public:
+        ALuint alBuffer[2];
+        ALuint menuSound;
+        ALuint moveSound;
+        Sound();
+        void clearSounds();
+        void initializeSounds();
+        void loadSounds();
+};
+#endif
 
 class Entity {
     private:
@@ -134,6 +150,9 @@ class Player : public Entity {
 
 class NJordGlobal {
     public:
+#ifdef SOUND
+    Sound sound;
+#endif
 	Player *player;
 	Enemy *enemies;
 	Ally *allies;

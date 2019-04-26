@@ -170,6 +170,7 @@ void check_mouse(XEvent *e);
 int check_keys(XEvent *e);
 void render();
 Game game(g.xres, g.yres);
+extern NJordGlobal njG;
 //=====================================
 // MAIN FUNCTION IS HERE
 //=====================================
@@ -180,6 +181,10 @@ int main()
 	game.init(); 
 	srand(time(NULL));
 	init_opengl();
+#ifdef SOUND
+	njG.sound.initializeSounds();
+	njG.sound.loadSounds();
+#endif
 	//Main animation loop
 	int done = 0;
 	while (!done) {

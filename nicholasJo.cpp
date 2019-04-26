@@ -9,6 +9,7 @@
 #include "nicholasJo.h"
 
 NJordGlobal njG;
+
 NJordGlobal::NJordGlobal()
 {
 }
@@ -188,6 +189,61 @@ bool NJordGlobal::checkBattleCollision(int x, int z)
     }
     return true;
 }
+
+//==========================[SOUND CLASS]===============================
+#ifdef SOUND
+
+Sound::Sound()
+{	
+}
+
+void Sound::clearSounds()
+{
+	Log("Sound::clearSounds()\n");
+    alDeleteSources(1, &menuSound);
+    alDeleteSources(1, &moveSound);
+    alDeleteBuffers(1, &alBuffer[0]);
+    alDeleteBuffers(1, &alBuffer[1]);
+    
+	ALCcontext *Context = alcGetCurrentContext();
+    ALCdevice *Device = alcGetContextsDevice(Context);
+    alcMakeContextCurrent(NULL);
+    alcDestroyContext(Context);
+    alcCloseDevice(Device);
+}
+
+void Sound::initializeSounds()
+{
+	Log("Sound::initializeSounds()\n");
+    alutInit(0, NULL);
+    if (alGetError() != AL_NO_ERROR)
+        printf("ERROR: alutInit()\n");
+    alGetError();
+    float vec[6] = {0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f};
+    alListener3f(AL_POSITION, 0.0f, 0.0f, 0.0f);
+    alListenerfv(AL_ORIENTATION, vec);
+    alListenerf(AL_GAIN, 1.0f);
+}
+
+void Sound::loadSounds()
+{
+	Log("Sound::loadSounds()\n");
+	alBuffer[0] = alutCreateBufferFromFile("./sounds/click.wav");
+	alBuffer[1] = alutCreateBufferFromFile("./sounds/grass_step.wav");
+    alGenSources(1, &menuSound);
+    alGenSources(1, &moveSound);
+    alSourcei(menuSound, AL_BUFFER, alBuffer[0]);
+    alSourcei(moveSound, AL_BUFFER, alBuffer[1]);
+    alSourcef(menuSound, AL_GAIN, 1.0f);
+    alSourcef(moveSound, AL_GAIN, 1.0f);
+    alSourcef(menuSound, AL_PITCH, 1.0f);
+    alSourcef(moveSound, AL_PITCH, 1.0f);
+	alSourcei(menuSound, AL_LOOPING, AL_FALSE);
+	alSourcei(moveSound, AL_LOOPING, AL_FALSE);
+	if (alGetError() != AL_NO_ERROR)
+    	printf("ERROR: setting menu sound\n");
+}
+#endif
 
 //==========================[ENTITY CLASS]===============================
 
