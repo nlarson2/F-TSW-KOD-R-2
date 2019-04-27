@@ -32,6 +32,8 @@ class Image;
 class NLarsGlobal {
 public:
 	int ** MainMap;
+	int ** BattleMap1;
+	int ** BattleMap2;
 	static NLarsGlobal * GetInstance();
 private:
 	static NLarsGlobal * instance;
@@ -172,6 +174,7 @@ public:
 	void rotate(float direction);
 	void translate(int key);
 	void updateVectors();
+	void setCameraPosition(vec3 newPos);
 	vec3 getPos();
 	Matrix getViewMatrix();
 };
@@ -202,7 +205,7 @@ public:
 };
 
 class WorldGS : public GameState {
-private:
+protected:
 	Map map;
 	Camera camera;
 	float xres, yres;
@@ -222,5 +225,16 @@ public:
 	void drawPath();
 	void drawGameState();
 };
-
+class BattleGS : public WorldGS {
+protected:
+	
+public:
+	BattleGS(int ** mapArr,int sizex,int sizey,
+	float camRot, int posx, int posz,
+	float xres, float yres);
+	int procMouseInput(int x, int y);
+	int procKeyInput(int key);
+	void drawPath();
+	void drawGameState();
+};
 #endif

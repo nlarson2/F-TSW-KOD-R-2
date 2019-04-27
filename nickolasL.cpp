@@ -16,7 +16,9 @@
 #define XOFFSET -2.0f
 #define ZOFFSET -1.70710378118f
 
-extern int mainMap[0][25];
+extern int mainMap[][25];
+extern int battleMap1[][10];
+extern int battleMap2[][10];
 extern NJordGlobal njG;
 extern AOglobal aog;
 
@@ -37,6 +39,20 @@ NLarsGlobal::NLarsGlobal()
 		MainMap[i] = new int[25];
 		for(int j = 0 ; j < 25 ; j++) {
 			MainMap[i][j] = mainMap[i][j];
+		}
+	}
+	BattleMap1 = new int*[10];
+	for ( int i = 0 ; i < 10 ; i++) {
+		BattleMap1[i] = new int[10];
+		for(int j = 0 ; j < 10 ; j++) {
+			BattleMap1[i][j] = battleMap1[i][j];
+		}
+	}
+	BattleMap2 = new int*[10];
+	for ( int i = 0 ; i < 10 ; i++) {
+		BattleMap2[i] = new int[10];
+		for(int j = 0 ; j < 10 ; j++) {
+			BattleMap2[i][j] = battleMap2[i][j];
 		}
 	}
 
@@ -625,14 +641,14 @@ bool Tile::collisionDetect(float x, float z) {
 Map::Map(int ** map, int _width, int _height){
 	mapW = _width;
 	mapH = _height;
-	tile = new Tile *[mapW];
-	for(int i = 0; i<25;i++){
+	tile = new Tile *[mapH];
+	for(int i = 0; i<mapW;i++){
 		tile[i] = new Tile[mapH];
 	}
 	int count = 0;
-	for(int i = 0; i < 25; i++){
+	for(int i = 0; i < mapH; i++){
 
-		for(int j = 0; j < 25 ; j++){
+		for(int j = 0; j < mapW ; j++){
 			//printf("%d\n",count);
 			tile[i][j].modelID = map[i][j];
 			tile[i][j].x = i;
@@ -648,13 +664,13 @@ Map::Map(int ** map, int _width, int _height){
 }
 Map::~Map()
 {
-	for(int i = 0 ; i < mapW ; i++)
+	for(int i = 0 ; i < mapH ; i++)
 		delete[] tile[i];
 	delete[] tile;
 }
 void Map::draw(){
-	for(int i = 0; i < 25; i++){
-		for(int j = 0; j< 25; j++){
+	for(int i = 0; i < mapH; i++){
+		for(int j = 0; j< mapW; j++){
 			//tiles[tile[i][j].modelID].pos.x = tile[i][j].x;
 			//tiles[tile[i][j].modelID].pos.z = tile[i][j].z;
 			tiles[tile[i][j].modelID].draw(i,j);
@@ -800,6 +816,10 @@ void Camera::updateVectors()
 	
 
 	
+}
+void Camera::setCameraPosition(vec3 newPos)
+{
+	wPos = newPos;
 }
 vec3 Camera::getPos()
 {
@@ -961,11 +981,20 @@ int WorldGS::procKeyInput(int key)
 			camera.translate(key);
 			break;
 		case XK_q:
-			camera.rotate(-4.0f);
+			//camera.rotate(-4.0f);
 			break;
 		case XK_e:
-			camera.rotate(4.0f);
+			//camera.rotate(4.0f);
 			break;
+		case XK_c:
+			camera.setCameraPosition(vec3(
+				njG.player->wPos.x * XOFFSET,
+				0.0f,
+				njG.player->wPos.z * ZOFFSET
+				));
+			break;
+		case XK_b:
+			return 3;
 		case XK_Escape:
 			return 2;
 	}
@@ -975,7 +1004,7 @@ void WorldGS::drawPath() {
 	if(path.empty()) return;
 
 	for (int i = 0; i < path.size(); i++) {
-		printf("X: %d  Z: %d\n", path[i].first, path[i].second);
+		//printf("X: %d  Z: %d\n", path[i].first, path[i].second);
 		float posx = path[i].first * XOFFSET;
 		float posy = path[i].second * ZOFFSET;
 		if(path[i].second%2 == 0)
@@ -1052,7 +1081,155 @@ void WorldGS::drawGameState()
 	glColor3ub(255, 255, 255);
 }
 /*=======================================*/
-/*=======================================*/
+/*===============BATTLEGS================*/
+
+BattleGS::BattleGS(int ** mapArr,int sizex,int sizey,
+		float camRot, int posx, int posz,
+		float xres, float yres) :
+		WorldGS(mapArr, sizex, sizey, camRot, posx, posz, xres, yres)
+{	
+}
+
+int BattleGS::procMouseInput(int x, int y)
+{
+	glMatrixMode(GL_MODELVIEW);
+	pkr.update(projMatrix, camera, xres, yres, x, y);
+	pick(pkr.getCurrentRay());
+	vec2 chkPath = map.checkCollision(pickPos.x, pickPos.z);
+	//printf("chkPath %f %f\n", chkPath.x, chkPath.y);
+	pair<int,int> size(25,25);
+	if ( chkPath.x > -1 && chkPath.y > -1) {
+		stack<pair<int,int>> pathStack = Movement(size, nlG->MainMap, njG.player, chkPath);
+		path.clear();
+		while (!pathStack.empty()) {
+			//pair<int,int> temp = pathStack.pop();
+			path.push_back(pathStack.top());
+			pathStack.pop();
+		}
+        /*********NicholasJ addition************/
+        while (path.size() > njG.player->moveRange) {
+            path.pop_back();
+        }
+        if (njG.checkWorldCollision(path.back().first, path.back().second)) {
+            njG.player->wPos.x = path.back().first;
+            njG.player->wPos.z = path.back().second;
+        #ifdef SOUND
+            alSourcePlay(njG.sound.moveSound);
+        #endif
+        }
+        /***************************************/
+	}
+	//printf("X: %f  Z: %f\n", pickPos.x, pickPos.z);
+	return 0;
+	//picking/UI
+}
+int BattleGS::procKeyInput(int key)
+{
+	switch (key) {
+		case XK_1:
+			//Key 1 was pressed
+			break;
+		case XK_a: case XK_d: case XK_w: case XK_s:
+			camera.translate(key);
+			break;
+		case XK_q:
+			//camera.rotate(-4.0f);
+			break;
+		case XK_e:
+			//camera.rotate(4.0f);
+			break;
+		case XK_c:
+			camera.setCameraPosition(vec3(
+				njG.player->wPos.x * XOFFSET,
+				0.0f,
+				njG.player->wPos.z * ZOFFSET
+				));
+			break;
+		case XK_Escape:
+			return -1;
+	}
+	return 0;
+}
+void BattleGS::drawPath() {
+	if(path.empty()) return;
+
+	for (int i = 0; i < path.size(); i++) {
+		//printf("X: %d  Z: %d\n", path[i].first, path[i].second);
+		float posx = path[i].first * XOFFSET;
+		float posy = path[i].second * ZOFFSET;
+		if(path[i].second%2 == 0)
+			posx -= 1.0f;
+		glBegin(GL_QUADS);
+		glColor3f(1.0f, 0, 0);
+		glVertex3f(posx + 0.25f, 0.5f , posy + 0.25f);
+		glVertex3f(posx + 0.25f, 0.5f , posy - 0.25f);
+		glVertex3f(posx - 0.25f, 0.5f , posy - 0.25f);
+		glVertex3f(posx - 0.25f, 0.5f , posy + 0.25f);
+		glColor3f(1.0f,1.0f,1.0f);
+		glEnd();
+	}
+}
+void BattleGS::drawGameState()
+{
+	initWGS_GL();
+	//gluPerspective(45.0f, xres/yres, 0.1f, 100.0f);
+	// glMatrixMode(GL_MODELVIEW); glLoadIdentity();
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+
+	float  projMat[16];
+	glGetFloatv(GL_PROJECTION_MATRIX, projMat);
+	projMatrix = Matrix( 4, projMat);
+
+
+	glLoadIdentity();
+	camera.update();
+	map.draw();
+	drawPath();
+    njG.player = Player::getInstance();
+    if (njG.player->count != 0) {
+        njG.player->draw();
+        njG.player->displayImage(5, 0, 5);
+            for (int i = 0; i < njG.allies->count; i++) {
+                njG.allies[i].draw();
+                njG.allies[i].displayImage(5 * -i, 0, 5);
+            }
+    }
+    if (njG.enemies->count != 0) {
+        for (int i = 0; i < njG.enemies->count; i++) {
+			njG.enemies[i].draw();
+        }
+    }
+	camera.drawCamera(0);
+
+	glPushMatrix();/*
+	glBegin(GL_QUADS);
+		glColor3f(1.0f, 0, 0);
+		glTexCoord2f(1, 1);
+		glVertex3f(pickPos.x+1, 0.5f , pickPos.z+1);	
+		glTexCoord2f(1, 0);
+		glVertex3f(pickPos.x+1, 0.5f , pickPos.z-1);
+		glTexCoord2f(0, 0);
+		glVertex3f(pickPos.x-1, 0.5f , pickPos.z-1);
+		glTexCoord2f(0, 1);
+		glVertex3f(pickPos.x-1, 0.5f , pickPos.z+1);
+		glColor3f(1.0f,1.0f,1.0f);
+	glEnd();*/
+	glBegin(GL_LINES);
+		glColor3f(1.0f, 0, 0);
+		vec3 pos = camera.getPos();
+		glVertex3f(pickPos.x, 5.0f, pickPos.z);
+		
+		glVertex3f(pickPos.x, pickPos.y, pickPos.z);
+		glColor3f(1.0f, 0, 0);
+		glEnd();
+	glPopMatrix();
+
+	//set ortho
+
+	//draw UI
+	UI.drawBoxes();
+	glColor3ub(255, 255, 255);
+}
 /*=======================================*/
 /*=======================================*/
 

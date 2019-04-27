@@ -54,6 +54,9 @@ void Game::procKeyInput(int key)
         case 2:
             states.push(new PauseGS(bhg.pmenu,xres,yres));
             break;
+        case 3:
+            states.push(new BattleGS(nlG->BattleMap1,10 ,10, 180, 0, 0, xres, yres));
+            break;
     }
 }
 
