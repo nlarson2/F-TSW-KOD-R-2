@@ -38,8 +38,8 @@ AOglobal::AOglobal() {
         Boxes(BOX),
         Boxes(BOX),
         Boxes(BOX),
-        Boxes(BOX),
-        Boxes(BOX)
+        Boxes(BATTLE),
+        Boxes(BATTLE)
     };
 }
 
@@ -197,8 +197,11 @@ void uiboxes::drawBoxes() {
     string mv = to_string(player->moveRange);
     string mv2 = mv;
     ggprint16(&r, 16, 0xffffffff, mv2.c_str());
-    
-    
+    #ifdef DLC
+    r.bot = yres/2;
+    r.left = xres/2; 
+    ggprint16(&r, 1000, 0xfff00000, "YOU HAVE NOT PURCHASED THE REQUIRED DLC");
+    #endif
     glPushMatrix();
     glTranslatef(boxes[4].center.x, boxes[4].center.y, 0);
     glColor3ub(250,250,250);
