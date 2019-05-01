@@ -318,8 +318,11 @@ void render()
 		ggprint8b(&r, 16, 0xFFFFFFFF, "D - Camera Right");
 		ggprint8b(&r, 16, 0xFFFFFFFF, "Q - Rotate Left");
 		ggprint8b(&r, 16, 0xFFFFFFFF, "E - Rotate Right");
+		ggprint8b(&r, 16, 0xFFFFFFFF, "B - Enter Battle State");
+		ggprint8b(&r, 16, 0xFFFFFFFF, "C - Center On Player");
 		ggprint8b(&r, 16, 0xFFFFFFFF, "Left Click - Move");
-		ggprint8b(&r, 16, 0xFFFFFFFF, "Esc - Pause Game");
+		ggprint8b(&r, 16, 0xFFFFFFFF, "(In World)Esc - Pause Game");
+		ggprint8b(&r, 16, 0xFFFFFFFF, "(In Battle)Esc - Return To World");
 		glPopMatrix();
 	}
 }

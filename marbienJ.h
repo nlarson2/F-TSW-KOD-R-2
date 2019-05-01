@@ -62,7 +62,7 @@ stack<Pair> aStarSearch(Pair, int**, Pair src, Pair dest);
 
 void displayMap(int[][25]);
 
-stack<Pair> Movement(Pair, int**, Entity*, vec2); 
+stack<Pair> Movement(Pair, int**, int x, int z, vec2); 
 void showMarbienPicture(int x, int y, GLuint textid);
 
 #endif

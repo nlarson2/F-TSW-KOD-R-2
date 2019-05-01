@@ -4,7 +4,7 @@
 
 extern BHglobal bhg;
 extern NLarsGlobal * nlG;// = NLarsGlobal::GetInstance();
-//extern NJordGlobal njG;
+extern NJordGlobal njG;
 Game::Game(int x, int y) 
 {
     xres = x;
@@ -33,6 +33,12 @@ void Game::procMouseInput(int x, int y)
             break;
         case 2:
             states.push(new PauseGS(bhg.pmenu,xres,yres));
+            break;
+        case 3:
+            states.push(new BattleGS(nlG->BattleMap1,10 ,10, 180, 0, 0, xres, yres));
+        #ifdef SOUND
+            alSourcePlay(njG.sound.battleSound);
+        #endif
             break;
     }
 }
