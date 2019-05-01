@@ -157,7 +157,6 @@ stack<Pair> aStarSearch(Pair size, int ** grid, Pair src, Pair dest)
     openList.insert(make_pair (0.0, make_pair (i, j))); 
    
     bool foundDest = false; 
-  
     while (!openList.empty()) { 
         pPair p = *openList.begin(); 
   
@@ -609,7 +608,7 @@ stack<Pair> aStarSearch(Pair size, int ** grid, Pair src, Pair dest)
     exit(1); 
 } 
 
-stack<Pair> Movement(Pair size, int ** grid, Entity * entity, vec2 dest) 
+stack<Pair> Movement(Pair size, int ** grid, int x, int z, vec2 dest) 
 {
     //int sRow, sCol, dRow, dCol;
     bool error = false;
@@ -617,7 +616,7 @@ stack<Pair> Movement(Pair size, int ** grid, Entity * entity, vec2 dest)
      // Source is selected
     //cout << "Please pick source: ";
     ///cin >> sRow >> sCol;  
-    Pair source = make_pair(entity->wPos.x, entity->wPos.z); 
+    Pair source = make_pair(x, z); 
   
     // Destination is selected
     //cout << "Please pick destination: ";
@@ -626,7 +625,6 @@ stack<Pair> Movement(Pair size, int ** grid, Entity * entity, vec2 dest)
  
     // Display Map
     //displayMap(grid);
- 
     return (aStarSearch(size, grid, source, destination)); 
 
 }
