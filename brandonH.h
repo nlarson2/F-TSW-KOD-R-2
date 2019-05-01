@@ -19,12 +19,10 @@ enum ButtonID
 enum pButtonID
 {
     RESUME,SAVE_GAME,PMAIN_MENU,
+    RETREAT,
+    REST,
 };
 
-enum tButtonID
-{
-    tRESUME, REST,
-};
 
 struct vec
 {
@@ -36,11 +34,10 @@ struct Button
     float height, width;
     vec center;
     string name;
-    ButtonID bid; pButtonID pbid; tButtonID tbid;
+    ButtonID bid; pButtonID pbid;
     Button();
     Button(string,ButtonID);
     Button(string,pButtonID);
-    Button(string, tButtonID);
     ~Button();
 };
 
@@ -48,7 +45,8 @@ struct BHglobal
 {
     Button menus[5][5];
     Button pmenu[3];
-    Button tmenu[2];
+    Button bmenu[3];
+    Button tmenu[3];
     BHglobal();
 };
 // Done During Lab hours
@@ -79,7 +77,7 @@ class MenuGS : public GameState {
 		int procKeyInput(int);
 		void drawGameState();
 };
-
+// May not need implementation
 class TownGS : public GameState {
     private:
         Button * buttons;

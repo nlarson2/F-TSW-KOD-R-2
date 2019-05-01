@@ -1004,6 +1004,10 @@ int WorldGS::procKeyInput(int key)
 			break;
 		case XK_Escape:
 			return 2;
+            break;
+		case XK_t:
+			return 5;
+            break;
 	}
 	return 0;
 }
@@ -1166,7 +1170,9 @@ int BattleGS::procKeyInput(int key)
 				));
 			break;
 		case XK_Escape:
-			return -1;
+			return 4;
+            break;
+
 	}
 	return 0;
 }
