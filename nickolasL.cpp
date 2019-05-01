@@ -954,10 +954,15 @@ int WorldGS::procMouseInput(int x, int y)
 		while (!pathStack.empty()) {
 			//pair<int,int> temp = pathStack.pop();
             path.push_back(pathStack.top());
+            //denies player from moving through entities
+            if (njG.checkWorldCollision(pathStack.top().first, pathStack.top().second) > 1) {
+                if (pathStack.size() > 1)
+                    return 20;
+            }
 			pathStack.pop();
 		}
         /*********NicholasJ addition************/
-        while ((int)path.size() > 5) {
+        while ((int)path.size() > njG.player->moveRange+1) {
             path.pop_back();
         }
         int collision = njG.checkWorldCollision(path.back().first, path.back().second);
@@ -970,6 +975,8 @@ int WorldGS::procMouseInput(int x, int y)
             #endif
                 break;
             case 1:
+                break;
+            case 2:
                 break;
             case 3:
                 return 3;
@@ -1044,18 +1051,16 @@ void WorldGS::drawGameState()
     njG.player = Player::getInstance();
     if (njG.player->count != 0) {
         njG.player->drawWorld();
-        njG.player->displayImage(5, 0, 5);
-            for (int i = 0; i < njG.allies->count; i++) {
-                njG.allies[i].drawWorld();
-                njG.allies[i].displayImage(5 * -i, 0, 5);
-            }
     }
-    if (njG.enemies->count != 0) {
-        for (int i = 0; i < njG.enemies->count; i++) {
-			njG.enemies[i].drawWorld();
+    if (njG.allies->count != 0) {
+        for (int i = 0; i < njG.allies->count; i++) {
+            njG.allies[i].drawWorld();
         }
     }
-	camera.drawCamera(0);
+	if (njG.enemies->count != 0) {
+        njG.enemies[0].drawWorld();
+    }
+    camera.drawCamera(0);
 
 	glPushMatrix();/*
 	glBegin(GL_QUADS);
@@ -1208,10 +1213,8 @@ void BattleGS::drawGameState()
     njG.player = Player::getInstance();
     if (njG.player->count != 0) {
         njG.player->drawBattle();
-        njG.player->displayImage(5, 0, 5);
             //for (int i = 0; i < njG.allies->count; i++) {
             //    njG.allies[i].drawBattle();
-            //    njG.allies[i].displayImage(5 * -i, 0, 5);
             //}
     }
     if (njG.enemies->count != 0) {
