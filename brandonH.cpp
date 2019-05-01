@@ -36,6 +36,16 @@ BHglobal::BHglobal() {
         Button("Save Game", SAVE_GAME),
         Button("Main Menu", PMAIN_MENU),
     };
+    static Button bbtn[3] = {
+        Button("Resume", RESUME),
+        Button("Save Game", SAVE_GAME),
+        Button("Retreat", RETREAT),
+    };
+    static Button tbtn[3] = {
+        Button("Resume", RESUME),
+        Button("Save Game", SAVE_GAME),
+        Button("Rest", REST),
+    };
     // Derived Menu from PauseMenu. Select which save file to override
     // Needs implementation
     static Button pbtn2[5] = {
@@ -52,6 +62,8 @@ BHglobal::BHglobal() {
     }
     for (int i=0; i<3; i++) { 
         pmenu[i] = pbtn[i];
+        bmenu[i] = bbtn[i];
+        tmenu[i] = tbtn[i];
     }
 } BHglobal bhg;
 
@@ -130,7 +142,10 @@ int PauseGS::procMouseInput(int x, int y)
             njG.player->resetInstance();
             njG.resetAllies();
             njG.resetEnemies();
+        case RETREAT:
             return -2;
+            break;
+        case REST:
             break;
     }
     return 0;
@@ -152,7 +167,7 @@ void PauseGS::drawGameState()
     for (int i=0; i<3; i++) {
         //Draw Buttons
         Button *s;
-        glColor3ub(90,140,90);
+        glColor3ub(130,130,130);
         s = &buttons[i];
         glPushMatrix();
         glTranslatef(s->center.x, s->center.y, s->center.z);
@@ -174,7 +189,7 @@ void PauseGS::drawGameState()
         //r.left = 200 ;
         r.bot = yres/.95 - (i+1)*60;
         r.left = xres/4 ;
-        ggprint16(&r, 16, 0x00ffff00, buttons[i].name.c_str());
+        ggprint16(&r, 16, 0xFFFFFFFF, buttons[i].name.c_str());
     }
 }
 
@@ -397,7 +412,7 @@ void MenuGS::drawGameState()
     for (int i=0; i<size; i++) {
         //Draw Buttons
         Button *s;
-        glColor3ub(90,140,90);
+        glColor3ub(130,130,130);
         s = &buttons[state][i];
         glPushMatrix();
         glTranslatef(s->center.x, s->center.y, s->center.z);
@@ -418,7 +433,7 @@ void MenuGS::drawGameState()
         //r.bot = yres - (170 +(i*60));
         r.bot = yres/.95 - (i+1)*60;
         r.left = xres/2 ;
-        ggprint16(&r, 16, 0x00ffff00, buttons[state][i].name.c_str());
+        ggprint16(&r, 16, 0xFFFFFFFF, buttons[state][i].name.c_str());
             //buttons[j][i].center.x = xres/2;
             //buttons[j][i].center.y = yres/1.4 - (i+1)*60;
     }
