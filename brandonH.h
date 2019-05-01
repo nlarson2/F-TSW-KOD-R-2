@@ -23,6 +23,7 @@ enum pButtonID
     REST,
 };
 
+
 struct vec
 {
     float x,y,z;
@@ -82,7 +83,7 @@ class TownGS : public GameState {
         Button * buttons;
         float xres, yres;
     public:
-        TownGS(int, Button[3], int, int);
+        TownGS(Button[2], int, int);
         ~TownGS();
         int procMouseInput(int, int);
         int procKeyInput(int);

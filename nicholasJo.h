@@ -8,11 +8,12 @@
 
   -  The Player class is a singleton
 
-  -  saveInstance and loadInstance from the Player class are 
-  called from brandonH.cpp.
+  -  The functions saveInstance for Player, saveAllies, and 
+  saveEnemies are called from saveEntities in NJordGlobal class
 
-  -  saveAllies and loadAllies from the Ally class are called
-  in the saveInstance and loadInstance.
+  -  The functions loadInstance for Player, loadAllies in 
+  NJordGlobal, and loadEnemies in NJordGlobal are called from
+  loadEntities which is also in the NJordGlobal class
 
   -  The save functions write to 'save(*number*).txt'.
   The data is written line by line for the player as follows:
@@ -29,7 +30,24 @@
   -  The load functions can then read from 'save(*number*).txt'
   line by line to be saved into the correct object's variable
 
+  -  Sound can be enabled and disable simply by using different
+  makefile target. Using 'make' compiles the game with no sound.
+  Using 'make sound' compiles the game with sound. Both targets
+  generate different executables: 'game' and 'sound'.
+
+  -  In order to minimize the amount of space taken up by sound
+  files, all sounds are in .ogg file format. This means that
+  each sound file needs to be uncompressed and decoded. This
+  was done using the libogg and libvorgis libraries that can
+  be found at https://xiph.org/vorbis/
+
+  -  Example code that I looked at and used for sound can be 
+  found at https://www.gamedev.net/articles/programming/
+  general-and-gameplay-programming/introduction-to-ogg-vorbis-r2031/
+
 //=========================================================*/
+#ifndef NICHOLAS_JO_H
+#define NICHOLAS_JO_H
 
 #include <GL/glx.h>
 #include "fonts.h"
@@ -42,21 +60,24 @@
 #include <random>
 #include <cmath>
 #ifdef SOUND
-#include </usr/include/AL/alut.h>
+#include <AL/alut.h>
+#include <AL/al.h>
+#include <vorbis/vorbisfile.h>
 #endif
 
 using namespace std;
 
-#ifndef NICHOLAS_JO_H
-#define NICHOLAS_JO_H
 
 #ifdef SOUND
 class Sound {
     public:
-        ALuint alBuffer[2];
+        ALuint alBuffer[4];
         ALuint menuSound;
         ALuint moveSound;
+        ALuint ambientSound;
+        ALuint battleSound;
         Sound();
+        void loadOGG(char *filename, vector<char> &buffer, ALenum &format, ALsizei &freq);
         void clearSounds();
         void initializeSounds();
         void loadSounds();
@@ -69,10 +90,12 @@ class Entity {
 	float default_defense;
 	float default_damage;
 	bool ally;
+    int turns;
     protected:
 	void setMaxHealth(float);
 	void setDefaultDefense(float);
 	void setDefaultDamage(float);
+    void setMaxTurns(int);
     public:
 	//====[Health Functions]====
 	float getMaxHealth();
@@ -83,16 +106,18 @@ class Entity {
 	//====[Damage Functions]====
 	float getDefaultDamage();
 	float getCurrentDamage();
-	void dealDamage(Entity &target);
+	void dealDamage(Entity *target);
 	//====[Ally Functions]====
 	void setAlly(bool);
 	bool getAlly();
 	//====[ETC]====
 	void resetStats();
 	void displayImage(int,int,int);
-	void draw();
-    bool inWorldRange(Entity target);
-    bool inBattleRange(Entity target);
+	void drawWorld();
+	void drawBattle();
+    bool inWorldRange(Entity *target);
+    bool inBattleRange(Entity *target);
+    int getMaxTurns();
 
 	string combatType;
 	GLuint image;
@@ -165,8 +190,10 @@ class NJordGlobal {
     bool loadEntities(int);
 	void loadAllies(ifstream&);
     void loadEnemies(ifstream&);
-    bool checkWorldCollision(int, int);
-    bool checkBattleCollision(int, int);
+    int checkWorldCollision(int x , int y);
+    //int type: 0 = player, 1 = ally, 2 = enemy
+    bool checkBattleCollision(int x, int y, int position, int type);
+    void controlTurns(Entity *target, int dest_x, int dest_z, int turn_amount);
 };
 
 void Display_NicholasJordan(int, int, GLuint);
