@@ -202,8 +202,12 @@ void Sound::clearSounds()
 	Log("Sound::clearSounds()\n");
     alDeleteSources(1, &menuSound);
     alDeleteSources(1, &moveSound);
+    alDeleteSources(1, &ambientSound);
+    alDeleteSources(1, &battleSound);
     alDeleteBuffers(1, &alBuffer[0]);
     alDeleteBuffers(1, &alBuffer[1]);
+    alDeleteBuffers(1, &alBuffer[2]);
+    alDeleteBuffers(1, &alBuffer[3]);
     
 	ALCcontext *Context = alcGetCurrentContext();
     ALCdevice *Device = alcGetContextsDevice(Context);
@@ -225,24 +229,117 @@ void Sound::initializeSounds()
     alListenerf(AL_GAIN, 1.0f);
 }
 
+void Sound::loadOGG(char *filename, vector<char> &buffer, ALenum &format, ALsizei &freq)
+{
+	Log("Sound::loadOGG(char *filename, ...), filename = %s\n", filename);
+	int endian = 0;
+	int bitStream;
+	long bytes;
+	char array[32768]; //32 KB buffer
+	FILE *f;
+
+	f = fopen(filename, "rb");
+
+	if (f == NULL) {
+		cerr << "Cannot open " << filename << " for reading\n";
+		return;
+	}
+	vorbis_info *pInfo;
+	OggVorbis_File oggFile;
+	
+	if (ov_open(f, &oggFile, NULL, 0) != 0) {
+		cerr << "Cannot open " << filename << " for decoding\n";
+		return;	
+	}
+
+	pInfo = ov_info(&oggFile, -1);
+	if (pInfo->channels == 1)
+		format = AL_FORMAT_MONO16;
+	else
+		format = AL_FORMAT_STEREO16;
+	freq = pInfo->rate;
+
+	do {
+		bytes = ov_read(&oggFile, array, 32768, endian, 2, 1, &bitStream);
+		if (bytes < 0) {
+			ov_clear(&oggFile);
+			cerr << "Error decoding " << filename << endl;
+			return;
+		}
+		buffer.insert(buffer.end(), array, array + bytes);
+	} while (bytes > 0);
+	ov_clear(&oggFile);
+}
+
 void Sound::loadSounds()
 {
 	Log("Sound::loadSounds()\n");
-	alBuffer[0] = alutCreateBufferFromFile("./sounds/click.wav");
-	alBuffer[1] = alutCreateBufferFromFile("./sounds/grass_step.wav");
-    alGenSources(1, &menuSound);
+	//alBuffer[0] = alutCreateBufferFromFile("./sounds/click.wav");
+	//alBuffer[1] = alutCreateBufferFromFile("./sounds/grass_step.wav");
+	alGenBuffers(1, &alBuffer[0]);
+	char filename[] = "./sounds/click.ogg";
+	vector<char> bufferData;
+	ALenum format;
+	ALsizei freq;
+	loadOGG(filename, bufferData, format, freq);
+	alBufferData(alBuffer[0], format, &bufferData[0],
+				 static_cast<ALsizei>(bufferData.size()), freq);
+	
+	alGenBuffers(1, &alBuffer[1]);
+	char filename2[] = "./sounds/grass_step.ogg";
+	vector<char> bufferData2;
+	ALenum format2;
+	ALsizei freq2;
+	loadOGG(filename2, bufferData2, format2, freq2);
+	alBufferData(alBuffer[1], format2, &bufferData2[0],
+				 static_cast<ALsizei>(bufferData2.size()), freq2);
+	
+	alGenBuffers(1, &alBuffer[2]);
+	char filename3[] = "./sounds/ambient_nature.ogg";
+	vector<char> bufferData3;
+	ALenum format3;
+	ALsizei freq3;
+	loadOGG(filename3, bufferData3, format3, freq3);
+	alBufferData(alBuffer[2], format3, &bufferData3[0],
+				 static_cast<ALsizei>(bufferData3.size()), freq3);
+
+	alGenBuffers(1, &alBuffer[3]);
+	char filename4[] = "./sounds/battle_drums.ogg";
+	vector<char> bufferData4;
+	ALenum format4;
+	ALsizei freq4;
+	loadOGG(filename4, bufferData4, format4, freq4);
+	alBufferData(alBuffer[3], format4, &bufferData4[0],
+				 static_cast<ALsizei>(bufferData4.size()), freq4);
+	if (alGetError() == AL_INVALID_VALUE)
+    	printf("ERROR3: setting menu sound\n");
+
+	alGenSources(1, &menuSound);
     alGenSources(1, &moveSound);
-    alSourcei(menuSound, AL_BUFFER, alBuffer[0]);
+    alGenSources(1, &ambientSound);
+    alGenSources(1, &battleSound);
+    
+	alSourcei(menuSound, AL_BUFFER, alBuffer[0]);
     alSourcei(moveSound, AL_BUFFER, alBuffer[1]);
-    alSourcef(menuSound, AL_GAIN, 1.0f);
-    alSourcef(moveSound, AL_GAIN, 1.0f);
-    alSourcef(menuSound, AL_PITCH, 1.0f);
+    alSourcei(ambientSound, AL_BUFFER, alBuffer[2]);
+    alSourcei(battleSound, AL_BUFFER, alBuffer[3]);
+    
+	alSourcef(menuSound, AL_GAIN, 0.5f);
+    alSourcef(moveSound, AL_GAIN, 0.5f);
+    alSourcef(ambientSound, AL_GAIN, 1.0f);
+    alSourcef(battleSound, AL_GAIN, 1.0f);
+    
+	alSourcef(menuSound, AL_PITCH, 1.0f);
     alSourcef(moveSound, AL_PITCH, 1.0f);
+    alSourcef(ambientSound, AL_PITCH, 1.0f);
+    alSourcef(battleSound, AL_PITCH, 1.0f);
+	
 	alSourcei(menuSound, AL_LOOPING, AL_FALSE);
 	alSourcei(moveSound, AL_LOOPING, AL_FALSE);
-	if (alGetError() != AL_NO_ERROR)
-    	printf("ERROR: setting menu sound\n");
+	alSourcei(ambientSound, AL_LOOPING, AL_TRUE);
+	alSourcei(battleSound, AL_LOOPING, AL_TRUE);
 }
+
 #endif
 
 //==========================[ENTITY CLASS]===============================

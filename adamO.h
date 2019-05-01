@@ -53,7 +53,7 @@ struct Boxes
 
 struct AOglobal
 {
-    Boxes box[10];
+    Boxes box[11];
     AOglobal();
 };
 
@@ -61,10 +61,10 @@ class uiboxes
 {
     private:
         int size;
-        Boxes boxes[10];
+        Boxes boxes[11];
         float xres, yres;
     public:
-        uiboxes(Boxes[10], float, float);
+        uiboxes(Boxes[11], float, float);
         ~uiboxes(){}
         void procMouseInput(int, int);
         void procKeyInput(int key);
