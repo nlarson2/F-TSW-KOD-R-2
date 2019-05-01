@@ -45,6 +45,10 @@ BHglobal::BHglobal() {
         Button("Save 4", SAVE4),
         Button("Return", PMAIN_MENU),
     };
+    static Button tbtn[2] = {
+        Button("Resume", tRESUME),
+        Button("Rest", REST),
+    };
     for (int i=0; i<5; i++) {
         menus[0][i] = btn[i];
         menus[1][i] = btn1[i];
@@ -52,6 +56,9 @@ BHglobal::BHglobal() {
     }
     for (int i=0; i<3; i++) { 
         pmenu[i] = pbtn[i];
+    }
+    for (int i=0; i<2; i++) { 
+        tmenu[i] = tbtn[i];
     }
 } BHglobal bhg;
 
@@ -69,6 +76,10 @@ Button::Button(string n, ButtonID _bid) {
 Button::Button(string n, pButtonID _bid) {
     name = n;
     pbid = _bid;
+}
+Button::Button(string n, tButtonID _bid) {
+    name = n;
+    tbid = _bid;
 }
 Button::~Button() {
 }
@@ -125,6 +136,7 @@ int PauseGS::procMouseInput(int x, int y)
             break;
         case PMAIN_MENU:
         #ifdef SOUND
+            alSourceStop(njG.sound.ambientSound);
             alSourcePlay(njG.sound.menuSound); 
         #endif
             njG.player->resetInstance();
@@ -238,7 +250,7 @@ int MenuGS::procMouseInput(int x, int y)
             break;
         case LOAD_GAME:
         #ifdef SOUND
-            alSourcePlay(njG.sound.menuSound); 
+            alSourcePlay(njG.sound.menuSound);
         #endif
             state = LOAD_GAME;
             break;
@@ -265,6 +277,7 @@ int MenuGS::procMouseInput(int x, int y)
             {
             #ifdef SOUND
                 alSourcePlay(njG.sound.menuSound); 
+                alSourcePlay(njG.sound.ambientSound);
             #endif
                 if (Player::count != 0) {
                     Player::resetInstance();
@@ -282,6 +295,7 @@ int MenuGS::procMouseInput(int x, int y)
             {
             #ifdef SOUND
                 alSourcePlay(njG.sound.menuSound); 
+                alSourcePlay(njG.sound.ambientSound);
             #endif
                 if (Player::count != 0) {
                     Player::resetInstance();
@@ -299,6 +313,7 @@ int MenuGS::procMouseInput(int x, int y)
             {
             #ifdef SOUND
                 alSourcePlay(njG.sound.menuSound); 
+                alSourcePlay(njG.sound.ambientSound);
             #endif
                 if (Player::count != 0) {
                     Player::resetInstance();
@@ -316,6 +331,7 @@ int MenuGS::procMouseInput(int x, int y)
             {
             #ifdef SOUND
                 alSourcePlay(njG.sound.menuSound); 
+                alSourcePlay(njG.sound.ambientSound);
             #endif
                 if (Player::count != 0) {
                     Player::resetInstance();
@@ -333,6 +349,7 @@ int MenuGS::procMouseInput(int x, int y)
             {
             #ifdef SOUND
                 alSourcePlay(njG.sound.menuSound); 
+                alSourcePlay(njG.sound.ambientSound);
             #endif
                 if (njG.loadEntities(1)) {
                     state = MAIN_MENU;
@@ -345,6 +362,7 @@ int MenuGS::procMouseInput(int x, int y)
             {
             #ifdef SOUND
                 alSourcePlay(njG.sound.menuSound); 
+                alSourcePlay(njG.sound.ambientSound);
             #endif
                 if (njG.loadEntities(2)) {
                     state = MAIN_MENU;
@@ -357,6 +375,7 @@ int MenuGS::procMouseInput(int x, int y)
             {
             #ifdef SOUND
                 alSourcePlay(njG.sound.menuSound); 
+                alSourcePlay(njG.sound.ambientSound);
             #endif
                 if (njG.loadEntities(3)) {
                     state = MAIN_MENU;
@@ -369,6 +388,7 @@ int MenuGS::procMouseInput(int x, int y)
             {
             #ifdef SOUND
                 alSourcePlay(njG.sound.menuSound); 
+                alSourcePlay(njG.sound.ambientSound);
             #endif
                 if (njG.loadEntities(4)) {
                     state = MAIN_MENU;
@@ -423,3 +443,94 @@ void MenuGS::drawGameState()
             //buttons[j][i].center.y = yres/1.4 - (i+1)*60;
     }
 }
+
+//=================================================//
+//---------------- START OF TOWNGS ----------------//
+//=================================================//
+
+TownGS::TownGS(Button b[3],int xres, int yres)
+{
+    buttons = new Button[3];
+    this->xres = xres;
+    this->yres = yres;
+    for (int i=0; i<3; i++) {
+        buttons[i] = b[i];
+        buttons[i].width = 100;
+        buttons[i].height = 20;
+        buttons[i].center.x = xres/4;
+        buttons[i].center.y = yres/1.4 - (i+1)*60;
+        //buttons[i].center.y = 500 - (i+1)*60;
+    }
+}
+
+TownGS::~TownGS()
+{
+    delete [] buttons;
+}
+
+int TownGS::procMouseInput(int x, int y)
+{
+    tButtonID btn;
+    for (int i=0;i<3;i++) {
+        if (yres - y < buttons[i].center.y + buttons[i].height &&
+                yres - y > buttons[i].center.y - buttons[i].height &&
+                x < buttons[i].center.x + buttons[i].width &&
+                x > buttons[i].center.x - buttons[i].width) {
+            // Output which button and its corressponding ID to verify button clicks
+            cout << "Count: " << i << " Button: " << buttons[i].name << endl;
+            btn = buttons[i].tbid;
+        }
+    }
+    switch(btn) {
+        case RESUME:
+            return -1;
+            break;
+        case REST:
+            njG.player->resetStats();
+            break;
+    }
+    return 0;
+
+}
+
+int TownGS::procKeyInput(int key)
+{
+    return 0;//read keys
+}
+
+void TownGS::drawGameState()
+{
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(0,xres,0,yres,-1,1);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    for (int i=0; i<3; i++) {
+        //Draw Buttons
+        Button *s;
+        glColor3ub(90,140,90);
+        s = &buttons[i];
+        glPushMatrix();
+        glTranslatef(s->center.x, s->center.y, s->center.z);
+        float w, h;
+        w = s->width;
+        h = s->height;
+        glBegin(GL_QUADS);
+        glVertex2i(-w, -h);
+        glVertex2i(-w,  h);
+        glVertex2i( w,  h);
+        glVertex2i( w, -h);
+        glEnd();
+        glPopMatrix();
+
+        //Draw Names
+        int yres = 600;
+        Rect r;
+        //r.bot = yres - (170 +(i*60));
+        //r.left = 200 ;
+        r.bot = yres/.95 - (i+1)*60;
+        r.left = xres/4 ;
+        ggprint16(&r, 16, 0x00ffff00, buttons[i].name.c_str());
+    }
+}
+

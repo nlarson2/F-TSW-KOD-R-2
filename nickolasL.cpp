@@ -953,7 +953,7 @@ int WorldGS::procMouseInput(int x, int y)
 		path.clear();
 		while (!pathStack.empty()) {
 			//pair<int,int> temp = pathStack.pop();
-			path.push_back(pathStack.top());
+            path.push_back(pathStack.top());
 			pathStack.pop();
 		}
         /*********NicholasJ addition************/

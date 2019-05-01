@@ -8,12 +8,13 @@ SFLAGS = -D SOUND \
 all: game
 
 game: $(FFLAGS) $(HFLAGS)
-	g++ -g $(FFLAGS) $(CFLAGS)
+	g++ -g $(FFLAGS) $(CFLAGS) -o game
 
 sound: $(FFLAGS) $(HFLAGS)
-	g++ -g $(FFLAGS) $(CFLAGS) $(SFLAGS)
+	g++ -g $(FFLAGS) $(CFLAGS) $(SFLAGS) -o sound
 
 clean:
 	rm -f game
+	rm -f sound
 	rm -f *.o
 

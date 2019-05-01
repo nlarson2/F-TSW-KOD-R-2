@@ -332,6 +332,8 @@ void Sound::loadOGG(char *filename, vector<char> &buffer, ALenum &format, ALsize
 void Sound::loadSounds()
 {
 	Log("Sound::loadSounds()\n");
+	//alBuffer[0] = alutCreateBufferFromFile("./sounds/click.wav");
+	//alBuffer[1] = alutCreateBufferFromFile("./sounds/grass_step.wav");
 	alGenBuffers(1, &alBuffer[0]);
 	char filename[] = "./sounds/click.ogg";
 	vector<char> bufferData;
@@ -367,6 +369,8 @@ void Sound::loadSounds()
 	loadOGG(filename4, bufferData4, format4, freq4);
 	alBufferData(alBuffer[3], format4, &bufferData4[0],
 				 static_cast<ALsizei>(bufferData4.size()), freq4);
+	if (alGetError() == AL_INVALID_VALUE)
+    	printf("ERROR3: setting menu sound\n");
 
 	alGenSources(1, &menuSound);
     alGenSources(1, &moveSound);
@@ -392,8 +396,6 @@ void Sound::loadSounds()
 	alSourcei(moveSound, AL_LOOPING, AL_FALSE);
 	alSourcei(ambientSound, AL_LOOPING, AL_TRUE);
 	alSourcei(battleSound, AL_LOOPING, AL_TRUE);
-	if (alGetError() != AL_NO_ERROR)
-    	printf("ERROR setting sound somewhere\n");
 }
 
 #endif
