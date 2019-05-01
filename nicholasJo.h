@@ -30,6 +30,8 @@
   line by line to be saved into the correct object's variable
 
 //=========================================================*/
+#ifndef NICHOLAS_JO_H
+#define NICHOLAS_JO_H
 
 #include <GL/glx.h>
 #include "fonts.h"
@@ -42,21 +44,24 @@
 #include <random>
 #include <cmath>
 #ifdef SOUND
-#include </usr/include/AL/alut.h>
+#include <AL/alut.h>
+#include <AL/al.h>
+#include <vorbis/vorbisfile.h>
 #endif
 
 using namespace std;
 
-#ifndef NICHOLAS_JO_H
-#define NICHOLAS_JO_H
 
 #ifdef SOUND
 class Sound {
     public:
-        ALuint alBuffer[2];
+        ALuint alBuffer[4];
         ALuint menuSound;
         ALuint moveSound;
+        ALuint ambientSound;
+        ALuint battleSound;
         Sound();
+        void loadOGG(char *filename, vector<char> &buffer, ALenum &format, ALsizei &freq);
         void clearSounds();
         void initializeSounds();
         void loadSounds();
@@ -69,10 +74,12 @@ class Entity {
 	float default_defense;
 	float default_damage;
 	bool ally;
+    int turns;
     protected:
 	void setMaxHealth(float);
 	void setDefaultDefense(float);
 	void setDefaultDamage(float);
+    void setMaxTurns(int);
     public:
 	//====[Health Functions]====
 	float getMaxHealth();
@@ -83,16 +90,18 @@ class Entity {
 	//====[Damage Functions]====
 	float getDefaultDamage();
 	float getCurrentDamage();
-	void dealDamage(Entity &target);
+	void dealDamage(Entity *target);
 	//====[Ally Functions]====
 	void setAlly(bool);
 	bool getAlly();
 	//====[ETC]====
 	void resetStats();
 	void displayImage(int,int,int);
-	void draw();
-    bool inWorldRange(Entity target);
-    bool inBattleRange(Entity target);
+	void drawWorld();
+	void drawBattle();
+    bool inWorldRange(Entity *target);
+    bool inBattleRange(Entity *target);
+    int getMaxTurns();
 
 	string combatType;
 	GLuint image;
@@ -165,8 +174,10 @@ class NJordGlobal {
     bool loadEntities(int);
 	void loadAllies(ifstream&);
     void loadEnemies(ifstream&);
-    bool checkWorldCollision(int, int);
-    bool checkBattleCollision(int, int);
+    int checkWorldCollision(int x , int y);
+    //int type: 0 = player, 1 = ally, 2 = enemy
+    bool checkBattleCollision(int x, int y, int position, int type);
+    void controlTurns(Entity *target, int dest_x, int dest_z, int turn_amount);
 };
 
 void Display_NicholasJordan(int, int, GLuint);

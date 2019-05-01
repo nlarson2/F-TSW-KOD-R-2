@@ -13,7 +13,6 @@ class Game
 	private:
         int xres, yres;
 		stack<GameState*> states;
-		Enemy *enemies;
 	public:
 		Game(int x, int y);
         void init();

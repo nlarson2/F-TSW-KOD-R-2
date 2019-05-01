@@ -236,5 +236,6 @@ public:
 	int procKeyInput(int key);
 	void drawPath();
 	void drawGameState();
+    void endTurn();
 };
 #endif
