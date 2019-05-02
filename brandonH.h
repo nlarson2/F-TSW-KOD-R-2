@@ -68,6 +68,7 @@ class MenuGS : public GameState {
     private:
         int state;
         int size;
+        bool clicked;
         Button ** buttons;
         float xres, yres;
     public:
