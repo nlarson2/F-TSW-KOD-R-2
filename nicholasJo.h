@@ -190,9 +190,9 @@ class NJordGlobal {
     bool loadEntities(int);
 	void loadAllies(ifstream&);
     void loadEnemies(ifstream&);
-    int checkWorldCollision(int x , int y);
     //int type: 0 = player, 1 = ally, 2 = enemy
-    bool checkBattleCollision(int x, int y, int position, int type);
+    int checkWorldCollision(int x , int y, int type = 0);
+    bool checkBattleCollision(int x, int y, int position = 0, int type = 0);
     void controlTurns(Entity *target, int dest_x, int dest_z, int turn_amount);
 };
 

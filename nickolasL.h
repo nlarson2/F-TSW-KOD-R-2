@@ -227,7 +227,8 @@ public:
 };
 class BattleGS : public WorldGS {
 protected:
-	
+	int turns;
+    int count;
 public:
 	BattleGS(int ** mapArr,int sizex,int sizey,
 	float camRot, int posx, int posz,
