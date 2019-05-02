@@ -124,22 +124,22 @@ int PauseGS::procMouseInput(int x, int y)
     }
     switch(btn) {
         case RESUME:
-        #ifdef SOUND
+#ifdef SOUND
             alSourcePlay(njG.sound.menuSound); 
-        #endif
+#endif
             return -1;
             break;
         case SAVE_GAME:
-        #ifdef SOUND
+#ifdef SOUND
             alSourcePlay(njG.sound.menuSound); 
-        #endif
+#endif
             njG.saveEntities(1);
             break;
         case PMAIN_MENU:
-        #ifdef SOUND
+#ifdef SOUND
             alSourceStop(njG.sound.ambientSound);
             alSourcePlay(njG.sound.menuSound); 
-        #endif
+#endif
             njG.player->resetInstance();
             njG.resetAllies();
             njG.resetEnemies();
@@ -151,6 +151,10 @@ int PauseGS::procMouseInput(int x, int y)
             return -2;
             break;
         case REST:
+            njG.player->resetStats();
+            for(int i=0; i<njG.allies->count;i++) {
+                njG.allies[i].resetStats();
+            }
             break;
     }
     return 0;
@@ -245,54 +249,54 @@ int MenuGS::procMouseInput(int x, int y)
     }
     switch(btn) {
         case MAIN_MENU:
-        #ifdef SOUND
+#ifdef SOUND
             alSourcePlay(njG.sound.menuSound);
-        #endif
+#endif
             state = MAIN_MENU;
             break;
         case NEW_GAME:
-        #ifdef SOUND
+#ifdef SOUND
             alSourcePlay(njG.sound.menuSound); 
-        #endif
+#endif
             state = NEW_GAME;
             break;
         case LOAD_GAME:
-        #ifdef SOUND
+#ifdef SOUND
             alSourcePlay(njG.sound.menuSound);
-        #endif
+#endif
             state = LOAD_GAME;
             break;
         case HIGH_SCORES:
-        #ifdef SOUND
+#ifdef SOUND
             alSourcePlay(njG.sound.menuSound); 
-        #endif
+#endif
             //state = HIGH_SCORES;
             break;
         case CONTROLS:
-        #ifdef SOUND
+#ifdef SOUND
             alSourcePlay(njG.sound.menuSound); 
-        #endif
+#endif
             //state = CONTROLS;
             break;
         case EXIT:
-        #ifdef SOUND
+#ifdef SOUND
             alSourcePlay(njG.sound.menuSound); 
             njG.sound.clearSounds();
-        #endif
+#endif
             exit(0);
             break;
         case ARCHER:
             {
-            #ifdef SOUND
+#ifdef SOUND
                 alSourcePlay(njG.sound.menuSound); 
                 alSourcePlay(njG.sound.ambientSound);
-            #endif
+#endif
                 if (Player::count != 0) {
                     Player::resetInstance();
                 }
                 Player *player = Player::setInstance("Archer");
-		njG.spawnAllies(3);
-		njG.spawnEnemies(3);
+                njG.spawnAllies(3);
+                njG.spawnEnemies(3);
                 //stops 'unused variable' warning
                 (void)player;
                 state = MAIN_MENU;
@@ -301,16 +305,16 @@ int MenuGS::procMouseInput(int x, int y)
             break;
         case SOLDIER:
             {
-            #ifdef SOUND
+#ifdef SOUND
                 alSourcePlay(njG.sound.menuSound); 
                 alSourcePlay(njG.sound.ambientSound);
-            #endif
+#endif
                 if (Player::count != 0) {
                     Player::resetInstance();
                 }
                 Player *player = Player::setInstance("Soldier");
-		njG.spawnAllies(3);
-		njG.spawnEnemies(3);
+                njG.spawnAllies(3);
+                njG.spawnEnemies(3);
                 //stops 'unused variable' warning
                 (void)player;
                 state = MAIN_MENU;
@@ -319,16 +323,16 @@ int MenuGS::procMouseInput(int x, int y)
             break;
         case TANK:
             {
-            #ifdef SOUND
+#ifdef SOUND
                 alSourcePlay(njG.sound.menuSound); 
                 alSourcePlay(njG.sound.ambientSound);
-            #endif
+#endif
                 if (Player::count != 0) {
                     Player::resetInstance();
                 }
                 Player *player = Player::setInstance("Tank");
-		njG.spawnAllies(3);
-		njG.spawnEnemies(3);
+                njG.spawnAllies(3);
+                njG.spawnEnemies(3);
                 //stops 'unused variable' warning
                 (void)player;
                 state = MAIN_MENU;
@@ -337,16 +341,16 @@ int MenuGS::procMouseInput(int x, int y)
             break;
         case NICK:
             {
-            #ifdef SOUND
+#ifdef SOUND
                 alSourcePlay(njG.sound.menuSound); 
                 alSourcePlay(njG.sound.ambientSound);
-            #endif
+#endif
                 if (Player::count != 0) {
                     Player::resetInstance();
                 }
                 Player *player = Player::setInstance("Nick");
-		njG.spawnAllies(3);
-		njG.spawnEnemies(3);
+                njG.spawnAllies(3);
+                njG.spawnEnemies(3);
                 //stops 'unused variable' warning
                 (void)player;
                 state = MAIN_MENU;
@@ -355,10 +359,10 @@ int MenuGS::procMouseInput(int x, int y)
             break;
         case SAVE1:
             {
-            #ifdef SOUND
+#ifdef SOUND
                 alSourcePlay(njG.sound.menuSound); 
                 alSourcePlay(njG.sound.ambientSound);
-            #endif
+#endif
                 if (njG.loadEntities(1)) {
                     state = MAIN_MENU;
                     return 1;
@@ -368,10 +372,10 @@ int MenuGS::procMouseInput(int x, int y)
             break;
         case SAVE2:
             {
-            #ifdef SOUND
+#ifdef SOUND
                 alSourcePlay(njG.sound.menuSound); 
                 alSourcePlay(njG.sound.ambientSound);
-            #endif
+#endif
                 if (njG.loadEntities(2)) {
                     state = MAIN_MENU;
                     return 1;
@@ -381,10 +385,10 @@ int MenuGS::procMouseInput(int x, int y)
             break;
         case SAVE3:
             {
-            #ifdef SOUND
+#ifdef SOUND
                 alSourcePlay(njG.sound.menuSound); 
                 alSourcePlay(njG.sound.ambientSound);
-            #endif
+#endif
                 if (njG.loadEntities(3)) {
                     state = MAIN_MENU;
                     return 1;
@@ -394,10 +398,10 @@ int MenuGS::procMouseInput(int x, int y)
             break;
         case SAVE4:
             {
-            #ifdef SOUND
+#ifdef SOUND
                 alSourcePlay(njG.sound.menuSound); 
                 alSourcePlay(njG.sound.ambientSound);
-            #endif
+#endif
                 if (njG.loadEntities(4)) {
                     state = MAIN_MENU;
                     return 1;
@@ -447,15 +451,15 @@ void MenuGS::drawGameState()
         r.bot = yres/.95 - (i+1)*60;
         r.left = xres/2 ;
         ggprint16(&r, 16, 0xFFFFFFFF, buttons[state][i].name.c_str());
-            //buttons[j][i].center.x = xres/2;
-            //buttons[j][i].center.y = yres/1.4 - (i+1)*60;
+        //buttons[j][i].center.x = xres/2;
+        //buttons[j][i].center.y = yres/1.4 - (i+1)*60;
     }
 }
 
 //=================================================//
 //---------------- START OF TOWNGS ----------------//
 //=================================================//
-/*
+
 TownGS::TownGS(Button b[3],int xres, int yres)
 {
     buttons = new Button[3];
@@ -478,7 +482,7 @@ TownGS::~TownGS()
 
 int TownGS::procMouseInput(int x, int y)
 {
-    tButtonID btn;
+    pButtonID btn;
     for (int i=0;i<3;i++) {
         if (yres - y < buttons[i].center.y + buttons[i].height &&
                 yres - y > buttons[i].center.y - buttons[i].height &&
@@ -486,7 +490,7 @@ int TownGS::procMouseInput(int x, int y)
                 x > buttons[i].center.x - buttons[i].width) {
             // Output which button and its corressponding ID to verify button clicks
             cout << "Count: " << i << " Button: " << buttons[i].name << endl;
-            btn = buttons[i].tbid;
+            btn = buttons[i].pbid;
         }
     }
     switch(btn) {
@@ -495,6 +499,12 @@ int TownGS::procMouseInput(int x, int y)
             break;
         case REST:
             njG.player->resetStats();
+            break;
+        case SAVE_GAME:
+            break;
+        case PMAIN_MENU:
+            break;
+        case RETREAT:
             break;
     }
     return 0;
@@ -541,4 +551,4 @@ void TownGS::drawGameState()
         ggprint16(&r, 16, 0x00ffff00, buttons[i].name.c_str());
     }
 }
-*/
+
