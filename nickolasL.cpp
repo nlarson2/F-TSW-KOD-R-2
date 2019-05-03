@@ -1096,7 +1096,7 @@ void WorldGS::drawGameState()
 BattleGS::BattleGS(int ** mapArr,int sizex,int sizey,
 		float camRot, int posx, int posz,
 		float xres, float yres) :
-		WorldGS(mapArr, sizex, sizey, camRot, posx, posz, xres, yres)
+		WorldGS(mapArr, sizex, sizey, camRot, posx, posz, xres, yres), BT(aog.bbox, xres, yres)
 {	
 }
 
@@ -1254,6 +1254,8 @@ void BattleGS::drawGameState()
 
 	//draw UI
 	UI.drawBoxes();
+    glColor3ub(255, 255, 255);
+    BT.drawBattleBoxes();
 	glColor3ub(255, 255, 255);
 }
 
