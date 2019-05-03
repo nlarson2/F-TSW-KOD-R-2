@@ -1158,6 +1158,9 @@ int BattleGS::procMouseInput(int x, int y)
                         if (njG.player->inBattleRange(&njG.enemies[i])) {
                             njG.player->dealDamage(&njG.enemies[i]);
                             njG.player->moveRange--;
+                        #ifdef SOUND
+                            njG.sound.playRandomGrunt();
+                        #endif
                         }
                     }
                 }
@@ -1208,6 +1211,9 @@ int BattleGS::procMouseInput(int x, int y)
                         if (njG.allies[count-1].inBattleRange(&njG.enemies[i])) {
                             njG.allies[count-1].dealDamage(&njG.enemies[i]);
                             njG.allies[count-1].moveRange--;
+                        #ifdef SOUND
+                            njG.sound.playRandomGrunt();
+                        #endif
                         }
                     }
                 }
@@ -1372,6 +1378,9 @@ void BattleGS::endTurn()
         if (njG.enemies[i].inBattleRange(njG.player)) {
             njG.enemies[i].dealDamage(njG.player);
             njG.enemies[i].moveRange--;
+        #ifdef SOUND
+            alSourcePlay(njG.sound.hitSound);
+        #endif
         }
         vec2 destination(njG.player->bPos.x, njG.player->bPos.z);
         pair<int, int> size(10, 10);
