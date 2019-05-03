@@ -526,8 +526,11 @@ void Model::draw(int x, int z, float y, float yaw)
 	if(z%2 == 0)
 		posx -= 1.0f;
 	glTranslatef(posx, posy, posz);
-	glBegin(GL_TRIANGLES);
 	
+	if ( yaw > 0 ) {
+		glRotatef(yaw, 0, 1.0f, 0);
+	}	
+	glBegin(GL_TRIANGLES);
 
 	for( unsigned int i = 0 ; i < vIndices.size() ; i+=3 ) {
 		glTexCoord2f(vertTex[vtIndices.at(i)-1].x,
@@ -546,7 +549,6 @@ void Model::draw(int x, int z, float y, float yaw)
 				vert[vIndices.at(i+2)-1].y,
 				vert[vIndices.at(i+2)-1].z);
 	}
-	
 	glEnd();
 	glPopMatrix();
 	glBindTexture(GL_TEXTURE_2D, 0);
