@@ -110,8 +110,7 @@ stack<Pair> aStarSearch(Pair size, int ** grid, Pair src, Pair dest)
     { 
         printf ("Source is invalid\n"); 
         return(tracePath(size, cellDetails, src)); 
-    } 
-  
+    }  
     // destination is out of range? 
     if (isValid (dest.first, dest.second) == false) 
     { 
@@ -169,7 +168,7 @@ stack<Pair> aStarSearch(Pair size, int ** grid, Pair src, Pair dest)
        
         double gNew, hNew, fNew; 
   
-        //----------- (North) ------------ 
+/*        //----------- (North) ------------ 
         if ((i % 2) == 0) { 	 
             if (isValid(i-1, j-1) == true) {  
                 if (isDestination(i-1, j-1, dest) == true) { 
@@ -304,7 +303,7 @@ stack<Pair> aStarSearch(Pair size, int ** grid, Pair src, Pair dest)
                     } 
                 } 
             }	
-	    }
+	    }*/
   
         //----------- (East) ------------ 
         if (isValid (i, j+1) == true) 
@@ -372,8 +371,36 @@ stack<Pair> aStarSearch(Pair size, int ** grid, Pair src, Pair dest)
   
         //----------- (North-East) ------------ 
   	    if ((i % 2) == 0) {
+            if (isValid(i-1, j+1) == true) { 
+                if (isDestination(i-1, j+1, dest) == true) { 
+                    cellDetails[i-1][j+1].parent_i = i; 
+                    cellDetails[i-1][j+1].parent_j = j; 
+                    printf ("The destination cell is found\n"); 
+                    //tracePath (cellDetails, dest); 
+                    foundDest = true; 
+                    return(tracePath (size, cellDetails, dest)); 
+                } 
+                else if (closedList[i-1][j+1] == false && 
+                         isUnBlocked(size, grid, i-1, j+1) == true) { 
+                    gNew = cellDetails[i][j].g + 1.414; 
+                    hNew = calculateHValue(i-1, j+1, dest); 
+                    fNew = gNew + hNew; 
+                    if (cellDetails[i-1][j+1].f == FLT_MAX || 
+                            cellDetails[i-1][j+1].f > fNew) { 
+                        openList.insert(make_pair (fNew,  
+                                        make_pair(i-1, j+1))); 
+                        cellDetails[i-1][j+1].f = fNew; 
+                        cellDetails[i-1][j+1].g = gNew; 
+                        cellDetails[i-1][j+1].h = hNew; 
+                        cellDetails[i-1][j+1].parent_i = i; 
+                        cellDetails[i-1][j+1].parent_j = j; 
+                    } 
+                } 
+            } 
+        }
+        else {
             if (isValid(i-1, j) == true) { 
-                if (isDestination(i-1, j, dest) == true) { 
+               if (isDestination(i-1, j, dest) == true) { 
                     cellDetails[i-1][j].parent_i = i; 
                     cellDetails[i-1][j].parent_j = j; 
                     printf ("The destination cell is found\n"); 
@@ -398,64 +425,9 @@ stack<Pair> aStarSearch(Pair size, int ** grid, Pair src, Pair dest)
                     } 
                 } 
             } 
-        }
-        else {
-            if (isValid(i-1, j+2) == true) { 
-                if (isDestination(i-1, j+2, dest) == true) { 
-                    cellDetails[i-1][j+2].parent_i = i; 
-                    cellDetails[i-1][j+2].parent_j = j; 
-                    printf ("The destination cell is found\n"); 
-                    //tracePath (cellDetails, dest); 
-                    foundDest = true; 
-                    return(tracePath (size, cellDetails, dest)); 
-                } 
-                else if (closedList[i-1][j+2] == false && 
-                         isUnBlocked(size, grid, i-1, j+2) == true) { 
-                    gNew = cellDetails[i][j].g + 1.414; 
-                    hNew = calculateHValue(i-1, j+2, dest); 
-                    fNew = gNew + hNew; 
-                    if (cellDetails[i-1][j+2].f == FLT_MAX || 
-                            cellDetails[i-1][j+2].f > fNew) { 
-                        openList.insert(make_pair (fNew,  
-                                        make_pair(i-1, j+2))); 
-                        cellDetails[i-1][j+2].f = fNew; 
-                        cellDetails[i-1][j+2].g = gNew; 
-                        cellDetails[i-1][j+2].h = hNew; 
-                        cellDetails[i-1][j+2].parent_i = i; 
-                        cellDetails[i-1][j+2].parent_j = j; 
-                    } 
-                } 
-            } 
         }  
         //----------- (North-West) ------------ 
         if ((i % 2) == 0) {
-            if (isValid (i-1, j-2) == true) { 
-                if (isDestination (i-1, j-2, dest) == true) { 
-                    cellDetails[i-1][j-2].parent_i = i; 
-                    cellDetails[i-1][j-2].parent_j = j; 
-                    printf ("The destination cell is found\n"); 
-                    //tracePath (cellDetails, dest); 
-                    foundDest = true; 
-                    return(tracePath (size, cellDetails, dest)); 
-                } 
-                else if (closedList[i-1][j-2] == false && 
-                        isUnBlocked(size, grid, i-1, j-2) == true) { 
-                    gNew = cellDetails[i][j].g + 1.414; 
-                    hNew = calculateHValue(i-1, j-2, dest); 
-                    fNew = gNew + hNew; 
-                    if (cellDetails[i-1][j-2].f == FLT_MAX || 
-                        cellDetails[i-1][j-2].f > fNew) { 
-                        openList.insert( make_pair (fNew, make_pair (i-1, j-2))); 
-                        cellDetails[i-1][j-2].f = fNew; 
-                        cellDetails[i-1][j-2].g = gNew; 
-                        cellDetails[i-1][j-2].h = hNew; 
-                        cellDetails[i-1][j-2].parent_i = i; 
-                        cellDetails[i-1][j-2].parent_j = j; 
-                    } 
-                } 
-            } 
-        }
-        else {
             if (isValid (i-1, j) == true) { 
                 if (isDestination (i-1, j, dest) == true) { 
                     cellDetails[i-1][j].parent_i = i; 
@@ -473,7 +445,6 @@ stack<Pair> aStarSearch(Pair size, int ** grid, Pair src, Pair dest)
                     if (cellDetails[i-1][j].f == FLT_MAX || 
                         cellDetails[i-1][j].f > fNew) { 
                         openList.insert( make_pair (fNew, make_pair (i-1, j))); 
-                        // Update the details of this cell 
                         cellDetails[i-1][j].f = fNew; 
                         cellDetails[i-1][j].g = gNew; 
                         cellDetails[i-1][j].h = hNew; 
@@ -483,8 +454,65 @@ stack<Pair> aStarSearch(Pair size, int ** grid, Pair src, Pair dest)
                 } 
             } 
         }
+        else {
+            if (isValid (i-1, j-1) == true) { 
+                if (isDestination (i-1, j-1, dest) == true) { 
+                    cellDetails[i-1][j-1].parent_i = i; 
+                    cellDetails[i-1][j-1].parent_j = j; 
+                    printf ("The destination cell is found\n"); 
+                    //tracePath (cellDetails, dest); 
+                    foundDest = true; 
+                    return(tracePath (size, cellDetails, dest)); 
+                } 
+                else if (closedList[i-1][j-1] == false && 
+                        isUnBlocked(size, grid, i-1, j-1) == true) { 
+                    gNew = cellDetails[i][j].g + 1.414; 
+                    hNew = calculateHValue(i-1, j-1, dest); 
+                    fNew = gNew + hNew; 
+                    if (cellDetails[i-1][j-1].f == FLT_MAX || 
+                        cellDetails[i-1][j-1].f > fNew) { 
+                        openList.insert( make_pair (fNew, make_pair (i-1, j-1))); 
+                        // Update the details of this cell 
+                        cellDetails[i-1][j-1].f = fNew; 
+                        cellDetails[i-1][j-1].g = gNew; 
+                        cellDetails[i-1][j-1].h = hNew; 
+                        cellDetails[i-1][j-1].parent_i = i; 
+                        cellDetails[i-1][j-1].parent_j = j; 
+                    } 
+                } 
+            } 
+        }
         //----------- (South-East) ------------ 
         if ((i % 2) == 0) {
+            if (isValid(i+1, j+1) == true) { 
+                if (isDestination(i+1, j+1, dest) == true) { 
+                    cellDetails[i+1][j+1].parent_i = i; 
+                    cellDetails[i+1][j+1].parent_j = j; 
+                    printf ("The destination cell is found\n"); 
+                    //tracePath (cellDetails, dest); 
+                    foundDest = true; 
+                    return(tracePath (size, cellDetails, dest)); 
+                } 
+                else if (closedList[i+1][j+1] == false && 
+                        isUnBlocked(size, grid, i+1, j+1) == true) { 
+                    gNew = cellDetails[i][j].g + 1.414; 
+                    hNew = calculateHValue(i+1, j+1, dest); 
+                    fNew = gNew + hNew; 
+                    if (cellDetails[i+1][j+1].f == FLT_MAX || 
+                            cellDetails[i+1][j+1].f > fNew) 
+                    { 
+                        openList.insert(make_pair(fNew,  
+                                            make_pair (i+1, j+1))); 
+                        cellDetails[i+1][j+1].f = fNew; 
+                        cellDetails[i+1][j+1].g = gNew; 
+                        cellDetails[i+1][j+1].h = hNew; 
+                        cellDetails[i+1][j+1].parent_i = i; 
+                        cellDetails[i+1][j+1].parent_j = j; 
+                    } 
+                } 
+            } 
+        }
+        else {
             if (isValid(i+1, j) == true) { 
                 if (isDestination(i+1, j, dest) == true) { 
                     cellDetails[i+1][j].parent_i = i; 
@@ -511,68 +539,10 @@ stack<Pair> aStarSearch(Pair size, int ** grid, Pair src, Pair dest)
                         cellDetails[i+1][j].parent_j = j; 
                     } 
                 } 
-            } 
-        }
-        else {
-            if (isValid(i+1, j+2) == true) { 
-                if (isDestination(i+1, j+2, dest) == true) { 
-                    cellDetails[i+1][j+2].parent_i = i; 
-                    cellDetails[i+1][j+2].parent_j = j; 
-                    printf ("The destination cell is found\n"); 
-                    //tracePath (cellDetails, dest); 
-                    foundDest = true; 
-                    return(tracePath (size, cellDetails, dest)); 
-                } 
-                else if (closedList[i+1][j+2] == false && 
-                        isUnBlocked(size, grid, i+1, j+2) == true) { 
-                    gNew = cellDetails[i][j].g + 1.414; 
-                    hNew = calculateHValue(i+1, j+2, dest); 
-                    fNew = gNew + hNew; 
-                    if (cellDetails[i+1][j+2].f == FLT_MAX || 
-                            cellDetails[i+1][j+2].f > fNew) 
-                    { 
-                        openList.insert(make_pair(fNew,  
-                                            make_pair (i+1, j+2))); 
-                        cellDetails[i+1][j+2].f = fNew; 
-                        cellDetails[i+1][j+2].g = gNew; 
-                        cellDetails[i+1][j+2].h = hNew; 
-                        cellDetails[i+1][j+2].parent_i = i; 
-                        cellDetails[i+1][j+2].parent_j = j; 
-                    } 
-                } 
             }
         }
         //----------- (South-West) ------------ 
         if ((i % 2) == 0) {
-            if (isValid (i+1, j-2) == true) { 
-                if (isDestination(i+1, j-2, dest) == true) { 
-                    cellDetails[i+1][j-2].parent_i = i; 
-                    cellDetails[i+1][j-2].parent_j = j; 
-                    printf("The destination cell is found\n"); 
-                    //tracePath(cellDetails, dest); 
-                    foundDest = true; 
-                    return(tracePath (size, cellDetails, dest)); 
-                } 
-                else if (closedList[i+1][j-2] == false && 
-                         isUnBlocked(size, grid, i+1, j-2) == true) { 
-                    gNew = cellDetails[i][j].g + 1.414; 
-                    hNew = calculateHValue(i+1, j-2, dest); 
-                    fNew = gNew + hNew; 
-                    if (cellDetails[i+1][j-2].f == FLT_MAX || 
-                        cellDetails[i+1][j-2].f > fNew) 
-                    { 
-                        openList.insert(make_pair(fNew,  
-                                        make_pair(i+1, j-2))); 
-                        cellDetails[i+1][j-2].f = fNew; 
-                        cellDetails[i+1][j-2].g = gNew; 
-                        cellDetails[i+1][j-2].h = hNew; 
-                        cellDetails[i+1][j-2].parent_i = i; 
-                        cellDetails[i+1][j-2].parent_j = j; 
-                    } 
-                } 
-            }  
-        } 
-        else { 
             if (isValid (i+1, j) == true) { 
                 if (isDestination(i+1, j, dest) == true) { 
                     cellDetails[i+1][j].parent_i = i; 
@@ -597,6 +567,35 @@ stack<Pair> aStarSearch(Pair size, int ** grid, Pair src, Pair dest)
                         cellDetails[i+1][j].h = hNew; 
                         cellDetails[i+1][j].parent_i = i; 
                         cellDetails[i+1][j].parent_j = j; 
+                    } 
+                } 
+            }  
+        } 
+        else { 
+            if (isValid (i+1, j-1) == true) { 
+                if (isDestination(i+1, j-1, dest) == true) { 
+                    cellDetails[i+1][j-1].parent_i = i; 
+                    cellDetails[i+1][j-1].parent_j = j; 
+                    printf("The destination cell is found\n"); 
+                    //tracePath(cellDetails, dest); 
+                    foundDest = true; 
+                    return(tracePath (size, cellDetails, dest)); 
+                } 
+                else if (closedList[i+1][j-1] == false && 
+                         isUnBlocked(size, grid, i+1, j-1) == true) { 
+                    gNew = cellDetails[i][j].g + 1.414; 
+                    hNew = calculateHValue(i+1, j-1, dest); 
+                    fNew = gNew + hNew; 
+                    if (cellDetails[i+1][j-1].f == FLT_MAX || 
+                        cellDetails[i+1][j-1].f > fNew) 
+                    { 
+                        openList.insert(make_pair(fNew,  
+                                        make_pair(i+1, j-1))); 
+                        cellDetails[i+1][j-1].f = fNew; 
+                        cellDetails[i+1][j-1].g = gNew; 
+                        cellDetails[i+1][j-1].h = hNew; 
+                        cellDetails[i+1][j-1].parent_i = i; 
+                        cellDetails[i+1][j-1].parent_j = j; 
                     } 
                 } 
             } 
