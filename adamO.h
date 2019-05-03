@@ -42,6 +42,11 @@ struct vec9
     float x, y;
 };
 
+struct vec10
+{
+    float x, y;
+};
+
 struct Boxes
 {
     stateID ID;
@@ -51,9 +56,20 @@ struct Boxes
     Boxes(stateID);
 };
 
+struct BattleBoxes
+{
+    stateID ID;
+    float width, height;
+    vec10 center;
+    BattleBoxes();
+    BattleBoxes(stateID);
+};
+
 struct AOglobal
 {
-    Boxes box[11];
+    Boxes box[8];
+    BattleBoxes bbox[3];
+    GLuint endTurnTex;
     AOglobal();
 };
 
@@ -61,10 +77,10 @@ class uiboxes
 {
     private:
         int size;
-        Boxes boxes[11];
+        Boxes boxes[8];
         float xres, yres;
     public:
-        uiboxes(Boxes[11], float, float);
+        uiboxes(Boxes[8], float, float);
         ~uiboxes(){}
         void procMouseInput(int, int);
         void procKeyInput(int key);
@@ -73,6 +89,21 @@ class uiboxes
         void check_mouse(int, int, int);
 };
 
+class battleboxes
+{
+    private:
+        int size;
+        BattleBoxes btboxes[3];
+        float xres, yres;
+    public:
+        battleboxes(BattleBoxes[3], float, float);
+        ~battleboxes(){}
+        void procMouseInput(int, int);
+        void procKeyInput(int key);
+        void drawBattleBoxes();
+        void posBattleBoxes(int);
+        void check_mouse(int, int, int);
+};
 
 void showAdamPicture(int x, int y, GLuint textid);
 

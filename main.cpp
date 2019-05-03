@@ -99,7 +99,7 @@ class Global {
 		int xres, yres;
 		int n;
 		int count;
-	        bool ctrls = true;
+	    bool ctrls = true;
 		Global() {
 			xres = 1200;
 			yres = 900;
