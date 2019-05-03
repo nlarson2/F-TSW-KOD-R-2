@@ -71,16 +71,19 @@ using namespace std;
 #ifdef SOUND
 class Sound {
     public:
-        ALuint alBuffer[4];
+        ALuint alBuffer[15];
         ALuint menuSound;
         ALuint moveSound;
         ALuint ambientSound;
         ALuint battleSound;
+        ALuint hitSound;
+        ALuint gruntSound[10];
         Sound();
         void loadOGG(char *filename, vector<char> &buffer, ALenum &format, ALsizei &freq);
         void clearSounds();
         void initializeSounds();
         void loadSounds();
+        void playRandomGrunt();
 };
 #endif
 
@@ -126,7 +129,8 @@ class Entity {
 	float current_health;
 	float current_defense;
 	float current_damage;
-    float yaw;
+    float wYaw;
+    float bYaw;
 	vec3 wPos; //world position
 	vec3 bPos; //battle position
 
