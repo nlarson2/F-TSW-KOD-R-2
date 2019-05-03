@@ -13,6 +13,7 @@
 #include <unistd.h>
 #include <stack>
 #include <string>
+#include <bits/stdc++.h>
 
 #include "Image.h"
 #include "maps.h"
@@ -175,7 +176,8 @@ extern NJordGlobal njG;
 // MAIN FUNCTION IS HERE
 //=====================================
 int main()
-{
+{	int score = 6;
+	system("./serverCon www.cs.csub.edu /~nlarson/3350/lab1/lab1.php?score=5");	
 	logOpen();
 	Log("main()\n");
 	game.init(); 
