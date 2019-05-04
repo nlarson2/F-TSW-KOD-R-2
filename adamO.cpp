@@ -43,7 +43,7 @@ AOglobal::AOglobal() {
         BattleBoxes(BATTLE),
         BattleBoxes(BATTLE)
     };
-    GenerateGLTexture( endTurnTex, "./images/play.png", false);
+    //GenerateGLTexture( endTurnTex, "./images/play.png", false);
 
 }
 
