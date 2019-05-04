@@ -494,8 +494,8 @@ void draw_nickLCredit(int x, int y, GLuint texture)
 /*=======================================*/
 /*============MODEL STUCTURE=============*/
 Model::Model() {
-	const char * objFile = "models/tank/Tank.obj";
-	const char * texFile = "models/tank/TankTexture.png";
+	const char * objFile = "models/characters/Tank.obj";
+	const char * texFile = "models/characters/ModelTexturePlayer.png";
 	if(!GenerateModel(objFile)) {
 		printf("Failed to generate model\n");
 	}
@@ -554,11 +554,18 @@ void Model::draw(int x, int z, float y, float yaw)
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-static Model tiles[4] = {  
-	Model( "tiles/waterTile.obj" , "tiles/waterTexture.png" ),
-	Model( "tiles/grassTile.obj" , "tiles/grassTexture.png" ),
-	Model( "tiles/mountain.obj" , "tiles/mountainTex.png" ),
-	Model( "tiles/forestTile.obj" , "tiles/forestTexture.png" )
+
+static Model tiles[9] = {  
+	Model( "models/tiles/waterTile.obj" , "models/tiles/waterTexture.png" ),
+	Model( "models/tiles/grassTile.obj" , "models/tiles/grassTexture.png" ),
+	Model( "models/tiles/mountain.obj" , "models/tiles/mountainTex.png" ),
+	Model( "models/tiles/forestTile.obj" , "models/tiles/forestTexture.png" ),
+	Model( "models/tiles/CastleTile.obj" , "models/tiles/CastleTile.png" ),
+	Model( "models/tiles/CastleTile2.obj" , "models/tiles/CastleTile.png" ),
+	Model( "models/tiles/waterTile_smallBoat.obj" , "models/tiles/waterTile_smallBoat.png" ),
+	Model( "models/tiles/waterTile_medBoat.obj" , "models/tiles/waterTile_medBoat.png" ),
+	Model( "models/tiles/waterTile_lgBoat.obj" , "models/tiles/waterTile_lgBoat.png" )
+
 };
 
 bool Model::GenerateModel( const char * objFile) {

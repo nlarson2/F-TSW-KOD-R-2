@@ -628,8 +628,16 @@ void Sound::playRandomGrunt()
 
 //==========================[ENTITY CLASS]===============================
 
-static Model pModel[1] = {
-	Model("models/tank/Tank.obj","models/tank/TankTexture.png")
+static Model pModel[9] = {
+	Model("models/characters/Tank.obj","models/characters/ModelTexturePlayer.png"),
+	Model("models/characters/Tank.obj","models/characters/ModelTexturePlayer.png"),
+	Model("models/characters/Tank.obj","models/characters/ModelTexturePlayer.png"),
+	Model("models/characters/Archer.obj","models/characters/ModelTextureAlly.png"),
+	Model("models/characters/Archer.obj","models/characters/ModelTextureAlly.png"),
+	Model("models/characters/Archer.obj","models/characters/ModelTextureAlly.png"),
+	Model("models/characters/Spearman.obj","models/characters/ModelTextureEnemy.png"),
+	Model("models/characters/Spearman.obj","models/characters/ModelTextureEnemy.png"),
+	Model("models/characters/Spearman.obj","models/characters/ModelTextureEnemy.png"),
 };
 
 //==========[Health Functions]=========
