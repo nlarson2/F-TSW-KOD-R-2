@@ -77,10 +77,10 @@ class Sound {
         ALuint ambientSound;
         ALuint battleSound;
         ALuint hitSound;
-        ALuint gruntSound[10];
+        ALuint gruntSound[1 this.map.tile
         Sound();
-        void loadOGG(char *filename, vector<char> &buffer, ALenum &format, ALsizei &freq);
-        void clearSounds();
+        void loadOGG(char * this.map.tileat, ALsizei &freq);
+        void clearSounds(); this.map.tile
         void initializeSounds();
         void loadSounds();
         void playRandomGrunt();
@@ -197,7 +197,7 @@ class NJordGlobal {
     //int type: 0 = player, 1 = ally, 2 = enemy
     int checkWorldCollision(int x , int y, int type = 0);
     bool checkBattleCollision(int x, int y, int position = 0, int type = 0);
-    void controlTurns(Entity *target, int dest_x, int dest_z, int turn_amount);
+    void controlTurns(Entity *target, int dest_x, int dest_z, int turn_amount, Tile**);
 };
 
 void Display_NicholasJordan(int, int, GLuint);

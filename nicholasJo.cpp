@@ -244,7 +244,7 @@ bool NJordGlobal::checkBattleCollision(int x, int z, int position, int type)
 	return false;
 }
 
-void NJordGlobal::controlTurns(Entity *target, int dest_x, int dest_z, int amount)
+void NJordGlobal::controlTurns(Entity *target, int dest_x, int dest_z, int amount, Tile** tile)
 {
 	if (target->moveRange <= 0) {
 		return;
@@ -255,8 +255,10 @@ void NJordGlobal::controlTurns(Entity *target, int dest_x, int dest_z, int amoun
 	} else {
 		target->moveRange -= amount-1;
 	}
+	tile[(int)target->bPos.x][(int)target->bPos.z].occ = false;
 	target->bPos.x = dest_x;
 	target->bPos.z = dest_z;
+	tile[(int)target->bPos.x][(int)target->bPos.z].occ = true;
 }
 
 //==========================[SOUND CLASS]===============================

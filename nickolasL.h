@@ -130,6 +130,7 @@ private:
 
 struct Tile {
 	int modelID;
+	bool occ;//occupied
 	int x,z;
 	float radius = 1;
 	bool collisionDetect(float x, float z);
@@ -137,10 +138,9 @@ struct Tile {
 };
 
 class Map {
-private:
+public:
 	int mapW, mapH;
 	Tile ** tile;
-public:
 	Map(){}
 	Map(int ** map, int _width, int _height);
 	~Map();
@@ -214,6 +214,7 @@ protected:
 	vec3 pickPos;
 	Matrix projMatrix;
 	vector<pair<int,int>> path;
+	bool initializedPos;
 public:
 	WorldGS(int ** mapArr,int sizex,int sizey,
 	float camRot, int posx, int posz,

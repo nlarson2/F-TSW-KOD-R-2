@@ -51,18 +51,18 @@ struct cell
 typedef vector<vector<cell>> CellGroup;
 
 bool isValid(int, int);
-bool isUnBlocked(Pair, int**, int, int);
+bool isUnBlocked(Pair, Tile **, int, int);
 bool isDestination(int, int, Pair);
 double calculateHValue(int, int, Pair);
 
 //stack<Pair> tracePath(cell[][25], Pair dest);//changed
 stack<Pair> tracePath(Pair, CellGroup, Pair dest);
 //stack<Pair> aStarSearch(int[][25], Pair src, Pair dest);//changed
-stack<Pair> aStarSearch(Pair, int**, Pair src, Pair dest);
+stack<Pair> aStarSearch(Pair, Tile **, Pair src, Pair dest);
 
 void displayMap(int[][25]);
 
-stack<Pair> Movement(Pair, int**, int x, int z, vec2); 
+stack<Pair> Movement(Pair, Tile **, int x, int z, vec2); 
 void showMarbienPicture(int x, int y, GLuint textid);
 
 #endif
