@@ -210,7 +210,8 @@ protected:
 	Camera camera;
 	float xres, yres;
     uiboxes UI;
-	Picker pkr;
+	allyboxes AB;
+    Picker pkr;
 	vec3 pickPos;
 	Matrix projMatrix;
 	vector<pair<int,int>> path;
