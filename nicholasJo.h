@@ -77,10 +77,10 @@ class Sound {
         ALuint ambientSound;
         ALuint battleSound;
         ALuint hitSound;
-        ALuint gruntSound[1 this.map.tile
+        ALuint gruntSound[10];
         Sound();
-        void loadOGG(char * this.map.tileat, ALsizei &freq);
-        void clearSounds(); this.map.tile
+        void loadOGG(char *, vector<char>&, ALenum&, ALsizei&);
+        void clearSounds();
         void initializeSounds();
         void loadSounds();
         void playRandomGrunt();

@@ -632,13 +632,13 @@ void Sound::playRandomGrunt()
 
 static Model pModel[9] = {
 	Model("models/characters/Tank.obj","models/characters/ModelTexturePlayer.png"),
-	Model("models/characters/Tank.obj","models/characters/ModelTexturePlayer.png"),
-	Model("models/characters/Tank.obj","models/characters/ModelTexturePlayer.png"),
+	Model("models/characters/Tank.obj","models/characters/ModelTextureAlly.png"),
+	Model("models/characters/Tank.obj","models/characters/ModelTextureEnemy.png"),
+	Model("models/characters/Archer.obj","models/characters/ModelTexturePlayer.png"),
 	Model("models/characters/Archer.obj","models/characters/ModelTextureAlly.png"),
-	Model("models/characters/Archer.obj","models/characters/ModelTextureAlly.png"),
-	Model("models/characters/Archer.obj","models/characters/ModelTextureAlly.png"),
-	Model("models/characters/Spearman.obj","models/characters/ModelTextureEnemy.png"),
-	Model("models/characters/Spearman.obj","models/characters/ModelTextureEnemy.png"),
+	Model("models/characters/Archer.obj","models/characters/ModelTextureEnemy.png"),
+	Model("models/characters/Spearman.obj","models/characters/ModelTexturePlayer.png"),
+	Model("models/characters/Spearman.obj","models/characters/ModelTextureAlly.png"),
 	Model("models/characters/Spearman.obj","models/characters/ModelTextureEnemy.png"),
 };
 
@@ -836,14 +836,20 @@ Ally::Ally()
 		case 0:
 			wPos.x = 6;
 			wPos.z = 7;
+			bPos.x = 1;
+			bPos.z = 0;
 			break;
 		case 1:
 			wPos.x = 0;
 			wPos.z = 0;
+			bPos.x = 0;
+			bPos.z = 0;
 			break;
 		case 2:
 			wPos.x = 0;
 			wPos.z = 0;
+			bPos.x = 0;
+			bPos.z = 1;
 			break;
 	}
     wYaw = 180.0;
@@ -875,16 +881,16 @@ void Ally::loadAllyCombatType(string c)
 {
     Log("Ally::loadAllyCombatType(string c), c = %s\n", c.c_str());
 	if (c == "Archer") {
-        modelID = 0;
+        modelID = 4;
         combatType = c;
 		setMaxHealth(50.0);
 		setDefaultDefense(0.3);
 		setDefaultDamage(10.0);
 		setMaxTurns(2);
-        moveRange = 1;
+        moveRange = 2;
         attackRange = 3;
 	} else if (c == "Soldier") {
-        modelID = 0;
+        modelID = 7;
         combatType = c;
 		setMaxHealth(75.0);
 		setDefaultDefense(0.5);
@@ -893,7 +899,7 @@ void Ally::loadAllyCombatType(string c)
         moveRange = 3;
         attackRange = 1;
 	} else if (c == "Tank") {
-        modelID = 0;
+        modelID = 1;
         combatType = c;
 		setMaxHealth(100.0);
 		setDefaultDefense(0.70);
@@ -914,7 +920,7 @@ void Ally::setAllyCombatType()
     uniform_int_distribution<int> distribution(0, 2);
 	switch (distribution(generator)) {
 		case 0:
-            modelID = 0;
+            modelID = 4;
 			combatType = "Archer";
 			setMaxHealth(50.0);
 			setDefaultDefense(0.3);
@@ -924,7 +930,7 @@ void Ally::setAllyCombatType()
             attackRange = 3;
 			break;
 		case 1:
-            modelID = 0;
+            modelID = 7;
 			combatType = "Soldier";
 			setMaxHealth(75.0);
 			setDefaultDefense(0.5);
@@ -934,7 +940,7 @@ void Ally::setAllyCombatType()
             attackRange = 1;
 			break;
 		case 2:
-            modelID = 0;
+            modelID = 1;
 			combatType = "Tank";
 			setMaxHealth(100);
 			setDefaultDefense(0.7);
@@ -977,12 +983,20 @@ Enemy::Enemy()
     if (count == 0) {
 		wPos.x = 10;
     	wPos.z = 10;
-	} else {
+		bPos.x = 8;
+		bPos.z = 7;
+	} else if (count == 1) {
 		wPos.x = -1;
     	wPos.z = -1;
+		bPos.x = 8;
+		bPos.z = 8;
+	} else if (count == 2) {
+		wPos.x = -1;
+    	wPos.z = -1;
+		bPos.x = 7;
+		bPos.z = 8;
+
 	}
-	bPos.x = 8;
-	bPos.z = 8;
     wYaw = 0.0;
     bYaw = 0.0;
     count++;
@@ -1011,7 +1025,7 @@ void Enemy::loadEnemyCombatType(string c)
 {
     Log("Enemy::loadEnemyCombatType(string c), c = %s\n", c.c_str());
 	if (c == "Archer") {
-        modelID = 0;
+        modelID = 5;
         combatType = c;
 		setMaxHealth(50.0);
 		setDefaultDefense(0.3);
@@ -1020,7 +1034,7 @@ void Enemy::loadEnemyCombatType(string c)
         moveRange = 2;
         attackRange = 3;
 	} else if (c == "Soldier") {
-        modelID = 0;
+        modelID = 8;
         combatType = c;
 		setMaxHealth(75.0);
 		setDefaultDefense(0.5);
@@ -1029,7 +1043,7 @@ void Enemy::loadEnemyCombatType(string c)
         moveRange = 3;
         attackRange = 1;
 	} else if (c == "Tank") {
-        modelID = 0;
+        modelID = 2;
         combatType = c;
 		setMaxHealth(100.0);
 		setDefaultDefense(0.70);
@@ -1050,7 +1064,7 @@ void Enemy::setEnemyCombatType()
     uniform_int_distribution<int> distribution(0, 2);
     switch (distribution(generator)) {
 		case 0 :
-            modelID = 0;
+            modelID = 5;
 			combatType = "Archer";
 			setMaxHealth(50.0);
 			setDefaultDefense(0.3);
@@ -1060,7 +1074,7 @@ void Enemy::setEnemyCombatType()
             attackRange = 3;
 			break;
 		case 1:
-            modelID = 0;
+            modelID = 8;
 			combatType = "Soldier";
 			setMaxHealth(75.0);
 			setDefaultDefense(0.5);
@@ -1070,7 +1084,7 @@ void Enemy::setEnemyCombatType()
             attackRange = 1;
 			break;
 		case 2:
-            modelID = 0;
+            modelID = 2;
 			combatType = "Tank";
 			setMaxHealth(100);
 			setDefaultDefense(0.7);
@@ -1117,8 +1131,8 @@ Player::Player(string c)
 	bYaw = 180.0;
 	wPos.x = 7;
 	wPos.z = 7;
-	bPos.x = 0;
-	bPos.z = 0;
+	bPos.x = 1;
+	bPos.z = 1;
     count++;
 }
 
@@ -1201,7 +1215,7 @@ void Player::setPlayerCombatType(string c)
 {
     Log("Player::setPlayerCombatType(string c), c = %s\n", c.c_str());
 	if (c == "Archer") {
-        modelID = 0;
+        modelID = 3;
         combatType = c;
 		setMaxHealth(75.0);
 		setDefaultDefense(0.60);
@@ -1210,7 +1224,7 @@ void Player::setPlayerCombatType(string c)
         moveRange = 2;
         attackRange = 3;
 	} else if (c == "Soldier") {
-        modelID = 0;
+        modelID = 6;
         combatType = c;
 		setMaxHealth(100.0);
 		setDefaultDefense(0.70);
