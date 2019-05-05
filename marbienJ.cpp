@@ -19,7 +19,7 @@ bool isValid(int row, int col)
 bool isUnBlocked(Pair size, Tile ** grid, int row, int col) 
 { 
     // true if blocked else false
-    if (grid[row][col].modelID == 4 || grid[row][col].modelID == 5 || grid[row][col].modelID == 1) 
+    if (grid[row][col].modelID == 7 || grid[row][col].modelID == 8 || grid[row][col].modelID == 1) 
         return (true);
         
     return (false); 

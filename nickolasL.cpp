@@ -1172,7 +1172,7 @@ void WorldGS::drawGameState()
 	//set ortho
 
 	//draw UI
-	//UI.drawBoxes();
+	UI.drawBoxes();
 	glColor3ub(255, 255, 255);
     AB.drawAllyBoxes();
     glColor3ub(255, 255, 255);
