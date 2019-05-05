@@ -34,7 +34,7 @@ using namespace std;
 
 enum stateID
 {
-    END_TURN, CHAR_MENU, BATTLE, BOX
+    END_TURN, CHAR_MENU, BATTLE, ALLY, BOX
 };
 
 struct vec9
@@ -43,6 +43,11 @@ struct vec9
 };
 
 struct vec10
+{
+    float x, y;
+};
+
+struct vec11
 {
     float x, y;
 };
@@ -65,10 +70,20 @@ struct BattleBoxes
     BattleBoxes(stateID);
 };
 
+struct AllyBoxes
+{
+    stateID ID;
+    float width, height;
+    vec11 center;
+    AllyBoxes();
+    AllyBoxes(stateID);
+};
+
 struct AOglobal
 {
     Boxes box[8];
     BattleBoxes bbox[3];
+    AllyBoxes abox[4];
     GLuint endTurnTex;
     AOglobal();
 };
@@ -102,6 +117,22 @@ class battleboxes
         void procKeyInput(int key);
         void drawBattleBoxes();
         void posBattleBoxes(int);
+        void check_mouse(int, int, int);
+};
+
+class allyboxes
+{
+    private:
+        int size;
+        AllyBoxes alboxes[4];
+        float xres, yres;
+    public:
+        allyboxes(AllyBoxes[4], float, float);
+        ~allyboxes(){}
+        void procMouseInput(int, int);
+        void procKeyInput(int key);
+        void drawAllyBoxes();
+        void posAllyBoxes(int);
         void check_mouse(int, int, int);
 };
 

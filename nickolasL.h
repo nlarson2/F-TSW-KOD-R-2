@@ -228,7 +228,8 @@ public:
 class BattleGS : public WorldGS {
 protected:
 	battleboxes BT;
-	int turns;
+	allyboxes AB;
+    int turns;
     int count;
 public:
 	BattleGS(int ** mapArr,int sizex,int sizey,

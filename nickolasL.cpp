@@ -1134,7 +1134,7 @@ void WorldGS::drawGameState()
 BattleGS::BattleGS(int ** mapArr,int sizex,int sizey,
 		float camRot, int posx, int posz,
 		float xres, float yres) :
-		WorldGS(mapArr, sizex, sizey, camRot, posx, posz, xres, yres), BT(aog.bbox, xres, yres)
+		WorldGS(mapArr, sizex, sizey, camRot, posx, posz, xres, yres), BT(aog.bbox, xres, yres), AB(aog.abox, xres, yres)
 {
     turns = njG.allies->count + njG.player->count;
     count = 0;
@@ -1362,6 +1362,8 @@ void BattleGS::drawGameState()
     glColor3ub(255, 255, 255);
     BT.drawBattleBoxes();
 	glColor3ub(255, 255, 255);
+    AB.drawAllyBoxes();
+    glColor3ub(255, 255, 255);
 }
 
 void BattleGS::endTurn()
