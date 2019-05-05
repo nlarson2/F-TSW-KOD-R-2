@@ -993,6 +993,7 @@ int WorldGS::procMouseInput(int x, int y)
             #ifdef SOUND
                 alSourcePlay(njG.sound.moveSound);
             #endif
+                /*
                 vec2 destination(njG.player->wPos.x, njG.player->wPos.z);
                 pathStack = Movement(size, map.tile, njG.allies[0].wPos.x,
                                      njG.allies[0].wPos.z, destination);
@@ -1030,7 +1031,7 @@ int WorldGS::procMouseInput(int x, int y)
                     case 3:
                         break;
                 }
-                break;
+                break; */
             }
             case 1:
                 break;
