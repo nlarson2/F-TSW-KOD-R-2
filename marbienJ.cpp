@@ -16,15 +16,18 @@ bool isValid(int row, int col)
            (col >= 0) && (col < COL); 
 } 
   
-bool isUnBlocked(Pair size, int ** grid, int row, int col) 
+bool isUnBlocked(Pair size, Tile ** grid, int row, int col) 
 { 
-    // true if blocked else false 
-    if (grid[row][col] == 0 || grid[row][col] == 1) 
-        return (true); 
-    else
-        return (false); 
+    // true if blocked else false
+    if (grid[row][col].modelID == 4 || grid[row][col].modelID == 5 || grid[row][col].modelID == 1) 
+        return (true);
+        
+    return (false); 
 } 
-   
+bool isUnOccupied(Pair size, Tile** grid, int row, int col) {
+
+    return grid[row][col].occ ? false : true;
+}
 bool isDestination(int row, int col, Pair dest) 
 { 
     if (row == dest.first && col == dest.second) 
@@ -37,8 +40,9 @@ bool isDestination(int row, int col, Pair dest)
 double calculateHValue(int row, int col, Pair dest) 
 { 
     // distance formula 
-    return ((double)sqrt ((row-dest.first)*(row-dest.first) 
-                          + (col-dest.second)*(col-dest.second))); 
+    //return ((double)sqrt ((row-dest.first)*(row-dest.first) + (col-dest.second)*(col-dest.second))); 
+    return ((abs(row-dest.first) + abs(row+col - dest.first-dest.second) + abs(col - dest.second))/2);
+    //return(abs((dest.second - col) - (dest.first - row)));
 } 
   
 // trace path from the source to destination
@@ -72,7 +76,7 @@ stack<Pair> tracePath(Pair size, CellGroup cellDetails, Pair dest)
 } 
 
 // A* Search Algorithm 
-stack<Pair> aStarSearch(Pair size, int ** grid, Pair src, Pair dest) 
+stack<Pair> aStarSearch(Pair size, Tile ** grid, Pair src, Pair dest) 
 { 
     CellGroup cellDetails;
     for(int i = 0; i < size.first ; i++) {
@@ -318,7 +322,8 @@ stack<Pair> aStarSearch(Pair size, int ** grid, Pair src, Pair dest)
                 return(tracePath (size, cellDetails, dest)); 
             } 
             else if (closedList[i][j+1] == false && 
-                     isUnBlocked (size, grid, i, j+1) == true) 
+                     isUnBlocked (size, grid, i, j+1) == true &&
+                     isUnOccupied ( size, grid, i, j+1)) 
             { 
                 gNew = cellDetails[i][j].g + 1.0; 
                 hNew = calculateHValue (i, j+1, dest); 
@@ -350,7 +355,8 @@ stack<Pair> aStarSearch(Pair size, int ** grid, Pair src, Pair dest)
                 return(tracePath (size, cellDetails, dest)); 
             } 
             else if (closedList[i][j-1] == false && 
-                     isUnBlocked(size, grid, i, j-1) == true) 
+                     isUnBlocked(size, grid, i, j-1) == true &&
+                     isUnOccupied ( size, grid, i, j+1)) 
             { 
                 gNew = cellDetails[i][j].g + 1.0; 
                 hNew = calculateHValue(i, j-1, dest); 
@@ -381,7 +387,8 @@ stack<Pair> aStarSearch(Pair size, int ** grid, Pair src, Pair dest)
                     return(tracePath (size, cellDetails, dest)); 
                 } 
                 else if (closedList[i-1][j+1] == false && 
-                         isUnBlocked(size, grid, i-1, j+1) == true) { 
+                        isUnBlocked(size, grid, i-1, j+1) == true &&
+                        isUnOccupied ( size, grid, i, j+1)) { 
                     gNew = cellDetails[i][j].g + 1.414; 
                     hNew = calculateHValue(i-1, j+1, dest); 
                     fNew = gNew + hNew; 
@@ -409,7 +416,8 @@ stack<Pair> aStarSearch(Pair size, int ** grid, Pair src, Pair dest)
                     return(tracePath (size, cellDetails, dest)); 
                 } 
                 else if (closedList[i-1][j] == false && 
-                         isUnBlocked(size, grid, i-1, j) == true) { 
+                        isUnBlocked(size, grid, i-1, j) == true &&
+                        isUnOccupied ( size, grid, i, j+1)) { 
                     gNew = cellDetails[i][j].g + 1.414; 
                     hNew = calculateHValue(i-1, j, dest); 
                     fNew = gNew + hNew; 
@@ -438,7 +446,8 @@ stack<Pair> aStarSearch(Pair size, int ** grid, Pair src, Pair dest)
                     return(tracePath (size, cellDetails, dest)); 
                 } 
                 else if (closedList[i-1][j] == false && 
-                        isUnBlocked(size, grid, i-1, j) == true) { 
+                        isUnBlocked(size, grid, i-1, j) == true &&
+                        isUnOccupied ( size, grid, i, j+1)) { 
                     gNew = cellDetails[i][j].g + 1.414; 
                     hNew = calculateHValue(i-1, j, dest); 
                     fNew = gNew + hNew; 
@@ -465,7 +474,8 @@ stack<Pair> aStarSearch(Pair size, int ** grid, Pair src, Pair dest)
                     return(tracePath (size, cellDetails, dest)); 
                 } 
                 else if (closedList[i-1][j-1] == false && 
-                        isUnBlocked(size, grid, i-1, j-1) == true) { 
+                        isUnBlocked(size, grid, i-1, j-1) == true &&
+                        isUnOccupied ( size, grid, i, j+1)) { 
                     gNew = cellDetails[i][j].g + 1.414; 
                     hNew = calculateHValue(i-1, j-1, dest); 
                     fNew = gNew + hNew; 
@@ -494,7 +504,8 @@ stack<Pair> aStarSearch(Pair size, int ** grid, Pair src, Pair dest)
                     return(tracePath (size, cellDetails, dest)); 
                 } 
                 else if (closedList[i+1][j+1] == false && 
-                        isUnBlocked(size, grid, i+1, j+1) == true) { 
+                        isUnBlocked(size, grid, i+1, j+1) == true &&
+                        isUnOccupied ( size, grid, i, j+1)) { 
                     gNew = cellDetails[i][j].g + 1.414; 
                     hNew = calculateHValue(i+1, j+1, dest); 
                     fNew = gNew + hNew; 
@@ -523,7 +534,8 @@ stack<Pair> aStarSearch(Pair size, int ** grid, Pair src, Pair dest)
                     return(tracePath (size, cellDetails, dest)); 
                 } 
                 else if (closedList[i+1][j] == false && 
-                        isUnBlocked(size, grid, i+1, j) == true) { 
+                        isUnBlocked(size, grid, i+1, j) == true &&
+                        isUnOccupied ( size, grid, i, j+1)) { 
                     gNew = cellDetails[i][j].g + 1.414; 
                     hNew = calculateHValue(i+1, j, dest); 
                     fNew = gNew + hNew; 
@@ -553,7 +565,8 @@ stack<Pair> aStarSearch(Pair size, int ** grid, Pair src, Pair dest)
                     return(tracePath (size, cellDetails, dest)); 
                 } 
                 else if (closedList[i+1][j] == false && 
-                         isUnBlocked(size, grid, i+1, j) == true) { 
+                        isUnBlocked(size, grid, i+1, j) == true &&
+                        isUnOccupied ( size, grid, i, j+1)) { 
                     gNew = cellDetails[i][j].g + 1.414; 
                     hNew = calculateHValue(i+1, j, dest); 
                     fNew = gNew + hNew; 
@@ -582,7 +595,8 @@ stack<Pair> aStarSearch(Pair size, int ** grid, Pair src, Pair dest)
                     return(tracePath (size, cellDetails, dest)); 
                 } 
                 else if (closedList[i+1][j-1] == false && 
-                         isUnBlocked(size, grid, i+1, j-1) == true) { 
+                        isUnBlocked(size, grid, i+1, j-1) == true &&
+                        isUnOccupied ( size, grid, i, j+1)) { 
                     gNew = cellDetails[i][j].g + 1.414; 
                     hNew = calculateHValue(i+1, j-1, dest); 
                     fNew = gNew + hNew; 
@@ -601,13 +615,18 @@ stack<Pair> aStarSearch(Pair size, int ** grid, Pair src, Pair dest)
             } 
         }
     } 
-    if (foundDest == false) 
+    if (foundDest == false) {
         printf("Failed to find the Destination Cell\n"); 
+        stack<Pair> noMove;
+        noMove.push(src);
+        return noMove;
+    }
+
   
-    exit(1); 
+    //exit(1); 
 } 
 
-stack<Pair> Movement(Pair size, int ** grid, int x, int z, vec2 dest) 
+stack<Pair> Movement(Pair size, Tile ** grid, int x, int z, vec2 dest) 
 {
     //int sRow, sCol, dRow, dCol;
     bool error = false;

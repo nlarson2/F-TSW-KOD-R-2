@@ -36,7 +36,6 @@ AOglobal::AOglobal() {
         AllyBoxes(ALLY),
         AllyBoxes(ALLY)
     };
-    GenerateGLTexture( endTurnTex, "./images/play.png", false);
 }
 
 AOglobal aog;
