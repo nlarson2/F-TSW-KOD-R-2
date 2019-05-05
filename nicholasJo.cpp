@@ -246,19 +246,21 @@ bool NJordGlobal::checkBattleCollision(int x, int z, int position, int type)
 
 void NJordGlobal::controlTurns(Entity *target, int dest_x, int dest_z, int amount, Tile** tile)
 {
-	if (target->moveRange <= 0) {
-		return;
+	if (target->current_health > 0 && amount > 0) {
+		if (target->moveRange <= 0) {
+			return;
+		}
+		if (abs(target->bPos.x - dest_x) == 1 && abs(target->bPos.z - dest_z) == 1) {
+			target->moveRange--;
+			
+		} else {
+			target->moveRange -= amount-1;
+		}
+		tile[(int)target->bPos.x][(int)target->bPos.z].occ = false;
+		target->bPos.x = dest_x;
+		target->bPos.z = dest_z;
+		tile[(int)target->bPos.x][(int)target->bPos.z].occ = true;
 	}
-	if (abs(target->bPos.x - dest_x) == 1 && abs(target->bPos.z - dest_z) == 1) {
-		target->moveRange--;
-		
-	} else {
-		target->moveRange -= amount-1;
-	}
-	tile[(int)target->bPos.x][(int)target->bPos.z].occ = false;
-	target->bPos.x = dest_x;
-	target->bPos.z = dest_z;
-	tile[(int)target->bPos.x][(int)target->bPos.z].occ = true;
 }
 
 //==========================[SOUND CLASS]===============================
@@ -703,7 +705,7 @@ float Entity::getDefaultDamage()
     return default_damage;
 }
 
-void Entity::dealDamage(Entity *target)
+void Entity::dealDamage(Entity *target, Tile** tile)
 {
     Log("Entity::dealDamage(Entity &target), target->ally = %i\n", target->getAlly());
     if (this->getAlly() != target->getAlly() && target->current_health > 0 &&
@@ -712,8 +714,13 @@ void Entity::dealDamage(Entity *target)
         target->current_health -= target->current_defense * this->current_damage;
     else
         cout << "Cannot damage an ally!\n";
-    if (target->current_health < 0)
+    if (target->current_health < 0) {
         target->current_health = 0;
+		tile[(int)target->bPos.x][(int)target->bPos.z].occ = false;
+		target->bPos.x = -10;
+		target->bPos.z = -10;
+		//tile[(int)target->bPos.x][(int)target->bPos.z].occ = true;
+	}
 }
 //==========[Ally Functions]=========
 void Entity::setAlly(bool a)

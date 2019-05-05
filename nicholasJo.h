@@ -109,7 +109,7 @@ class Entity {
 	//====[Damage Functions]====
 	float getDefaultDamage();
 	float getCurrentDamage();
-	void dealDamage(Entity *target);
+	void dealDamage(Entity *target, Tile** tile);
 	//====[Ally Functions]====
 	void setAlly(bool);
 	bool getAlly();

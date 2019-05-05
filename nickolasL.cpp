@@ -1198,7 +1198,7 @@ int BattleGS::procMouseInput(int x, int y)
                     if (chkPath.x == njG.enemies[i].bPos.x &&
                         chkPath.y == njG.enemies[i].bPos.z) {
                         if (njG.player->inBattleRange(&njG.enemies[i])) {
-                            njG.player->dealDamage(&njG.enemies[i]);
+                            njG.player->dealDamage(&njG.enemies[i],  map.tile);
                             njG.player->moveRange--;
                         #ifdef SOUND
                             njG.sound.playRandomGrunt();
@@ -1251,7 +1251,7 @@ int BattleGS::procMouseInput(int x, int y)
                     if (chkPath.x == njG.enemies[i].bPos.x &&
                         chkPath.y == njG.enemies[i].bPos.z) {
                         if (njG.allies[count-1].inBattleRange(&njG.enemies[i])) {
-                            njG.allies[count-1].dealDamage(&njG.enemies[i]);
+                            njG.allies[count-1].dealDamage(&njG.enemies[i], map.tile);
                             njG.allies[count-1].moveRange--;
                         #ifdef SOUND
                             njG.sound.playRandomGrunt();
@@ -1391,13 +1391,17 @@ void BattleGS::drawGameState()
         njG.player->drawBattle();
     }
     for (int i = 0; i < njG.allies->count; i++) {
-        count == i+1 ? glColor4f(0, 0.75, 0, 0.1) : glColor3f(255, 255, 255);
-        njG.allies[i].drawBattle();
+		if (njG.enemies[i].current_health > 0) {
+        	count == i+1 ? glColor4f(0, 0.75, 0, 0.1) : glColor3f(255, 255, 255);
+        	njG.allies[i].drawBattle();
+		}
     }
     if (njG.enemies->count != 0) {
         for (int i = 0; i < njG.enemies->count; i++) {
-            glColor3f(255, 255, 255);
-			njG.enemies[i].drawBattle();
+			if (njG.enemies[i].current_health > 0) {
+            	glColor3f(255, 255, 255);
+				njG.enemies[i].drawBattle();
+			}
         }
     }
 	camera.drawCamera(0);
@@ -1438,7 +1442,7 @@ void BattleGS::endTurn()
 {
     for (int i = 0; i < njG.enemies->count; i++) {
         if (njG.enemies[i].inBattleRange(njG.player)) {
-            njG.enemies[i].dealDamage(njG.player);
+            njG.enemies[i].dealDamage(njG.player, map.tile);
             njG.enemies[i].moveRange--;
         #ifdef SOUND
             alSourcePlay(njG.sound.hitSound);

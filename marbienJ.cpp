@@ -616,7 +616,9 @@ stack<Pair> aStarSearch(Pair size, Tile ** grid, Pair src, Pair dest)
     } 
     if (foundDest == false) {
         printf("Failed to find the Destination Cell\n"); 
-        return stack<Pair>();
+        stack<Pair> noMove;
+        noMove.push(src);
+        return noMove;
     }
 
   
