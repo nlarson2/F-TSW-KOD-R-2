@@ -904,7 +904,7 @@ void Picker::rotate(float deg)
 WorldGS::WorldGS(int ** mapArr,int sizex,int sizey,
 		float camRot, int posx, int posz,
 		float xres, float yres) :
-	map(mapArr, sizex, sizey), camera(camRot, posx, posz), UI(aog.box, xres, yres)
+	map(mapArr, sizex, sizey), camera(camRot, posx, posz), UI(aog.box, xres, yres), AB(aog.abox, xres, yres)
 {	
 	this->xres = xres;
 	this->yres = yres;
@@ -1174,6 +1174,8 @@ void WorldGS::drawGameState()
 	//draw UI
 	//UI.drawBoxes();
 	glColor3ub(255, 255, 255);
+    AB.drawAllyBoxes();
+    glColor3ub(255, 255, 255);
 }
 /*=======================================*/
 /*===============BATTLEGS================*/
@@ -1181,7 +1183,7 @@ void WorldGS::drawGameState()
 BattleGS::BattleGS(int ** mapArr,int sizex,int sizey,
 		float camRot, int posx, int posz,
 		float xres, float yres) :
-		WorldGS(mapArr, sizex, sizey, camRot, posx, posz, xres, yres), BT(aog.bbox, xres, yres)
+		WorldGS(mapArr, sizex, sizey, camRot, posx, posz, xres, yres), BT(aog.bbox, xres, yres), AB(aog.abox, xres, yres)
 {
 
     turns = njG.allies->count + njG.player->count;
@@ -1440,6 +1442,8 @@ void BattleGS::drawGameState()
     glColor3ub(255, 255, 255);
     BT.drawBattleBoxes();
 	glColor3ub(255, 255, 255);
+    AB.drawAllyBoxes();
+    glColor3ub(255, 255, 255);
 }
 
 void BattleGS::endTurn()
