@@ -40,8 +40,9 @@ bool isDestination(int row, int col, Pair dest)
 double calculateHValue(int row, int col, Pair dest) 
 { 
     // distance formula 
-    return ((double)sqrt ((row-dest.first)*(row-dest.first) 
-                          + (col-dest.second)*(col-dest.second))); 
+    //return ((double)sqrt ((row-dest.first)*(row-dest.first) + (col-dest.second)*(col-dest.second))); 
+    return ((abs(row-dest.first) + abs(row+col - dest.first-dest.second) + abs(col - dest.second))/2);
+    //return(abs((dest.second - col) - (dest.first - row)));
 } 
   
 // trace path from the source to destination
