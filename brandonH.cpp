@@ -144,10 +144,10 @@ int PauseGS::procMouseInput(int x, int y)
             njG.resetAllies();
             njG.resetEnemies();
         case RETREAT:
-        #ifdef SOUND
+#ifdef SOUND
             alSourceStop(njG.sound.battleSound);
             alSourcePlay(njG.sound.ambientSound);
-        #endif
+#endif
             return -2;
             break;
         case REST:
@@ -415,6 +415,22 @@ int MenuGS::procMouseInput(int x, int y)
 
 int MenuGS::procKeyInput(int key)
 {
+    Rect r;
+    r.bot = yres/5;
+    r.left = xres/2;
+    /*
+    switch(key) {
+        case XK_a:
+            name.insert(x,1,'A');
+            break;
+        case XK_b:
+            break;
+        case XK_c:
+            break;
+    }
+    */
+    //ggprint16(&r, 16, 0xFFFFFFFF, name.c_str());
+
     return 0;//read keys
 }
 

@@ -71,6 +71,7 @@ class MenuGS : public GameState {
         bool clicked;
         Button ** buttons;
         float xres, yres;
+        int name;
     public:
         MenuGS(int, Button[5][5],int, int);
         ~MenuGS();
