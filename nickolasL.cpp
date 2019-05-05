@@ -494,8 +494,8 @@ void draw_nickLCredit(int x, int y, GLuint texture)
 /*=======================================*/
 /*============MODEL STUCTURE=============*/
 Model::Model() {
-	const char * objFile = "models/tank/Tank.obj";
-	const char * texFile = "models/tank/TankTexture.png";
+	const char * objFile = "models/characters/Tank.obj";
+	const char * texFile = "models/characters/ModelTexturePlayer.png";
 	if(!GenerateModel(objFile)) {
 		printf("Failed to generate model\n");
 	}
@@ -526,8 +526,11 @@ void Model::draw(int x, int z, float y, float yaw)
 	if(z%2 == 0)
 		posx -= 1.0f;
 	glTranslatef(posx, posy, posz);
-	glBegin(GL_TRIANGLES);
 	
+	if ( yaw > 0 ) {
+		glRotatef(yaw, 0, 1.0f, 0);
+	}	
+	glBegin(GL_TRIANGLES);
 
 	for( unsigned int i = 0 ; i < vIndices.size() ; i+=3 ) {
 		glTexCoord2f(vertTex[vtIndices.at(i)-1].x,
@@ -546,17 +549,23 @@ void Model::draw(int x, int z, float y, float yaw)
 				vert[vIndices.at(i+2)-1].y,
 				vert[vIndices.at(i+2)-1].z);
 	}
-	
 	glEnd();
 	glPopMatrix();
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-static Model tiles[4] = {  
-	Model( "tiles/waterTile.obj" , "tiles/waterTexture.png" ),
-	Model( "tiles/grassTile.obj" , "tiles/grassTexture.png" ),
-	Model( "tiles/mountain.obj" , "tiles/mountainTex.png" ),
-	Model( "tiles/forestTile.obj" , "tiles/forestTexture.png" )
+
+static Model tiles[9] = {  
+	Model( "models/tiles/waterTile.obj" , "models/tiles/waterTexture.png" ),
+	Model( "models/tiles/grassTile.obj" , "models/tiles/grassTexture.png" ),
+	Model( "models/tiles/mountain.obj" , "models/tiles/mountainTex.png" ),
+	Model( "models/tiles/forestTile.obj" , "models/tiles/forestTexture.png" ),
+	Model( "models/tiles/CastleTile.obj" , "models/tiles/CastleTile.png" ),
+	Model( "models/tiles/CastleTile2.obj" , "models/tiles/CastleTile.png" ),
+	Model( "models/tiles/waterTile_smallBoat.obj" , "models/tiles/waterTile_smallBoat.png" ),
+	Model( "models/tiles/waterTile_medBoat.obj" , "models/tiles/waterTile_medBoat.png" ),
+	Model( "models/tiles/waterTile_lgBoat.obj" , "models/tiles/waterTile_lgBoat.png" )
+
 };
 
 bool Model::GenerateModel( const char * objFile) {
@@ -653,6 +662,7 @@ Map::Map(int ** map, int _width, int _height){
 			tile[i][j].modelID = map[i][j];
 			tile[i][j].x = i;
 			tile[i][j].z = j;
+			tile[i][j].occ = false;
 
 			//tile[i][j].x = 2.0*j;
 			//tile[i][j].z = 1.70710378118f*i;
@@ -672,8 +682,12 @@ void Map::draw(){
 	for(int i = 0; i < mapH; i++){
 		for(int j = 0; j< mapW; j++){
 			//tiles[tile[i][j].modelID].pos.x = tile[i][j].x;
-			//tiles[tile[i][j].modelID].pos.z = tile[i][j].z;
+			//tiles[tile[i][j].modelID].pos.z = tile[i][j].z; 
+			if ( tile[i][j].occ) {
+				glColor3f(1.0f,0,0);
+			}
 			tiles[tile[i][j].modelID].draw(i,j);
+			glColor3f(1.0f,1.0f,1.0f);
 		}
 	}
 }
@@ -891,6 +905,9 @@ WorldGS::WorldGS(int ** mapArr,int sizex,int sizey,
 {	
 	this->xres = xres;
 	this->yres = yres;
+
+	initializedPos = false;
+	
 	initWGS_GL();
 }
 
@@ -948,7 +965,7 @@ int WorldGS::procMouseInput(int x, int y)
 	pair<int,int> size(25,25);
 	if ( chkPath.x > -1 && chkPath.y > -1) {
 		stack<pair<int,int>> pathStack = 
-            Movement(size, nlG->MainMap, njG.player->wPos.x, 
+            Movement(size, map.tile, njG.player->wPos.x, 
                      njG.player->wPos.z, chkPath);
 		path.clear();
 		while (!pathStack.empty()) {
@@ -969,13 +986,16 @@ int WorldGS::procMouseInput(int x, int y)
         switch (collision) {
             case 0:
             {
+				map.tile[(int)njG.player->wPos.x][(int)njG.player->wPos.z].occ = false;
                 njG.player->wPos.x = path.back().first;
                 njG.player->wPos.z = path.back().second;
+				map.tile[(int)njG.player->wPos.x][(int)njG.player->wPos.z].occ = true;
             #ifdef SOUND
                 alSourcePlay(njG.sound.moveSound);
             #endif
+                /*
                 vec2 destination(njG.player->wPos.x, njG.player->wPos.z);
-                pathStack = Movement(size, nlG->MainMap, njG.allies[0].wPos.x,
+                pathStack = Movement(size, map.tile, njG.allies[0].wPos.x,
                                      njG.allies[0].wPos.z, destination);
                 path.clear();
                 while(!pathStack.empty()) {
@@ -994,20 +1014,24 @@ int WorldGS::procMouseInput(int x, int y)
                                                     path.back().second, 1);
                 switch (collision) {
                     case 0:
+						map.tile[(int)njG.allies[0].wPos.x][(int)njG.allies[0].wPos.z].occ = false;
                         njG.allies[0].wPos.x = path.back().first;
                         njG.allies[0].wPos.z = path.back().second;
+						map.tile[(int)njG.allies[0].wPos.x][(int)njG.allies[0].wPos.z].occ = true;
                         break;
                     case 1:
                         path.pop_back();
+						map.tile[(int)njG.allies[0].wPos.x][(int)njG.allies[0].wPos.z].occ = false;
                         njG.allies[0].wPos.x = path.back().first;
                         njG.allies[0].wPos.z = path.back().second;
+						map.tile[(int)njG.allies[0].wPos.x][(int)njG.allies[0].wPos.z].occ = true;
                         break;
                     case 2:
                         break;
                     case 3:
                         break;
                 }
-                break;
+                break; */
             }
             case 1:
                 break;
@@ -1074,6 +1098,26 @@ void WorldGS::drawPath() {
 }
 void WorldGS::drawGameState()
 {
+	if ( !initializedPos && njG.player) {
+		for ( int i = 0; i < map.mapW; i++) {
+			for ( int j = 0; j < map.mapH; j++) {
+				if (njG.player->wPos.x == i && njG.player->wPos.z == j) {
+					map.tile[i][j].occ = true;
+				}
+				for ( int k = 0; k < njG.allies->count; k++) {
+					if ( njG.allies[k].wPos.x == i && njG.allies[k].wPos.z == j) {
+						map.tile[i][j].occ = true;
+					}
+				}
+				for ( int k = 0; k < njG.enemies->count; k++) {
+					if ( njG.enemies[k].wPos.x == i && njG.enemies[k].wPos.z == j) {
+						map.tile[i][j].occ = true;
+					}
+				}
+			}
+		}
+		initializedPos = true;
+	}
 	initWGS_GL();
 	//gluPerspective(45.0f, xres/yres, 0.1f, 100.0f);
 	// glMatrixMode(GL_MODELVIEW); glLoadIdentity();
@@ -1136,6 +1180,7 @@ BattleGS::BattleGS(int ** mapArr,int sizex,int sizey,
 		float xres, float yres) :
 		WorldGS(mapArr, sizex, sizey, camRot, posx, posz, xres, yres), BT(aog.bbox, xres, yres)
 {
+
     turns = njG.allies->count + njG.player->count;
     count = 0;
 }
@@ -1154,13 +1199,16 @@ int BattleGS::procMouseInput(int x, int y)
                     if (chkPath.x == njG.enemies[i].bPos.x &&
                         chkPath.y == njG.enemies[i].bPos.z) {
                         if (njG.player->inBattleRange(&njG.enemies[i])) {
-                            njG.player->dealDamage(&njG.enemies[i]);
+                            njG.player->dealDamage(&njG.enemies[i],  map.tile);
                             njG.player->moveRange--;
+                        #ifdef SOUND
+                            njG.sound.playRandomGrunt();
+                        #endif
                         }
                     }
                 }
 		        stack<pair<int,int>> pathStack = 
-                    Movement(size, nlG->BattleMap1, njG.player->bPos.x, 
+                    Movement(size, map.tile, njG.player->bPos.x, 
                             njG.player->bPos.z, chkPath);
 		        path.clear();
 		        while (!pathStack.empty()) {
@@ -1175,7 +1223,7 @@ int BattleGS::procMouseInput(int x, int y)
                 if (njG.checkBattleCollision(path.back().first, path.back().second, 0, 0)) {
                     njG.controlTurns(njG.player, 
                                     path.back().first, path.back().second, 
-                                    (int)path.size());
+                                    (int)path.size(), map.tile);
                 #ifdef SOUND
                     alSourcePlay(njG.sound.moveSound);
                 #endif
@@ -1183,7 +1231,7 @@ int BattleGS::procMouseInput(int x, int y)
                     path.pop_back();
                     njG.controlTurns(njG.player, 
                                     path.back().first, path.back().second, 
-                                    (int)path.size());
+                                    (int)path.size(), map.tile);
                 #ifdef SOUND
                     alSourcePlay(njG.sound.moveSound);
                 #endif
@@ -1204,13 +1252,16 @@ int BattleGS::procMouseInput(int x, int y)
                     if (chkPath.x == njG.enemies[i].bPos.x &&
                         chkPath.y == njG.enemies[i].bPos.z) {
                         if (njG.allies[count-1].inBattleRange(&njG.enemies[i])) {
-                            njG.allies[count-1].dealDamage(&njG.enemies[i]);
+                            njG.allies[count-1].dealDamage(&njG.enemies[i], map.tile);
                             njG.allies[count-1].moveRange--;
+                        #ifdef SOUND
+                            njG.sound.playRandomGrunt();
+                        #endif
                         }
                     }
                 }
 		        stack<pair<int,int>> pathStack = 
-                    Movement(size, nlG->BattleMap1, njG.allies[count-1].bPos.x, 
+                    Movement(size, map.tile, njG.allies[count-1].bPos.x, 
                             njG.allies[count-1].bPos.z, chkPath);
 		        path.clear();
 		        while (!pathStack.empty()) {
@@ -1225,7 +1276,7 @@ int BattleGS::procMouseInput(int x, int y)
                 if (njG.checkBattleCollision(path.back().first, path.back().second, 0, 0)) {
                     njG.controlTurns(&njG.allies[count-1], 
                                     path.back().first, path.back().second, 
-                                    (int)path.size());
+                                    (int)path.size(), map.tile);
                 #ifdef SOUND
                     alSourcePlay(njG.sound.moveSound);
                 #endif
@@ -1233,7 +1284,7 @@ int BattleGS::procMouseInput(int x, int y)
                     path.pop_back();
                     njG.controlTurns(njG.player, 
                                     path.back().first, path.back().second, 
-                                    (int)path.size());
+                                    (int)path.size(), map.tile);
                 #ifdef SOUND
                     alSourcePlay(njG.sound.moveSound);
                 #endif
@@ -1301,6 +1352,26 @@ void BattleGS::drawPath() {
 }
 void BattleGS::drawGameState()
 {
+	if ( !initializedPos) {
+		for ( int i = 0; i < map.mapW; i++) {
+			for ( int j = 0; j < map.mapH; j++) {
+				if (njG.player->bPos.x == i && njG.player->bPos.z == j) {
+					map.tile[i][j].occ = true;
+				}
+				for ( int k = 0; k < njG.allies->count; k++) {
+					if ( njG.allies[k].bPos.x == i && njG.allies[k].bPos.z == j) {
+						map.tile[i][j].occ = true;
+					}
+				}
+				for ( int k = 0; k < njG.enemies->count; k++) {
+					if ( njG.enemies[k].bPos.x == i && njG.enemies[k].bPos.z == j) {
+						map.tile[i][j].occ = true;
+					}
+				}
+			}
+		}
+		initializedPos = true;
+	}
 	initWGS_GL();
 	//gluPerspective(45.0f, xres/yres, 0.1f, 100.0f);
 	// glMatrixMode(GL_MODELVIEW); glLoadIdentity();
@@ -1321,13 +1392,17 @@ void BattleGS::drawGameState()
         njG.player->drawBattle();
     }
     for (int i = 0; i < njG.allies->count; i++) {
-        count == i+1 ? glColor4f(0, 0.75, 0, 0.1) : glColor3f(255, 255, 255);
-        njG.allies[i].drawBattle();
+		if (njG.enemies[i].current_health > 0) {
+        	count == i+1 ? glColor4f(0, 0.75, 0, 0.1) : glColor3f(255, 255, 255);
+        	njG.allies[i].drawBattle();
+		}
     }
     if (njG.enemies->count != 0) {
         for (int i = 0; i < njG.enemies->count; i++) {
-            glColor3f(255, 255, 255);
-			njG.enemies[i].drawBattle();
+			if (njG.enemies[i].current_health > 0) {
+            	glColor3f(255, 255, 255);
+				njG.enemies[i].drawBattle();
+			}
         }
     }
 	camera.drawCamera(0);
@@ -1368,13 +1443,16 @@ void BattleGS::endTurn()
 {
     for (int i = 0; i < njG.enemies->count; i++) {
         if (njG.enemies[i].inBattleRange(njG.player)) {
-            njG.enemies[i].dealDamage(njG.player);
+            njG.enemies[i].dealDamage(njG.player, map.tile);
             njG.enemies[i].moveRange--;
+        #ifdef SOUND
+            alSourcePlay(njG.sound.hitSound);
+        #endif
         }
         vec2 destination(njG.player->bPos.x, njG.player->bPos.z);
         pair<int, int> size(10, 10);
         if (destination.x > -1 && destination.y > -1) {
-            stack<pair<int, int>> pathStack = Movement(size, nlG->BattleMap1,
+            stack<pair<int, int>> pathStack = Movement(size, map.tile,
                     njG.enemies[i].bPos.x, njG.enemies[i].bPos.z, destination);
             path.clear();
             while (!pathStack.empty()) {
@@ -1387,12 +1465,12 @@ void BattleGS::endTurn()
             if (njG.checkBattleCollision(path.back().first, path.back().second, i, 2)) {
                 njG.controlTurns(&njG.enemies[i],
                                  path.back().first, path.back().second,
-                                 (int)path.size());
+                                 (int)path.size(), map.tile);
             } else {
                 path.pop_back();
                 njG.controlTurns(&njG.enemies[i],
                                  path.back().first, path.back().second,
-                                 (int)path.size());
+                                 (int)path.size(), map.tile);
             }
         }
     }

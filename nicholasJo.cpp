@@ -244,19 +244,23 @@ bool NJordGlobal::checkBattleCollision(int x, int z, int position, int type)
 	return false;
 }
 
-void NJordGlobal::controlTurns(Entity *target, int dest_x, int dest_z, int amount)
+void NJordGlobal::controlTurns(Entity *target, int dest_x, int dest_z, int amount, Tile** tile)
 {
-	if (target->moveRange <= 0) {
-		return;
+	if (target->current_health > 0 && amount > 0) {
+		if (target->moveRange <= 0) {
+			return;
+		}
+		if (abs(target->bPos.x - dest_x) == 1 && abs(target->bPos.z - dest_z) == 1) {
+			target->moveRange--;
+			
+		} else {
+			target->moveRange -= amount-1;
+		}
+		tile[(int)target->bPos.x][(int)target->bPos.z].occ = false;
+		target->bPos.x = dest_x;
+		target->bPos.z = dest_z;
+		tile[(int)target->bPos.x][(int)target->bPos.z].occ = true;
 	}
-	if (abs(target->bPos.x - dest_x) == 1 && abs(target->bPos.z - dest_z) == 1) {
-		target->moveRange--;
-		
-	} else {
-		target->moveRange -= amount-1;
-	}
-	target->bPos.x = dest_x;
-	target->bPos.z = dest_z;
 }
 
 //==========================[SOUND CLASS]===============================
@@ -273,10 +277,32 @@ void Sound::clearSounds()
     alDeleteSources(1, &moveSound);
     alDeleteSources(1, &ambientSound);
     alDeleteSources(1, &battleSound);
+    alDeleteSources(1, &hitSound);
+    alDeleteSources(1, &gruntSound[0]);
+    alDeleteSources(1, &gruntSound[1]);
+    alDeleteSources(1, &gruntSound[2]);
+    alDeleteSources(1, &gruntSound[3]);
+    alDeleteSources(1, &gruntSound[4]);
+    alDeleteSources(1, &gruntSound[5]);
+    alDeleteSources(1, &gruntSound[6]);
+    alDeleteSources(1, &gruntSound[7]);
+    alDeleteSources(1, &gruntSound[8]);
+    alDeleteSources(1, &gruntSound[9]);
     alDeleteBuffers(1, &alBuffer[0]);
     alDeleteBuffers(1, &alBuffer[1]);
     alDeleteBuffers(1, &alBuffer[2]);
     alDeleteBuffers(1, &alBuffer[3]);
+    alDeleteBuffers(1, &alBuffer[4]);
+    alDeleteBuffers(1, &alBuffer[5]);
+    alDeleteBuffers(1, &alBuffer[6]);
+    alDeleteBuffers(1, &alBuffer[7]);
+    alDeleteBuffers(1, &alBuffer[8]);
+    alDeleteBuffers(1, &alBuffer[9]);
+    alDeleteBuffers(1, &alBuffer[10]);
+    alDeleteBuffers(1, &alBuffer[11]);
+    alDeleteBuffers(1, &alBuffer[12]);
+    alDeleteBuffers(1, &alBuffer[13]);
+    alDeleteBuffers(1, &alBuffer[14]);
     
 	ALCcontext *Context = alcGetCurrentContext();
     ALCdevice *Device = alcGetContextsDevice(Context);
@@ -380,6 +406,106 @@ void Sound::loadSounds()
 	loadOGG(filename4, bufferData4, format4, freq4);
 	alBufferData(alBuffer[3], format4, &bufferData4[0],
 				 static_cast<ALsizei>(bufferData4.size()), freq4);
+	
+	alGenBuffers(1, &alBuffer[4]);
+	char filename5[] = "./sounds/hit.ogg";
+	vector<char> bufferData5;
+	ALenum format5;
+	ALsizei freq5;
+	loadOGG(filename5, bufferData5, format5, freq5);
+	alBufferData(alBuffer[4], format5, &bufferData5[0],
+				 static_cast<ALsizei>(bufferData5.size()), freq5);
+	
+	alGenBuffers(1, &alBuffer[5]);
+	char filename6[] = "./sounds/grunt1.ogg";
+	vector<char> bufferData6;
+	ALenum format6;
+	ALsizei freq6;
+	loadOGG(filename6, bufferData6, format6, freq6);
+	alBufferData(alBuffer[5], format6, &bufferData6[0],
+				 static_cast<ALsizei>(bufferData6.size()), freq6);
+	
+	alGenBuffers(1, &alBuffer[6]);
+	char filename7[] = "./sounds/grunt2.ogg";
+	vector<char> bufferData7;
+	ALenum format7;
+	ALsizei freq7;
+	loadOGG(filename7, bufferData7, format7, freq7);
+	alBufferData(alBuffer[6], format7, &bufferData7[0],
+				 static_cast<ALsizei>(bufferData7.size()), freq7);
+	
+	alGenBuffers(1, &alBuffer[7]);
+	char filename8[] = "./sounds/grunt3.ogg";
+	vector<char> bufferData8;
+	ALenum format8;
+	ALsizei freq8;
+	loadOGG(filename8, bufferData8, format8, freq8);
+	alBufferData(alBuffer[7], format8, &bufferData8[0],
+				 static_cast<ALsizei>(bufferData8.size()), freq8);
+	
+	alGenBuffers(1, &alBuffer[8]);
+	char filename9[] = "./sounds/grunt4.ogg";
+	vector<char> bufferData9;
+	ALenum format9;
+	ALsizei freq9;
+	loadOGG(filename9, bufferData9, format9, freq9);
+	alBufferData(alBuffer[8], format9, &bufferData9[0],
+				 static_cast<ALsizei>(bufferData9.size()), freq9);
+	
+	alGenBuffers(1, &alBuffer[9]);
+	char filename10[] = "./sounds/grunt5.ogg";
+	vector<char> bufferData10;
+	ALenum format10;
+	ALsizei freq10;
+	loadOGG(filename10, bufferData10, format10, freq10);
+	alBufferData(alBuffer[9], format10, &bufferData10[0],
+				 static_cast<ALsizei>(bufferData10.size()), freq10);
+	
+	alGenBuffers(1, &alBuffer[10]);
+	char filename11[] = "./sounds/grunt6.ogg";
+	vector<char> bufferData11;
+	ALenum format11;
+	ALsizei freq11;
+	loadOGG(filename11, bufferData11, format11, freq11);
+	alBufferData(alBuffer[10], format11, &bufferData11[0],
+				 static_cast<ALsizei>(bufferData11.size()), freq11);
+	
+	alGenBuffers(1, &alBuffer[11]);
+	char filename12[] = "./sounds/grunt7.ogg";
+	vector<char> bufferData12;
+	ALenum format12;
+	ALsizei freq12;
+	loadOGG(filename12, bufferData12, format12, freq12);
+	alBufferData(alBuffer[11], format12, &bufferData12[0],
+				 static_cast<ALsizei>(bufferData12.size()), freq12);
+	
+	alGenBuffers(1, &alBuffer[12]);
+	char filename13[] = "./sounds/grunt8.ogg";
+	vector<char> bufferData13;
+	ALenum format13;
+	ALsizei freq13;
+	loadOGG(filename13, bufferData13, format13, freq13);
+	alBufferData(alBuffer[12], format13, &bufferData13[0],
+				 static_cast<ALsizei>(bufferData13.size()), freq13);
+	
+	alGenBuffers(1, &alBuffer[13]);
+	char filename14[] = "./sounds/grunt9.ogg";
+	vector<char> bufferData14;
+	ALenum format14;
+	ALsizei freq14;
+	loadOGG(filename14, bufferData14, format14, freq14);
+	alBufferData(alBuffer[13], format14, &bufferData14[0],
+				 static_cast<ALsizei>(bufferData14.size()), freq14);
+	
+	alGenBuffers(1, &alBuffer[14]);
+	char filename15[] = "./sounds/grunt10.ogg";
+	vector<char> bufferData15;
+	ALenum format15;
+	ALsizei freq15;
+	loadOGG(filename15, bufferData15, format15, freq15);
+	alBufferData(alBuffer[14], format15, &bufferData15[0],
+				 static_cast<ALsizei>(bufferData15.size()), freq15);
+	
 	if (alGetError() == AL_INVALID_VALUE)
     	printf("ERROR3: setting menu sound\n");
 
@@ -387,34 +513,135 @@ void Sound::loadSounds()
     alGenSources(1, &moveSound);
     alGenSources(1, &ambientSound);
     alGenSources(1, &battleSound);
+    alGenSources(1, &hitSound);
+    alGenSources(1, &gruntSound[0]);
+    alGenSources(1, &gruntSound[1]);
+    alGenSources(1, &gruntSound[2]);
+    alGenSources(1, &gruntSound[3]);
+    alGenSources(1, &gruntSound[4]);
+    alGenSources(1, &gruntSound[5]);
+    alGenSources(1, &gruntSound[6]);
+    alGenSources(1, &gruntSound[7]);
+    alGenSources(1, &gruntSound[8]);
+    alGenSources(1, &gruntSound[9]);
+
     
 	alSourcei(menuSound, AL_BUFFER, alBuffer[0]);
     alSourcei(moveSound, AL_BUFFER, alBuffer[1]);
     alSourcei(ambientSound, AL_BUFFER, alBuffer[2]);
     alSourcei(battleSound, AL_BUFFER, alBuffer[3]);
+    alSourcei(hitSound, AL_BUFFER, alBuffer[4]);
+    alSourcei(gruntSound[0], AL_BUFFER, alBuffer[5]);
+    alSourcei(gruntSound[1], AL_BUFFER, alBuffer[6]);
+    alSourcei(gruntSound[2], AL_BUFFER, alBuffer[7]);
+    alSourcei(gruntSound[3], AL_BUFFER, alBuffer[8]);
+    alSourcei(gruntSound[4], AL_BUFFER, alBuffer[9]);
+    alSourcei(gruntSound[5], AL_BUFFER, alBuffer[10]);
+    alSourcei(gruntSound[6], AL_BUFFER, alBuffer[11]);
+    alSourcei(gruntSound[7], AL_BUFFER, alBuffer[12]);
+    alSourcei(gruntSound[8], AL_BUFFER, alBuffer[13]);
+    alSourcei(gruntSound[9], AL_BUFFER, alBuffer[14]);
     
 	alSourcef(menuSound, AL_GAIN, 0.5f);
     alSourcef(moveSound, AL_GAIN, 0.5f);
     alSourcef(ambientSound, AL_GAIN, 1.0f);
     alSourcef(battleSound, AL_GAIN, 1.0f);
+    alSourcef(hitSound, AL_GAIN, 1.0f);
+    alSourcef(gruntSound[0], AL_GAIN, 1.0f);
+    alSourcef(gruntSound[1], AL_GAIN, 1.0f);
+    alSourcef(gruntSound[2], AL_GAIN, 1.0f);
+    alSourcef(gruntSound[3], AL_GAIN, 1.0f);
+    alSourcef(gruntSound[4], AL_GAIN, 1.0f);
+    alSourcef(gruntSound[5], AL_GAIN, 1.0f);
+    alSourcef(gruntSound[6], AL_GAIN, 1.0f);
+    alSourcef(gruntSound[7], AL_GAIN, 1.0f);
+    alSourcef(gruntSound[8], AL_GAIN, 1.0f);
+    alSourcef(gruntSound[9], AL_GAIN, 1.0f);
     
 	alSourcef(menuSound, AL_PITCH, 1.0f);
     alSourcef(moveSound, AL_PITCH, 1.0f);
     alSourcef(ambientSound, AL_PITCH, 1.0f);
     alSourcef(battleSound, AL_PITCH, 1.0f);
+    alSourcef(hitSound, AL_PITCH, 1.0f);
+    alSourcef(gruntSound[0], AL_PITCH, 1.0f);
+    alSourcef(gruntSound[1], AL_PITCH, 1.0f);
+    alSourcef(gruntSound[2], AL_PITCH, 1.0f);
+    alSourcef(gruntSound[3], AL_PITCH, 1.0f);
+    alSourcef(gruntSound[4], AL_PITCH, 1.0f);
+    alSourcef(gruntSound[5], AL_PITCH, 1.0f);
+    alSourcef(gruntSound[6], AL_PITCH, 1.0f);
+    alSourcef(gruntSound[7], AL_PITCH, 1.0f);
+    alSourcef(gruntSound[8], AL_PITCH, 1.0f);
+    alSourcef(gruntSound[9], AL_PITCH, 1.0f);
 	
 	alSourcei(menuSound, AL_LOOPING, AL_FALSE);
 	alSourcei(moveSound, AL_LOOPING, AL_FALSE);
 	alSourcei(ambientSound, AL_LOOPING, AL_TRUE);
 	alSourcei(battleSound, AL_LOOPING, AL_TRUE);
+	alSourcei(hitSound, AL_LOOPING, AL_FALSE);
+	alSourcei(gruntSound[0], AL_LOOPING, AL_FALSE);
+	alSourcei(gruntSound[1], AL_LOOPING, AL_FALSE);
+	alSourcei(gruntSound[2], AL_LOOPING, AL_FALSE);
+	alSourcei(gruntSound[3], AL_LOOPING, AL_FALSE);
+	alSourcei(gruntSound[4], AL_LOOPING, AL_FALSE);
+	alSourcei(gruntSound[5], AL_LOOPING, AL_FALSE);
+	alSourcei(gruntSound[6], AL_LOOPING, AL_FALSE);
+	alSourcei(gruntSound[7], AL_LOOPING, AL_FALSE);
+	alSourcei(gruntSound[8], AL_LOOPING, AL_FALSE);
+	alSourcei(gruntSound[9], AL_LOOPING, AL_FALSE);
 }
 
+void Sound::playRandomGrunt()
+{
+	random_device generator;
+    uniform_int_distribution<int> distribution(0, 9);
+    switch (distribution(generator)) {
+		case 0:
+			alSourcePlay(njG.sound.gruntSound[0]);
+			break;
+		case 1:
+			alSourcePlay(njG.sound.gruntSound[1]);
+			break;
+		case 2:
+			alSourcePlay(njG.sound.gruntSound[2]);
+			break;
+		case 3:
+			alSourcePlay(njG.sound.gruntSound[3]);
+			break;
+		case 4:
+			alSourcePlay(njG.sound.gruntSound[4]);
+			break;
+		case 5:
+			alSourcePlay(njG.sound.gruntSound[5]);
+			break;
+		case 6:
+			alSourcePlay(njG.sound.gruntSound[6]);
+			break;
+		case 7:
+			alSourcePlay(njG.sound.gruntSound[7]);
+			break;
+		case 8:
+			alSourcePlay(njG.sound.gruntSound[8]);
+			break;
+		case 9:
+			alSourcePlay(njG.sound.gruntSound[9]);
+			break;
+	}
+}
 #endif
 
 //==========================[ENTITY CLASS]===============================
 
-static Model pModel[1] = {
-	Model("models/tank/Tank.obj","models/tank/TankTexture.png")
+static Model pModel[9] = {
+	Model("models/characters/Tank.obj","models/characters/ModelTexturePlayer.png"),
+	Model("models/characters/Tank.obj","models/characters/ModelTextureAlly.png"),
+	Model("models/characters/Tank.obj","models/characters/ModelTextureEnemy.png"),
+	Model("models/characters/Archer.obj","models/characters/ModelTexturePlayer.png"),
+	Model("models/characters/Archer.obj","models/characters/ModelTextureAlly.png"),
+	Model("models/characters/Archer.obj","models/characters/ModelTextureEnemy.png"),
+	Model("models/characters/Spearman.obj","models/characters/ModelTexturePlayer.png"),
+	Model("models/characters/Spearman.obj","models/characters/ModelTextureAlly.png"),
+	Model("models/characters/Spearman.obj","models/characters/ModelTextureEnemy.png"),
 };
 
 //==========[Health Functions]=========
@@ -478,7 +705,7 @@ float Entity::getDefaultDamage()
     return default_damage;
 }
 
-void Entity::dealDamage(Entity *target)
+void Entity::dealDamage(Entity *target, Tile** tile)
 {
     Log("Entity::dealDamage(Entity &target), target->ally = %i\n", target->getAlly());
     if (this->getAlly() != target->getAlly() && target->current_health > 0 &&
@@ -487,8 +714,13 @@ void Entity::dealDamage(Entity *target)
         target->current_health -= target->current_defense * this->current_damage;
     else
         cout << "Cannot damage an ally!\n";
-    if (target->current_health < 0)
+    if (target->current_health < 0) {
         target->current_health = 0;
+		tile[(int)target->bPos.x][(int)target->bPos.z].occ = false;
+		target->bPos.x = -10;
+		target->bPos.z = -10;
+		//tile[(int)target->bPos.x][(int)target->bPos.z].occ = true;
+	}
 }
 //==========[Ally Functions]=========
 void Entity::setAlly(bool a)
@@ -532,12 +764,12 @@ void Entity::resetStats()
 
 void Entity::drawWorld()
 {
-    pModel[this->modelID].draw(this->wPos.x, this->wPos.z, 0.3);
+    pModel[this->modelID].draw(this->wPos.x, this->wPos.z, 0.3, wYaw);
 }
 
 void Entity::drawBattle()
 {
-    pModel[this->modelID].draw(this->bPos.x, this->bPos.z, 0.3);
+    pModel[this->modelID].draw(this->bPos.x, this->bPos.z, 0.3, bYaw);
 }
 
 bool Entity::inWorldRange(Entity *target)
@@ -611,17 +843,24 @@ Ally::Ally()
 		case 0:
 			wPos.x = 6;
 			wPos.z = 7;
+			bPos.x = 1;
+			bPos.z = 0;
 			break;
 		case 1:
 			wPos.x = 0;
 			wPos.z = 0;
+			bPos.x = 0;
+			bPos.z = 0;
 			break;
 		case 2:
 			wPos.x = 0;
 			wPos.z = 0;
+			bPos.x = 0;
+			bPos.z = 1;
 			break;
 	}
-    yaw = 0.0;
+    wYaw = 180.0;
+    bYaw = 180.0;
     count++;
 }
 
@@ -649,16 +888,16 @@ void Ally::loadAllyCombatType(string c)
 {
     Log("Ally::loadAllyCombatType(string c), c = %s\n", c.c_str());
 	if (c == "Archer") {
-        modelID = 0;
+        modelID = 4;
         combatType = c;
 		setMaxHealth(50.0);
 		setDefaultDefense(0.3);
 		setDefaultDamage(10.0);
 		setMaxTurns(2);
-        moveRange = 1;
+        moveRange = 2;
         attackRange = 3;
 	} else if (c == "Soldier") {
-        modelID = 0;
+        modelID = 7;
         combatType = c;
 		setMaxHealth(75.0);
 		setDefaultDefense(0.5);
@@ -667,7 +906,7 @@ void Ally::loadAllyCombatType(string c)
         moveRange = 3;
         attackRange = 1;
 	} else if (c == "Tank") {
-        modelID = 0;
+        modelID = 1;
         combatType = c;
 		setMaxHealth(100.0);
 		setDefaultDefense(0.70);
@@ -688,7 +927,7 @@ void Ally::setAllyCombatType()
     uniform_int_distribution<int> distribution(0, 2);
 	switch (distribution(generator)) {
 		case 0:
-            modelID = 0;
+            modelID = 4;
 			combatType = "Archer";
 			setMaxHealth(50.0);
 			setDefaultDefense(0.3);
@@ -698,7 +937,7 @@ void Ally::setAllyCombatType()
             attackRange = 3;
 			break;
 		case 1:
-            modelID = 0;
+            modelID = 7;
 			combatType = "Soldier";
 			setMaxHealth(75.0);
 			setDefaultDefense(0.5);
@@ -708,7 +947,7 @@ void Ally::setAllyCombatType()
             attackRange = 1;
 			break;
 		case 2:
-            modelID = 0;
+            modelID = 1;
 			combatType = "Tank";
 			setMaxHealth(100);
 			setDefaultDefense(0.7);
@@ -751,13 +990,22 @@ Enemy::Enemy()
     if (count == 0) {
 		wPos.x = 10;
     	wPos.z = 10;
-	} else {
+		bPos.x = 8;
+		bPos.z = 7;
+	} else if (count == 1) {
 		wPos.x = -1;
     	wPos.z = -1;
+		bPos.x = 8;
+		bPos.z = 8;
+	} else if (count == 2) {
+		wPos.x = -1;
+    	wPos.z = -1;
+		bPos.x = 7;
+		bPos.z = 8;
+
 	}
-	bPos.x = 8;
-	bPos.z = 8;
-    yaw = 0.0;
+    wYaw = 0.0;
+    bYaw = 0.0;
     count++;
 }
 
@@ -784,7 +1032,7 @@ void Enemy::loadEnemyCombatType(string c)
 {
     Log("Enemy::loadEnemyCombatType(string c), c = %s\n", c.c_str());
 	if (c == "Archer") {
-        modelID = 0;
+        modelID = 5;
         combatType = c;
 		setMaxHealth(50.0);
 		setDefaultDefense(0.3);
@@ -793,7 +1041,7 @@ void Enemy::loadEnemyCombatType(string c)
         moveRange = 2;
         attackRange = 3;
 	} else if (c == "Soldier") {
-        modelID = 0;
+        modelID = 8;
         combatType = c;
 		setMaxHealth(75.0);
 		setDefaultDefense(0.5);
@@ -802,7 +1050,7 @@ void Enemy::loadEnemyCombatType(string c)
         moveRange = 3;
         attackRange = 1;
 	} else if (c == "Tank") {
-        modelID = 0;
+        modelID = 2;
         combatType = c;
 		setMaxHealth(100.0);
 		setDefaultDefense(0.70);
@@ -823,7 +1071,7 @@ void Enemy::setEnemyCombatType()
     uniform_int_distribution<int> distribution(0, 2);
     switch (distribution(generator)) {
 		case 0 :
-            modelID = 0;
+            modelID = 5;
 			combatType = "Archer";
 			setMaxHealth(50.0);
 			setDefaultDefense(0.3);
@@ -833,7 +1081,7 @@ void Enemy::setEnemyCombatType()
             attackRange = 3;
 			break;
 		case 1:
-            modelID = 0;
+            modelID = 8;
 			combatType = "Soldier";
 			setMaxHealth(75.0);
 			setDefaultDefense(0.5);
@@ -843,7 +1091,7 @@ void Enemy::setEnemyCombatType()
             attackRange = 1;
 			break;
 		case 2:
-            modelID = 0;
+            modelID = 2;
 			combatType = "Tank";
 			setMaxHealth(100);
 			setDefaultDefense(0.7);
@@ -886,11 +1134,12 @@ Player::Player(string c)
     current_health = getMaxHealth();
     current_defense = getDefaultDefense();
     current_damage = getDefaultDamage();
-    yaw = 0.0;
+    wYaw = 180.0;
+	bYaw = 180.0;
 	wPos.x = 7;
 	wPos.z = 7;
-	bPos.x = 0;
-	bPos.z = 0;
+	bPos.x = 1;
+	bPos.z = 1;
     count++;
 }
 
@@ -973,7 +1222,7 @@ void Player::setPlayerCombatType(string c)
 {
     Log("Player::setPlayerCombatType(string c), c = %s\n", c.c_str());
 	if (c == "Archer") {
-        modelID = 0;
+        modelID = 3;
         combatType = c;
 		setMaxHealth(75.0);
 		setDefaultDefense(0.60);
@@ -982,7 +1231,7 @@ void Player::setPlayerCombatType(string c)
         moveRange = 2;
         attackRange = 3;
 	} else if (c == "Soldier") {
-        modelID = 0;
+        modelID = 6;
         combatType = c;
 		setMaxHealth(100.0);
 		setDefaultDefense(0.70);

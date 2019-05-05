@@ -9,9 +9,11 @@ all: game
 
 game: $(FFLAGS) $(HFLAGS)
 	g++ -g $(FFLAGS) $(CFLAGS) -o game
+	g++ serverCon.cpp -Wall -oserverCon -lssl -lcrypto	
 
 sound: $(FFLAGS) $(HFLAGS)
 	g++ -g $(FFLAGS) $(CFLAGS) $(SFLAGS) -o sound
+	g++ serverCon.cpp -Wall -oserverCon -lssl -lcrypto	
 
 clean:
 	rm -f game

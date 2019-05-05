@@ -71,16 +71,19 @@ using namespace std;
 #ifdef SOUND
 class Sound {
     public:
-        ALuint alBuffer[4];
+        ALuint alBuffer[15];
         ALuint menuSound;
         ALuint moveSound;
         ALuint ambientSound;
         ALuint battleSound;
+        ALuint hitSound;
+        ALuint gruntSound[10];
         Sound();
-        void loadOGG(char *filename, vector<char> &buffer, ALenum &format, ALsizei &freq);
+        void loadOGG(char *, vector<char>&, ALenum&, ALsizei&);
         void clearSounds();
         void initializeSounds();
         void loadSounds();
+        void playRandomGrunt();
 };
 #endif
 
@@ -106,7 +109,7 @@ class Entity {
 	//====[Damage Functions]====
 	float getDefaultDamage();
 	float getCurrentDamage();
-	void dealDamage(Entity *target);
+	void dealDamage(Entity *target, Tile** tile);
 	//====[Ally Functions]====
 	void setAlly(bool);
 	bool getAlly();
@@ -126,7 +129,8 @@ class Entity {
 	float current_health;
 	float current_defense;
 	float current_damage;
-    float yaw;
+    float wYaw;
+    float bYaw;
 	vec3 wPos; //world position
 	vec3 bPos; //battle position
 
@@ -193,7 +197,7 @@ class NJordGlobal {
     //int type: 0 = player, 1 = ally, 2 = enemy
     int checkWorldCollision(int x , int y, int type = 0);
     bool checkBattleCollision(int x, int y, int position = 0, int type = 0);
-    void controlTurns(Entity *target, int dest_x, int dest_z, int turn_amount);
+    void controlTurns(Entity *target, int dest_x, int dest_z, int turn_amount, Tile**);
 };
 
 void Display_NicholasJordan(int, int, GLuint);
