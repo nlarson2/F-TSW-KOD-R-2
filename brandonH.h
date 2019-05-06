@@ -82,9 +82,9 @@ class MenuGS : public GameState {
         int state;
         int size;
         bool clicked;
+        string name;
         Button ** buttons;
         float xres, yres;
-        int name;
     public:
         MenuGS(int, Button[5][5],int, int);
         ~MenuGS();

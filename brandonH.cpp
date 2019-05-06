@@ -210,6 +210,7 @@ MenuGS::MenuGS(int s, Button b[5][5], int xres, int yres)
 {
     state = 0;
     size = s;
+    name = "NAME";
     buttons = new Button*[5];
     for (int i=0; i<5; i++)
         buttons[i] = new Button[5];
@@ -415,28 +416,205 @@ int MenuGS::procMouseInput(int x, int y)
 
 int MenuGS::procKeyInput(int key)
 {
-    Rect r;
-    r.bot = yres/5;
-    r.left = xres/2;
-    /*
-    switch(key) {
-        case XK_a:
-            name.insert(x,1,'A');
-            break;
-        case XK_b:
-            break;
-        case XK_c:
-            break;
-    }
-    */
-    //ggprint16(&r, 16, 0xFFFFFFFF, name.c_str());
     switch(key) {
         if(state == 0) {
             case XK_Escape:
-            return -1;
+                return -1;
         }
-            };
-    return 0;//read keys
+        case XK_a:
+        case XK_A:
+        if(state == 1 && name.size() < 4) {
+            name = name +"A";
+            cout << "Inserting A" << endl;
+            cout << this->state << " " << name.size() << endl;
+
+        }
+        break;
+        case XK_b:
+        case XK_B:
+        if(state == 1 && name.size() < 4) {
+            name = name +"B";
+            cout << "Inserting B" << endl;
+        }
+            break;
+        case XK_c:
+        case XK_C:
+        if(state == 1 && name.size() < 4) {
+            name = name +"C";
+            cout << "Inserting C" << endl;
+        }
+            break;
+        case XK_d:
+        case XK_D:
+        if(state == 1 && name.size() < 4) {
+            name = name +"D";
+            cout << "Inserting D" << endl;
+        }
+            break;
+        case XK_e:
+        case XK_E:
+        if(state == 1 && name.size() < 4) {
+            name = name +"E";
+            cout << "Inserting E" << endl;
+        }
+            break;
+        case XK_f:
+        case XK_F:
+        if(state == 1 && name.size() < 4) {
+            name = name +"F";
+            cout << "Inserting F" << endl;
+        }
+            break;
+        case XK_g:
+        case XK_G:
+        if(state == 1 && name.size() < 4) {
+            name = name +"G";
+            cout << "Inserting G" << endl;
+        }
+            break;
+        case XK_h:
+        case XK_H:
+        if(state == 1 && name.size() < 4) {
+            name = name +"H";
+            cout << "Inserting H" << endl;
+        }
+            break;
+        case XK_i:
+        case XK_I:
+        if(state == 1 && name.size() < 4) {
+            name = name +"I";
+            cout << "Inserting I" << endl;
+        }
+            break;
+        case XK_j:
+        case XK_J:
+        if(state == 1 && name.size() < 4) {
+            name = name +"J";
+            cout << "Inserting J" << endl;
+        }
+            break;
+        case XK_k:
+        case XK_K:
+        if(state == 1 && name.size() < 4) {
+            name = name +"K";
+            cout << "Inserting K" << endl;
+        }
+            break;
+        case XK_l:
+        case XK_L:
+        if(state == 1 && name.size() < 4) {
+            name = name +"L";
+            cout << "Inserting L" << endl;
+        }
+            break;
+        case XK_m:
+        case XK_M:
+        if(state == 1 && name.size() < 4) {
+            name = name +"M";
+            cout << "Inserting M" << endl;
+        }
+            break;
+        case XK_n:
+        case XK_N:
+        if(state == 1 && name.size() < 4) {
+            name = name +"N";
+            cout << "Inserting N" << endl;
+        }
+            break;
+        case XK_o:
+        case XK_O:
+        if(state == 1 && name.size() < 4) {
+            name = name +"O";
+            cout << "Inserting O" << endl;
+        }
+            break;
+        case XK_p:
+        case XK_P:
+        if(state == 1 && name.size() < 4) {
+            name = name +"P";
+            cout << "Inserting P" << endl;
+        }
+            break;
+        case XK_q:
+        case XK_Q:
+        if(state == 1 && name.size() < 4) {
+            name = name +"Q";
+            cout << "Inserting Q" << endl;
+        }
+            break;
+        case XK_r:
+        case XK_R:
+        if(state == 1 && name.size() < 4) {
+            name = name +"R";
+            cout << "Inserting R" << endl;
+        }
+            break;
+        case XK_s:
+        case XK_S:
+        if(state == 1 && name.size() < 4) {
+            name = name +"S";
+            cout << "Inserting S" << endl;
+        }
+            break;
+        case XK_t:
+        case XK_T:
+        if(state == 1 && name.size() < 4) {
+            name = name +"T";
+            cout << "Inserting T" << endl;
+        }
+            break;
+        case XK_u:
+        case XK_U:
+        if(state == 1 && name.size() < 4) {
+            name = name +"U";
+            cout << "Inserting U" << endl;
+        }
+            break;
+        case XK_v:
+        case XK_V:
+        if(state == 1 && name.size() < 4) {
+            name = name +"V";
+            cout << "Inserting V" << endl;
+        }
+            break;
+        case XK_w:
+        case XK_W:
+        if(state == 1 && name.size() < 4) {
+            name = name +"W";
+            cout << "Inserting W" << endl;
+        }
+            break;
+        case XK_x:
+        case XK_X:
+        if(state == 1 && name.size() < 4) {
+            name = name +"X";
+            cout << "Inserting X" << endl;
+        }
+            break;
+        case XK_y:
+        case XK_Y:
+        if(state == 1 && name.size() < 4) {
+            name = name +"Y";
+            cout << "Inserting Y" << endl;
+        }
+            break;
+        case XK_z:
+        case XK_Z:
+        if(state == 1 && name.size() < 4) {
+            name = name +"Z";
+            cout << "Inserting Z" << endl;
+        }
+            break;
+        case XK_BackSpace:
+        if(state == 1 && name.size() > 0) {
+            name.pop_back();
+
+        }
+            break;
+        default:
+            break;
+    };
+    return 0;
 }
 
 void MenuGS::drawGameState()
@@ -474,6 +652,14 @@ void MenuGS::drawGameState()
         ggprint16(&r, 16, 0xFFFFFFFF, buttons[state][i].name.c_str());
         //buttons[j][i].center.x = xres/2;
         //buttons[j][i].center.y = yres/1.4 - (i+1)*60;
+    }
+    if(state == 1) {
+        Rect r;
+        r.bot = yres/1.25;
+        r.left = xres/2;
+        ggprint16(&r, 16, 0xFFFFFFFF, "Name:");
+        r.bot = yres/1.3;
+        ggprint16(&r, 16, 0xFFFFFFFF, this->name.c_str());
     }
 }
 
@@ -584,7 +770,7 @@ TitleGS::TitleGS(int xres, int yres)
 
 int TitleGS::procMouseInput(int,int)
 {
-    //return 6;
+    return 0;
 }
 
 int TitleGS::procKeyInput(int)

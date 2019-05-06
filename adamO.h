@@ -81,7 +81,7 @@ struct AllyBoxes
 
 struct AOglobal
 {
-    Boxes box[8];
+    Boxes box[7];
     BattleBoxes bbox[3];
     AllyBoxes abox[4];
     GLuint endTurnTex;
@@ -92,10 +92,10 @@ class uiboxes
 {
     private:
         int size;
-        Boxes boxes[8];
+        Boxes boxes[7];
         float xres, yres;
     public:
-        uiboxes(Boxes[8], float, float);
+        uiboxes(Boxes[7], float, float);
         ~uiboxes(){}
         void procMouseInput(int, int);
         void procKeyInput(int key);

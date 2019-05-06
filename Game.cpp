@@ -75,6 +75,7 @@ void Game::procKeyInput(int key)
             break;
         case 5:
             states.push(new PauseGS(bhg.tmenu,xres,yres));
+            break;
         case 6:
             states.push(new MenuGS(5, bhg.menus,  xres, yres));
             break;

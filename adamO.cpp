@@ -81,46 +81,39 @@ void uiboxes::posBoxes() {
     boxes[1].center.y = (yres/6);
     //
 
-    // Turn Change Box
-    boxes[2].width = 60;
-    boxes[2].height = 60;
-    boxes[2].center.x = xres - 60;
-    boxes[2].center.y = 60;
-    //
-
     // Character Image Box
-    boxes[3].width = 75;
-    boxes[3].height = 75;
-    boxes[3].center.x = 110;
-    boxes[3].center.y = 195;
+    boxes[2].width = 75;
+    boxes[2].height = 75;
+    boxes[2].center.x = 110;
+    boxes[2].center.y = 195;
     //
 
     // Character Info Background Box
-    boxes[4].width = 75;
-    boxes[4].height = 40;
-    boxes[4].center.x = 110;
-    boxes[4].center.y = 65;
+    boxes[3].width = 75;
+    boxes[3].height = 40;
+    boxes[3].center.x = 110;
+    boxes[3].center.y = 65;
     //
 
     // Character Name Box
-    boxes[5].width = 70;
-    boxes[5].height = 10;
-    boxes[5].center.x = 110;
-    boxes[5].center.y = 90;
+    boxes[4].width = 70;
+    boxes[4].height = 10;
+    boxes[4].center.x = 110;
+    boxes[4].center.y = 90;
     //
 
     // Character Health Bar Box
-    boxes[6].width = 70;
-    boxes[6].height = 10;
-    boxes[6].center.x = 110;
-    boxes[6].center.y = 65;
+    boxes[5].width = 70;
+    boxes[5].height = 10;
+    boxes[5].center.x = 110;
+    boxes[5].center.y = 65;
     //
 
     // Character Movements Left Box
-    boxes[7].width = 70;
-    boxes[7].height = 10;
-    boxes[7].center.x = 110;
-    boxes[7].center.y = 40;
+    boxes[6].width = 70;
+    boxes[6].height = 10;
+    boxes[6].center.x = 110;
+    boxes[6].center.y = 40;
     //
 }
 
@@ -192,14 +185,14 @@ void uiboxes::drawBoxes() {
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
 
-    for (int i = 0; i < 8; i++) {
+    for (int i = 0; i < 7; i++) {
         Boxes *s;
         glColor3ub(90, 140, 90);
-        if (i > 4 || i == 1)
+        if (i > 3 || i == 1)
             glColor3ub(40,40,40);
-        if (i == 2 || i == 3 || i == 4 || i == 0)
+        if ( i == 2 || i == 3 || i == 0)
             glColor3ub(130,130,130);
-        if (i == 5)
+        if (i == 4)
             glColor3ub(20, 20, 100);
         s = &boxes[i];
         glPushMatrix();
@@ -252,27 +245,14 @@ void uiboxes::drawBoxes() {
     ggprint16(&r, 16, 0xffffffff, mv2.c_str());
     
     glPushMatrix();
-    glTranslatef(boxes[3].center.x, boxes[3].center.y, 0);
+    glTranslatef(boxes[2].center.x, boxes[2].center.y, 0);
     glColor3ub(250,250,250);
     glBindTexture(GL_TEXTURE_2D, player->image);
     glBegin(GL_QUADS);
-        glTexCoord2f(0.0f, 1.0f); glVertex2i(-boxes[3].width+5,-boxes[3].width+5);
-        glTexCoord2f(0.0f, 0.0f); glVertex2i(-boxes[3].width+5, boxes[3].width-5);
-        glTexCoord2f(1.0f, 0.0f); glVertex2i( boxes[3].width-5, boxes[3].width-5);
-        glTexCoord2f(1.0f, 1.0f); glVertex2i( boxes[3].width-5,-boxes[3].width+5);
-    glEnd();
-    glBindTexture(GL_TEXTURE_2D, 0);
-    glPopMatrix();
-    
-    glPushMatrix();
-    glTranslatef(boxes[2].center.x, boxes[2].center.y, 0);
-    glColor3ub(250,250,250);
-    glBindTexture(GL_TEXTURE_2D, aog.endTurnTex);
-    glBegin(GL_QUADS);
-        glTexCoord2f(0.0f, 1.0f); glVertex2i(-boxes[2].width + 5, -boxes[2].width + 5);
-        glTexCoord2f(0.0f, 0.0f); glVertex2i(-boxes[2].width + 5,  boxes[2].width - 5);
-        glTexCoord2f(1.0f, 0.0f); glVertex2i( boxes[2].width - 5,  boxes[2].width - 5);
-        glTexCoord2f(1.0f, 1.0f); glVertex2i( boxes[2].width - 5, -boxes[2].width + 5);
+        glTexCoord2f(0.0f, 1.0f); glVertex2i(-boxes[2].width+5,-boxes[2].width+5);
+        glTexCoord2f(0.0f, 0.0f); glVertex2i(-boxes[2].width+5, boxes[2].width-5);
+        glTexCoord2f(1.0f, 0.0f); glVertex2i( boxes[2].width-5, boxes[2].width-5);
+        glTexCoord2f(1.0f, 1.0f); glVertex2i( boxes[2].width-5,-boxes[2].width+5);
     glEnd();
     glBindTexture(GL_TEXTURE_2D, 0);
     glPopMatrix();
@@ -444,9 +424,9 @@ void allyboxes::drawAllyBoxes() {
 //------------- UI BOXES --------------//
 //=====================================//
 
-uiboxes::uiboxes(Boxes b[10], float xres, float yres)
+uiboxes::uiboxes(Boxes b[7], float xres, float yres)
 {
-    size = 8;
+    size = 7;
     this->xres = xres;
     this->yres = yres;
     for(int i = 0; i < size; i++)
