@@ -210,7 +210,8 @@ protected:
 	Camera camera;
 	float xres, yres;
     uiboxes UI;
-	Picker pkr;
+	allyboxes AB;
+    Picker pkr;
 	vec3 pickPos;
 	Matrix projMatrix;
 	vector<pair<int,int>> path;
@@ -229,7 +230,8 @@ public:
 class BattleGS : public WorldGS {
 protected:
 	battleboxes BT;
-	int turns;
+	allyboxes AB;
+    int turns;
     int count;
 public:
 	BattleGS(int ** mapArr,int sizex,int sizey,

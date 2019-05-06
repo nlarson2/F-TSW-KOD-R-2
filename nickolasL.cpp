@@ -1,7 +1,7 @@
 //Author: Nickolas Larson
 //Date: 2/14/2019
 //Modified By: Nickolas Larson
-//Modified 3/20/2019
+//Modified: 5/5/2019
 
 #ifndef NICKOLAS_L_CPP
 #define NICKOLAS_L_CPP
@@ -555,16 +555,15 @@ void Model::draw(int x, int z, float y, float yaw)
 }
 
 
-static Model tiles[9] = {  
+static Model tiles[8] = {  
 	Model( "models/tiles/waterTile.obj" , "models/tiles/waterTexture.png" ),
 	Model( "models/tiles/grassTile.obj" , "models/tiles/grassTexture.png" ),
 	Model( "models/tiles/mountain.obj" , "models/tiles/mountainTex.png" ),
 	Model( "models/tiles/forestTile.obj" , "models/tiles/forestTexture.png" ),
-	Model( "models/tiles/CastleTile.obj" , "models/tiles/CastleTile.png" ),
-	Model( "models/tiles/CastleTile2.obj" , "models/tiles/CastleTile.png" ),
 	Model( "models/tiles/waterTile_smallBoat.obj" , "models/tiles/waterTile_smallBoat.png" ),
 	Model( "models/tiles/waterTile_medBoat.obj" , "models/tiles/waterTile_medBoat.png" ),
-	Model( "models/tiles/waterTile_lgBoat.obj" , "models/tiles/waterTile_lgBoat.png" )
+	Model( "models/tiles/waterTile_lgBoat.obj" , "models/tiles/waterTile_lgBoat.png" ),
+	Model( "models/tiles/CastleTile.obj" , "models/tiles/CastleTile.png" )
 
 };
 
@@ -684,9 +683,13 @@ void Map::draw(){
 			//tiles[tile[i][j].modelID].pos.x = tile[i][j].x;
 			//tiles[tile[i][j].modelID].pos.z = tile[i][j].z; 
 			if ( tile[i][j].occ) {
-				glColor3f(1.0f,0,0);
+				//glColor3f(1.0f,0,0);
 			}
-			tiles[tile[i][j].modelID].draw(i,j);
+			if (tile[i][j].modelID == 8) {
+				tiles[7].draw(i, j, 0, 120);
+			} else {
+				tiles[tile[i][j].modelID].draw(i,j);
+			}
 			glColor3f(1.0f,1.0f,1.0f);
 		}
 	}
@@ -901,7 +904,7 @@ void Picker::rotate(float deg)
 WorldGS::WorldGS(int ** mapArr,int sizex,int sizey,
 		float camRot, int posx, int posz,
 		float xres, float yres) :
-	map(mapArr, sizex, sizey), camera(camRot, posx, posz), UI(aog.box, xres, yres)
+	map(mapArr, sizex, sizey), camera(camRot, posx, posz), UI(aog.box, xres, yres), AB(aog.abox, xres, yres)
 {	
 	this->xres = xres;
 	this->yres = yres;
@@ -1130,13 +1133,13 @@ void WorldGS::drawGameState()
 	glLoadIdentity();
 	camera.update();
 	map.draw();
-	drawPath();
+	//drawPath();
     njG.player = Player::getInstance();
     if (njG.player->count != 0) {
         njG.player->drawWorld();
     }
     if (njG.allies->count != 0) {
-        njG.allies[0].drawWorld();
+       // njG.allies[0].drawWorld();
     }
 	if (njG.enemies->count != 0) {
         njG.enemies[0].drawWorld();
@@ -1171,6 +1174,8 @@ void WorldGS::drawGameState()
 	//draw UI
 	UI.drawBoxes();
 	glColor3ub(255, 255, 255);
+    AB.drawAllyBoxes();
+    glColor3ub(255, 255, 255);
 }
 /*=======================================*/
 /*===============BATTLEGS================*/
@@ -1178,7 +1183,7 @@ void WorldGS::drawGameState()
 BattleGS::BattleGS(int ** mapArr,int sizex,int sizey,
 		float camRot, int posx, int posz,
 		float xres, float yres) :
-		WorldGS(mapArr, sizex, sizey, camRot, posx, posz, xres, yres), BT(aog.bbox, xres, yres)
+		WorldGS(mapArr, sizex, sizey, camRot, posx, posz, xres, yres), BT(aog.bbox, xres, yres), AB(aog.abox, xres, yres)
 {
 
     turns = njG.allies->count + njG.player->count;
@@ -1392,7 +1397,7 @@ void BattleGS::drawGameState()
         njG.player->drawBattle();
     }
     for (int i = 0; i < njG.allies->count; i++) {
-		if (njG.enemies[i].current_health > 0) {
+		if (njG.allies[i].current_health > 0) {
         	count == i+1 ? glColor4f(0, 0.75, 0, 0.1) : glColor3f(255, 255, 255);
         	njG.allies[i].drawBattle();
 		}
@@ -1437,43 +1442,48 @@ void BattleGS::drawGameState()
     glColor3ub(255, 255, 255);
     BT.drawBattleBoxes();
 	glColor3ub(255, 255, 255);
+    AB.drawAllyBoxes();
+    glColor3ub(255, 255, 255);
 }
 
 void BattleGS::endTurn()
 {
     for (int i = 0; i < njG.enemies->count; i++) {
-        if (njG.enemies[i].inBattleRange(njG.player)) {
-            njG.enemies[i].dealDamage(njG.player, map.tile);
-            njG.enemies[i].moveRange--;
-        #ifdef SOUND
-            alSourcePlay(njG.sound.hitSound);
-        #endif
-        }
-        vec2 destination(njG.player->bPos.x, njG.player->bPos.z);
-        pair<int, int> size(10, 10);
-        if (destination.x > -1 && destination.y > -1) {
-            stack<pair<int, int>> pathStack = Movement(size, map.tile,
-                    njG.enemies[i].bPos.x, njG.enemies[i].bPos.z, destination);
-            path.clear();
-            while (!pathStack.empty()) {
-                path.push_back(pathStack.top());
-                pathStack.pop();
-            }
-            while ((int)path.size()-1 > njG.enemies[i].moveRange) {
-                path.pop_back();
-            }
-            if (njG.checkBattleCollision(path.back().first, path.back().second, i, 2)) {
-                njG.controlTurns(&njG.enemies[i],
-                                 path.back().first, path.back().second,
-                                 (int)path.size(), map.tile);
-            } else {
-                path.pop_back();
-                njG.controlTurns(&njG.enemies[i],
-                                 path.back().first, path.back().second,
-                                 (int)path.size(), map.tile);
-            }
-        }
+		if (njG.enemies[i].current_health > 0 ) {
+			if (njG.enemies[i].inBattleRange(njG.player)) {
+				njG.enemies[i].dealDamage(njG.player, map.tile);
+				njG.enemies[i].moveRange--;
+			#ifdef SOUND
+				alSourcePlay(njG.sound.hitSound);
+			#endif
+			}
+			vec2 destination(njG.player->bPos.x, njG.player->bPos.z);
+			pair<int, int> size(10, 10);
+			if (destination.x > -1 && destination.y > -1) {
+				stack<pair<int, int>> pathStack = Movement(size, map.tile,
+						njG.enemies[i].bPos.x, njG.enemies[i].bPos.z, destination);
+				path.clear();
+				while (!pathStack.empty()) {
+					path.push_back(pathStack.top());
+					pathStack.pop();
+				}
+				while ((int)path.size()-1 > njG.enemies[i].moveRange) {
+					path.pop_back();
+				}
+				if (njG.checkBattleCollision(path.back().first, path.back().second, i, 2)) {
+					njG.controlTurns(&njG.enemies[i],
+									path.back().first, path.back().second,
+									(int)path.size(), map.tile);
+				} else {
+					path.pop_back();
+					njG.controlTurns(&njG.enemies[i],
+									path.back().first, path.back().second,
+									(int)path.size(), map.tile);
+				}
+			}
+		}
     }
+	
     njG.player->moveRange = njG.player->getMaxTurns();
     for (int i = 0; i < njG.enemies->count; i++) {
         njG.enemies[i].moveRange = njG.enemies[i].getMaxTurns();
