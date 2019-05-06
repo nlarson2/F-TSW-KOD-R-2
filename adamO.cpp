@@ -16,7 +16,7 @@
 extern NJordGlobal njG;
 
 AOglobal::AOglobal() {
-    Boxes box[8] = {
+        Boxes box[8] = {
         Boxes(BOX),
         Boxes(END_TURN),
         Boxes(BOX),
@@ -26,16 +26,19 @@ AOglobal::AOglobal() {
         Boxes(BOX),
         Boxes(BOX)
     };
-    BattleBoxes bbox[3] = {
+        (void)box;
+        BattleBoxes bbox[3] = {
         BattleBoxes(BATTLE),
         BattleBoxes(BATTLE),
         BattleBoxes(BATTLE)
     };
-    AllyBoxes abox[3] = {
+        (void)bbox;
+        AllyBoxes abox[4] = {
         AllyBoxes(ALLY),
         AllyBoxes(ALLY),
         AllyBoxes(ALLY)
     };
+        (void)abox;
 }
 
 AOglobal aog;
@@ -280,7 +283,7 @@ void uiboxes::drawBoxes() {
     glPopMatrix();
 }
 
-void battleboxes::drawBattleBoxes() {
+void battleboxes::drawBattleBoxes(int enemy) {
    
     glPushMatrix(); 
         glMatrixMode(GL_PROJECTION);
@@ -288,8 +291,7 @@ void battleboxes::drawBattleBoxes() {
         glOrtho(0, xres, 0, yres, -1, 1);
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
-    for (int j = 0; j < njG.enemies->count; j++) {
-
+    for (int j = 0; j < njG.enemyCount/njG.enemyArrayCount; j++) {
         posBattleBoxes(75 + (75*j*2));
         if(1) {
         for (int i = 0; i < 3; i++) {
@@ -329,13 +331,13 @@ void battleboxes::drawBattleBoxes() {
         Rect r;
         r.bot = yres - 27;
         r.left = xres - 75 - (150*(j));
-        ggprint16(&r, 16, 0xffffffff, njG.enemies[j].combatType.c_str());
+        ggprint16(&r, 16, 0xffffffff, njG.enemies[enemy][j].combatType.c_str());
               
         r.bot = yres - 52;
         r.left = xres - 95 - (150*(j));
         string ehc;
-        ehc = std::to_string((int)njG.enemies[j].getCurrentHealth());
-        if (njG.enemies[j].getCurrentHealth() <= njG.enemies[j].getMaxHealth() / 2)
+        ehc = std::to_string((int)njG.enemies[enemy][j].getCurrentHealth());
+        if (njG.enemies[enemy][j].getCurrentHealth() <= njG.enemies[enemy][j].getMaxHealth() / 2)
             ggprint16(&r, 16, 0xfff00000, ehc.c_str());
         else
             ggprint16(&r, 16, 0xffffffff, ehc.c_str());
@@ -343,8 +345,8 @@ void battleboxes::drawBattleBoxes() {
         r.bot = yres - 52;
         r.left = xres - 55 - (150*(j));
         string ehm;
-        ehm = std::to_string((int)njG.enemies[j].getMaxHealth());
-        if (njG.enemies[j].getCurrentHealth() <= njG.enemies[j].getMaxHealth() / 2)
+        ehm = std::to_string((int)njG.enemies[enemy][j].getMaxHealth());
+        if (njG.enemies[enemy][j].getCurrentHealth() <= njG.enemies[enemy][j].getMaxHealth() / 2)
             ggprint16(&r, 16, 0xfff00000, ehm.c_str());
         else 
             ggprint16(&r, 16, 0xffffffff, ehm.c_str());

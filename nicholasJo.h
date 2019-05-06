@@ -143,7 +143,7 @@ class Enemy : public Entity {
     public:
 	Enemy();
 	static int count;
-	void saveEnemies(ofstream&);
+    static int arrayCount;
 	void loadEnemyCombatType(string);
     private:
 	void setEnemyCombatType();
@@ -183,7 +183,9 @@ class NJordGlobal {
     Sound sound;
 #endif
 	Player *player;
-	Enemy *enemies;
+	Enemy **enemies;
+    int enemyCount;
+    int enemyArrayCount;
 	Ally *allies;
 	NJordGlobal();
 	void spawnEnemies(int);
@@ -194,6 +196,7 @@ class NJordGlobal {
     bool loadEntities(int);
 	void loadAllies(ifstream&);
     void loadEnemies(ifstream&);
+	void saveEnemies(ofstream&);
     //int type: 0 = player, 1 = ally, 2 = enemy
     int checkWorldCollision(int x , int y, int type = 0);
     bool checkBattleCollision(int x, int y, int position = 0, int type = 0);

@@ -144,6 +144,9 @@ int PauseGS::procMouseInput(int x, int y)
             njG.resetAllies();
             njG.resetEnemies();
         case RETREAT:
+            njG.player->moveRange = njG.player->getMaxTurns();
+            for (int i = 0; i < njG.allies->count; i++)
+                njG.allies[i].moveRange = njG.player->getMaxTurns();
         #ifdef SOUND
             alSourceStop(njG.sound.battleSound);
             alSourcePlay(njG.sound.ambientSound);

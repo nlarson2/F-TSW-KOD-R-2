@@ -115,7 +115,7 @@ class battleboxes
         ~battleboxes(){}
         void procMouseInput(int, int);
         void procKeyInput(int key);
-        void drawBattleBoxes();
+        void drawBattleBoxes(int);
         void posBattleBoxes(int);
         void check_mouse(int, int, int);
 };

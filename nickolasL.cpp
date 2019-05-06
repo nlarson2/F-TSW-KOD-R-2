@@ -1042,6 +1042,10 @@ int WorldGS::procMouseInput(int x, int y)
                 break;
             case 3:
                 return 3;
+            case 4:
+                return 5;
+            case 5:
+                return 6;
         }
         /***************************************/
 	}
@@ -1112,11 +1116,12 @@ void WorldGS::drawGameState()
 						map.tile[i][j].occ = true;
 					}
 				}
-				for ( int k = 0; k < njG.enemies->count; k++) {
-					if ( njG.enemies[k].wPos.x == i && njG.enemies[k].wPos.z == j) {
-						map.tile[i][j].occ = true;
-					}
-				}
+				for ( int k = 0; k < njG.enemyArrayCount; k++) {
+                    for (int l = 0; l < njG.enemyCount; l++) {
+					    if ( njG.enemies[k][l].wPos.x == i && njG.enemies[k][l].wPos.z == j)
+						    map.tile[i][j].occ = true;
+				    }
+                }
 			}
 		}
 		initializedPos = true;
@@ -1141,9 +1146,8 @@ void WorldGS::drawGameState()
     if (njG.allies->count != 0) {
        // njG.allies[0].drawWorld();
     }
-	if (njG.enemies->count != 0) {
-        njG.enemies[0].drawWorld();
-    }
+    for (int i = 0; i < njG.enemyArrayCount; i++)
+        njG.enemies[i][0].drawWorld();
     camera.drawCamera(0);
 
 	glPushMatrix();/*
@@ -1182,12 +1186,14 @@ void WorldGS::drawGameState()
 
 BattleGS::BattleGS(int ** mapArr,int sizex,int sizey,
 		float camRot, int posx, int posz,
-		float xres, float yres) :
-		WorldGS(mapArr, sizex, sizey, camRot, posx, posz, xres, yres), BT(aog.bbox, xres, yres), AB(aog.abox, xres, yres)
+		float xres, float yres, int target) :
+		WorldGS(mapArr, sizex, sizey, camRot, posx, posz, xres, yres),
+        BT(aog.bbox, xres, yres), AB(aog.abox, xres, yres)
 {
 
     turns = njG.allies->count + njG.player->count;
     count = 0;
+    enemy = target;
 }
 
 int BattleGS::procMouseInput(int x, int y)
@@ -1200,15 +1206,17 @@ int BattleGS::procMouseInput(int x, int y)
 	        vec2 chkPath = map.checkCollision(pickPos.x, pickPos.z);
             pair<int,int> size(10, 11);
 	        if ( chkPath.x > -1 && chkPath.y > -1) {
-                for (int i = 0; i < njG.enemies->count; i++) {
-                    if (chkPath.x == njG.enemies[i].bPos.x &&
-                        chkPath.y == njG.enemies[i].bPos.z) {
-                        if (njG.player->inBattleRange(&njG.enemies[i])) {
-                            njG.player->dealDamage(&njG.enemies[i],  map.tile);
-                            njG.player->moveRange--;
-                        #ifdef SOUND
-                            njG.sound.playRandomGrunt();
-                        #endif
+                    for (int i = 0; i < njG.enemyArrayCount; i++) {
+                        for (int j = 0; j < njG.enemyCount; j++) {
+                        if (chkPath.x == njG.enemies[i][j].bPos.x &&
+                            chkPath.y == njG.enemies[i][j].bPos.z) {
+                            if (njG.player->inBattleRange(&njG.enemies[i][j])) {
+                                njG.player->dealDamage(&njG.enemies[i][j],  map.tile);
+                                njG.player->moveRange--;
+                            #ifdef SOUND
+                                njG.sound.playRandomGrunt();
+                            #endif
+                            }
                         }
                     }
                 }
@@ -1253,15 +1261,17 @@ int BattleGS::procMouseInput(int x, int y)
 	        //printf("chkPath %f %f\n", chkPath.x, chkPath.y);
 	        pair<int,int> size(10, 11);
 	        if ( chkPath.x > -1 && chkPath.y > -1) {
-                for (int i = 0; i < njG.enemies->count; i++) {
-                    if (chkPath.x == njG.enemies[i].bPos.x &&
-                        chkPath.y == njG.enemies[i].bPos.z) {
-                        if (njG.allies[count-1].inBattleRange(&njG.enemies[i])) {
-                            njG.allies[count-1].dealDamage(&njG.enemies[i], map.tile);
-                            njG.allies[count-1].moveRange--;
-                        #ifdef SOUND
-                            njG.sound.playRandomGrunt();
-                        #endif
+                for (int i = 0; i < njG.enemyArrayCount; i++) {
+                    for (int j = 0; j < njG.enemyCount; j++) {
+                        if (chkPath.x == njG.enemies[i][j].bPos.x &&
+                            chkPath.y == njG.enemies[i][j].bPos.z) {
+                            if (njG.allies[count-1].inBattleRange(&njG.enemies[i][j])) {
+                                njG.allies[count-1].dealDamage(&njG.enemies[i][j], map.tile);
+                                njG.allies[count-1].moveRange--;
+                            #ifdef SOUND
+                                njG.sound.playRandomGrunt();
+                            #endif
+                            }
                         }
                     }
                 }
@@ -1368,8 +1378,9 @@ void BattleGS::drawGameState()
 						map.tile[i][j].occ = true;
 					}
 				}
-				for ( int k = 0; k < njG.enemies->count; k++) {
-					if ( njG.enemies[k].bPos.x == i && njG.enemies[k].bPos.z == j) {
+				for ( int k = 0; k < njG.enemies[enemy]->count; k++) {
+					if ( njG.enemies[enemy][k].bPos.x == i &&
+                         njG.enemies[enemy][k].bPos.z == j) {
 						map.tile[i][j].occ = true;
 					}
 				}
@@ -1402,13 +1413,11 @@ void BattleGS::drawGameState()
         	njG.allies[i].drawBattle();
 		}
     }
-    if (njG.enemies->count != 0) {
-        for (int i = 0; i < njG.enemies->count; i++) {
-			if (njG.enemies[i].current_health > 0) {
+    for (int i = 0; i < njG.enemyCount/njG.enemyArrayCount; i++) {
+			if (njG.enemies[enemy][i].current_health > 0) {
             	glColor3f(255, 255, 255);
-				njG.enemies[i].drawBattle();
+				njG.enemies[enemy][i].drawBattle();
 			}
-        }
     }
 	camera.drawCamera(0);
 
@@ -1440,7 +1449,7 @@ void BattleGS::drawGameState()
 	//draw UI
 	UI.drawBoxes();
     glColor3ub(255, 255, 255);
-    BT.drawBattleBoxes();
+    BT.drawBattleBoxes(enemy);
 	glColor3ub(255, 255, 255);
     AB.drawAllyBoxes();
     glColor3ub(255, 255, 255);
@@ -1448,11 +1457,11 @@ void BattleGS::drawGameState()
 
 void BattleGS::endTurn()
 {
-    for (int i = 0; i < njG.enemies->count; i++) {
-		if (njG.enemies[i].current_health > 0 ) {
-			if (njG.enemies[i].inBattleRange(njG.player)) {
-				njG.enemies[i].dealDamage(njG.player, map.tile);
-				njG.enemies[i].moveRange--;
+    for (int i = 0; i < njG.enemyCount/njG.enemyArrayCount; i++) {
+		if (njG.enemies[enemy][i].current_health > 0 ) {
+			if (njG.enemies[enemy][i].inBattleRange(njG.player)) {
+				njG.enemies[enemy][i].dealDamage(njG.player, map.tile);
+				njG.enemies[enemy][i].moveRange--;
 			#ifdef SOUND
 				alSourcePlay(njG.sound.hitSound);
 			#endif
@@ -1460,23 +1469,25 @@ void BattleGS::endTurn()
 			vec2 destination(njG.player->bPos.x, njG.player->bPos.z);
 			pair<int, int> size(10, 10);
 			if (destination.x > -1 && destination.y > -1) {
-				stack<pair<int, int>> pathStack = Movement(size, map.tile,
-						njG.enemies[i].bPos.x, njG.enemies[i].bPos.z, destination);
+				stack<pair<int, int>> pathStack =
+                Movement(size, map.tile,
+				        njG.enemies[enemy][i].bPos.x,
+                        njG.enemies[enemy][i].bPos.z, destination);
 				path.clear();
 				while (!pathStack.empty()) {
 					path.push_back(pathStack.top());
 					pathStack.pop();
 				}
-				while ((int)path.size()-1 > njG.enemies[i].moveRange) {
+				while ((int)path.size()-1 > njG.enemies[enemy][i].moveRange) {
 					path.pop_back();
 				}
 				if (njG.checkBattleCollision(path.back().first, path.back().second, i, 2)) {
-					njG.controlTurns(&njG.enemies[i],
+					njG.controlTurns(&njG.enemies[enemy][i],
 									path.back().first, path.back().second,
 									(int)path.size(), map.tile);
 				} else {
 					path.pop_back();
-					njG.controlTurns(&njG.enemies[i],
+					njG.controlTurns(&njG.enemies[enemy][i],
 									path.back().first, path.back().second,
 									(int)path.size(), map.tile);
 				}
@@ -1485,8 +1496,8 @@ void BattleGS::endTurn()
     }
 	
     njG.player->moveRange = njG.player->getMaxTurns();
-    for (int i = 0; i < njG.enemies->count; i++) {
-        njG.enemies[i].moveRange = njG.enemies[i].getMaxTurns();
+    for (int i = 0; i < njG.enemyCount/njG.enemyArrayCount; i++) {
+        njG.enemies[enemy][i].moveRange = njG.enemies[enemy][i].getMaxTurns();
     }
     for (int i = 0; i < njG.allies->count; i++) {
         njG.allies[i].moveRange = njG.allies[i].getMaxTurns();
