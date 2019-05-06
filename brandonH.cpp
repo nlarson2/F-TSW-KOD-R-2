@@ -430,7 +430,12 @@ int MenuGS::procKeyInput(int key)
     }
     */
     //ggprint16(&r, 16, 0xFFFFFFFF, name.c_str());
-
+    switch(key) {
+        if(state == 0) {
+            case XK_Escape:
+            return -1;
+        }
+            };
     return 0;//read keys
 }
 
@@ -567,4 +572,64 @@ void TownGS::drawGameState()
         ggprint16(&r, 16, 0x00ffff00, buttons[i].name.c_str());
     }
 }
+
+//=================================================//
+//--------------- START OF TITLEGS ----------------//
+//=================================================//
+TitleGS::TitleGS(int xres, int yres)
+{
+    this->xres = xres;
+    this->yres = yres;
+}
+
+int TitleGS::procMouseInput(int,int)
+{
+    //return 6;
+}
+
+int TitleGS::procKeyInput(int)
+{
+    return 6;
+}
+
+void TitleGS::drawGameState()
+{
+    glClear(GL_COLOR_BUFFER_BIT);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(0,xres,0,yres,-1,1);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    Rect r;
+    r.bot = yres/2+100;
+    r.left = xres/2;
+    ggprint16(&r, 16, 0xFFFFFFFF, "Fate: The Shadow Wizard: Kingdom of Darkness: Revived: 2: The Second One");
+    r.bot = yres/2;
+    r.left = xres/2;
+    ggprint16(&r, 16, 0xFFFFFFFF, "Press any key");
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
