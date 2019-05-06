@@ -49,9 +49,22 @@ struct BHglobal
     Button tmenu[3];
     BHglobal();
 };
+
+class TitleGS: public GameState {
+    private:
+        string title;
+        string req;
+        float xres, yres;
+    public:
+        TitleGS(int, int);
+        ~TitleGS();
+        int procMouseInput(int, int);
+        int procKeyInput(int);
+        void drawGameState();
+};
 // Done During Lab hours
 // Creates pause functionality by pressing esc while in game.
-// Additionally added save game functionality
+// Additionally added save game functionaliy
 class PauseGS : public GameState {
     private:
         Button * buttons;
@@ -69,6 +82,7 @@ class MenuGS : public GameState {
         int state;
         int size;
         bool clicked;
+        string name;
         Button ** buttons;
         float xres, yres;
     public:

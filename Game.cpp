@@ -13,7 +13,7 @@ Game::Game(int x, int y)
 
 void Game::init()
 {
-    states.push(new MenuGS(5, bhg.menus,  xres, yres));
+    states.push(new TitleGS(xres,yres));
 }
 
 void Game::procMouseInput(int x, int y)
@@ -36,6 +36,7 @@ void Game::procMouseInput(int x, int y)
             break;
         case 4:
             states.push(new PauseGS(bhg.bmenu,xres,yres));
+            break;
         case 3:
             states.push(new BattleGS(nlG->BattleMap1, 10 ,10, 180, 0, 0,
                         xres, yres, 0));
@@ -52,13 +53,16 @@ void Game::procMouseInput(int x, int y)
             alSourcePlay(njG.sound.battleSound);
         #endif
             break;
-        case 6:
+        case 7:
             states.push(new BattleGS(nlG->BattleMap1, 10 ,10, 180, 0, 0,
                         xres, yres, 2));
         #ifdef SOUND
             alSourceStop(njG.sound.ambientSound);
             alSourcePlay(njG.sound.battleSound);
         #endif
+            break;
+        case 6:
+            states.push(new MenuGS(5, bhg.menus,  xres, yres));
             break;
     }
 }
@@ -88,6 +92,9 @@ void Game::procKeyInput(int key)
             break;
         case 5:
             states.push(new PauseGS(bhg.tmenu,xres,yres));
+            break;
+        case 6:
+            states.push(new MenuGS(5, bhg.menus,  xres, yres));
             break;
     }
 }

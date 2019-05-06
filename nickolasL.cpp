@@ -1045,7 +1045,7 @@ int WorldGS::procMouseInput(int x, int y)
             case 4:
                 return 5;
             case 5:
-                return 6;
+                return 7;
         }
         /***************************************/
 	}
