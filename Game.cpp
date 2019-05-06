@@ -37,7 +37,24 @@ void Game::procMouseInput(int x, int y)
         case 4:
             states.push(new PauseGS(bhg.bmenu,xres,yres));
         case 3:
-            states.push(new BattleGS(nlG->BattleMap1, 10 ,10, 180, 0, 0, xres, yres));
+            states.push(new BattleGS(nlG->BattleMap1, 10 ,10, 180, 0, 0,
+                        xres, yres, 0));
+        #ifdef SOUND
+            alSourceStop(njG.sound.ambientSound);
+            alSourcePlay(njG.sound.battleSound);
+        #endif
+            break;
+        case 5:
+            states.push(new BattleGS(nlG->BattleMap1, 10 ,10, 180, 0, 0,
+                        xres, yres, 1));
+        #ifdef SOUND
+            alSourceStop(njG.sound.ambientSound);
+            alSourcePlay(njG.sound.battleSound);
+        #endif
+            break;
+        case 6:
+            states.push(new BattleGS(nlG->BattleMap1, 10 ,10, 180, 0, 0,
+                        xres, yres, 2));
         #ifdef SOUND
             alSourceStop(njG.sound.ambientSound);
             alSourcePlay(njG.sound.battleSound);
