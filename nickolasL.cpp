@@ -1041,10 +1041,13 @@ int WorldGS::procMouseInput(int x, int y)
             case 2:
                 break;
             case 3:
+                //use enemies[0] as enemies for battle state
                 return 3;
             case 4:
+                //use enemies[1] as enemies for battle state
                 return 5;
             case 5:
+                //use enemies[2] as enemies for battle state
                 return 7;
         }
         /***************************************/
@@ -1197,7 +1200,12 @@ BattleGS::BattleGS(int ** mapArr,int sizex,int sizey,
 }
 
 int BattleGS::procMouseInput(int x, int y)
-{
+{   
+    if (njG.enemiesAreDead(njG.enemies[enemy])) {
+        njG.resetTurns(njG.enemies[enemy]);
+        njG.resetBPos();
+        return -1;
+    }
     if (count % turns == 0) {
         if (njG.player->moveRange > 0) {
 	        glMatrixMode(GL_MODELVIEW);
@@ -1216,6 +1224,7 @@ int BattleGS::procMouseInput(int x, int y)
                             #ifdef SOUND
                                 njG.sound.playRandomGrunt();
                             #endif
+                                return 0;
                             }
                         }
                     }
@@ -1229,19 +1238,11 @@ int BattleGS::procMouseInput(int x, int y)
 			        path.push_back(pathStack.top());
 			        pathStack.pop();
                 }
-                /*********NicholasJ addition************/
                 while ((int)path.size()-1 > njG.player->moveRange) {
                     path.pop_back();
                 }
-                if (njG.checkBattleCollision(path.back().first, path.back().second, 0, 0)) {
-                    njG.controlTurns(njG.player, 
-                                    path.back().first, path.back().second, 
-                                    (int)path.size(), map.tile);
-                #ifdef SOUND
-                    alSourcePlay(njG.sound.moveSound);
-                #endif
-                } else {
-                    path.pop_back();
+                if (njG.checkBattleCollision(path.back().first,
+                    path.back().second, 0, enemy, 0)) {
                     njG.controlTurns(njG.player, 
                                     path.back().first, path.back().second, 
                                     (int)path.size(), map.tile);
@@ -1249,7 +1250,6 @@ int BattleGS::procMouseInput(int x, int y)
                     alSourcePlay(njG.sound.moveSound);
                 #endif
                 }
-                /***************************************/
 	        }
         }
     } else {
@@ -1271,6 +1271,7 @@ int BattleGS::procMouseInput(int x, int y)
                             #ifdef SOUND
                                 njG.sound.playRandomGrunt();
                             #endif
+                                return 0;
                             }
                         }
                     }
@@ -1288,23 +1289,15 @@ int BattleGS::procMouseInput(int x, int y)
                 while ((int)path.size()-1 > njG.allies[count-1].moveRange) {
                     path.pop_back();
                 }
-                if (njG.checkBattleCollision(path.back().first, path.back().second, 0, 0)) {
+                if (njG.checkBattleCollision(path.back().first,
+                    path.back().second, count-1, enemy, 1)) {
                     njG.controlTurns(&njG.allies[count-1], 
                                     path.back().first, path.back().second, 
                                     (int)path.size(), map.tile);
                 #ifdef SOUND
                     alSourcePlay(njG.sound.moveSound);
                 #endif
-                } else {
-                    path.pop_back();
-                    njG.controlTurns(njG.player, 
-                                    path.back().first, path.back().second, 
-                                    (int)path.size(), map.tile);
-                #ifdef SOUND
-                    alSourcePlay(njG.sound.moveSound);
-                #endif
                 }
-                /***************************************/
 	        }
         }
     }
@@ -1373,14 +1366,14 @@ void BattleGS::drawGameState()
 				if (njG.player->bPos.x == i && njG.player->bPos.z == j) {
 					map.tile[i][j].occ = true;
 				}
-				for ( int k = 0; k < njG.allies->count; k++) {
-					if ( njG.allies[k].bPos.x == i && njG.allies[k].bPos.z == j) {
+				for (int k = 0; k < njG.allies->count; k++) {
+					if (njG.allies[k].bPos.x == i && njG.allies[k].bPos.z == j) {
 						map.tile[i][j].occ = true;
 					}
 				}
-				for ( int k = 0; k < njG.enemies[enemy]->count; k++) {
-					if ( njG.enemies[enemy][k].bPos.x == i &&
-                         njG.enemies[enemy][k].bPos.z == j) {
+				for (int k = 0; k < njG.enemyCount/njG.enemyArrayCount; k++) {
+					if (njG.enemies[enemy][k].bPos.x == i &&
+                        njG.enemies[enemy][k].bPos.z == j) {
 						map.tile[i][j].occ = true;
 					}
 				}
@@ -1481,12 +1474,8 @@ void BattleGS::endTurn()
 				while ((int)path.size()-1 > njG.enemies[enemy][i].moveRange) {
 					path.pop_back();
 				}
-				if (njG.checkBattleCollision(path.back().first, path.back().second, i, 2)) {
-					njG.controlTurns(&njG.enemies[enemy][i],
-									path.back().first, path.back().second,
-									(int)path.size(), map.tile);
-				} else {
-					path.pop_back();
+				if (njG.checkBattleCollision(path.back().first,
+                    path.back().second, i, enemy, 2)) {
 					njG.controlTurns(&njG.enemies[enemy][i],
 									path.back().first, path.back().second,
 									(int)path.size(), map.tile);
@@ -1494,14 +1483,7 @@ void BattleGS::endTurn()
 			}
 		}
     }
-	
-    njG.player->moveRange = njG.player->getMaxTurns();
-    for (int i = 0; i < njG.enemyCount/njG.enemyArrayCount; i++) {
-        njG.enemies[enemy][i].moveRange = njG.enemies[enemy][i].getMaxTurns();
-    }
-    for (int i = 0; i < njG.allies->count; i++) {
-        njG.allies[i].moveRange = njG.allies[i].getMaxTurns();
-    }
+	njG.resetTurns(njG.enemies[enemy]);
 }
 
 /*=======================================*/

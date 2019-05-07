@@ -212,7 +212,7 @@ int NJordGlobal::checkWorldCollision(int x, int z, int type)
 	return -1;	
 }
 
-bool NJordGlobal::checkBattleCollision(int x, int z, int position, int type)
+bool NJordGlobal::checkBattleCollision(int x, int z, int position, int arrPos, int type)
 {
 	switch (type) {
 		case 0: //player case
@@ -223,30 +223,30 @@ bool NJordGlobal::checkBattleCollision(int x, int z, int position, int type)
     		}
     		for (int i = 0; i < enemyArrayCount; i++) {
 				for (int j = 0; j < enemyCount/enemyArrayCount; j++) {
-        			if (x == enemies[i][j].bPos.x && z == enemies[i][j].bPos.z)
+        			if (x == enemies[arrPos][j].bPos.x && z == enemies[arrPos][j].bPos.z)
             			return false;
 				}
     		}
     		return true;
+			break;
 		case 1: //ally case
 			Log("NJordGlobal::checkBattleCollision(..., type), type = %i\n", type);
 			if (x == player->bPos.x && z == player->bPos.z) {
 				return false;
 			}
-    		for (int i = 0; i < enemyArrayCount; i++) {
-				for (int j = 0; j < enemyCount/enemyArrayCount; j++) {
-        			if (x == enemies[i][j].bPos.x && z == enemies[i][j].bPos.z)
+			for (int i = 0; i < enemyCount/enemyArrayCount; i++) {
+        		if (x == enemies[arrPos][i].bPos.x && z == enemies[arrPos][i].bPos.z)
+            		return false;
+			}
+    		for (int i = 0; i < allies->count; i++) {
+        		if (i != position) {
+					if (x == allies[i].bPos.x && z == allies[i].bPos.z)
             			return false;
 				}
     		}
-    		for (int i = 0; i < allies->count; i++) {
-        		if (i == position) {
-				} else if (x == allies[i].bPos.x && z == allies[i].bPos.z) {
-            		return false;
-				}
-    		}
 			return true;
-		/*case 2: //enemy case
+			break;
+		case 2: //enemy case
 			Log("NJordGlobal::checkBattleCollision(..., type), type = %i\n", type);
     		if (x == player->bPos.x && z == player->bPos.z)
 				return false;
@@ -254,13 +254,14 @@ bool NJordGlobal::checkBattleCollision(int x, int z, int position, int type)
         		if (x == allies[i].bPos.x && z == allies[i].bPos.z)
             		return false;
     		}
-    		for (int i = 0; i < njG.enemies->count; i++) {
+    		for (int i = 0; i < njG.enemyCount/njG.enemyArrayCount; i++) {
 				if (i != position) {
-        			if (x == enemies[i].bPos.x && z == enemies[i].bPos.z)
+        			if (x == enemies[arrPos][i].bPos.x && z == enemies[arrPos][i].bPos.z)
             			return false;
 				}
 			}
-    		return true; */
+    		return true;
+			break;
 	}
 	return false;
 }
@@ -273,7 +274,6 @@ void NJordGlobal::controlTurns(Entity *target, int dest_x, int dest_z, int amoun
 		}
 		if (abs(target->bPos.x - dest_x) == 1 && abs(target->bPos.z - dest_z) == 1) {
 			target->moveRange--;
-			
 		} else {
 			target->moveRange -= amount-1;
 		}
@@ -303,6 +303,60 @@ void NJordGlobal::saveEnemies(ofstream& file)
     } else {
         printf("Could not locate file specified\n");
     }
+}
+
+bool NJordGlobal::enemiesAreDead(Enemy *target)
+{
+	int count = 0;
+	for (int i = 0; i < enemyCount/enemyArrayCount; i++) {
+		if (target[i].current_health <= 0)
+			count++;
+	}
+	if (count == enemyCount/enemyArrayCount)
+		return true;
+	return false;
+}
+
+bool NJordGlobal::allEnemiesAreDead()
+{
+	int count = 0;
+	for (int i = 0; i < enemyArrayCount; i++) {
+		for (int j = 0; j < enemyCount/enemyArrayCount; j++) {
+			if (enemies[i][j].current_health <= 0)
+				count++;
+		}
+	}
+	if (count == enemyCount)
+		return true;
+	return false;
+}
+
+void NJordGlobal::resetTurns(Enemy *target)
+{
+	player->moveRange = player->getMaxTurns();
+	for (int i = 0; i < allies->count; i++)
+		allies[i].moveRange = allies[i].getMaxTurns();
+	if (target != 0) {
+		for (int i = 0; i < enemyCount/enemyArrayCount; i++)
+			target[i].moveRange = target[i].getMaxTurns();
+	}
+	return;
+}
+
+void NJordGlobal::resetBPos()
+{
+	player->bPos.x = player->defaultBPos.x;
+	player->bPos.z = player->defaultBPos.z;
+	for (int i = 0; i < allies->count; i++) {
+		allies[i].bPos.x = allies[i].defaultBPos.x;
+		allies[i].bPos.z = allies[i].defaultBPos.z;
+	}
+	for (int i = 0; i < enemyArrayCount; i++) {
+		for (int j = 0; j < enemyCount/enemyArrayCount; j++) {
+			enemies[i][j].bPos.x = enemies[i][j].defaultBPos.x;
+			enemies[i][j].bPos.z = enemies[i][j].defaultBPos.z;
+		}
+	}
 }
 
 //==========================[SOUND CLASS]===============================
@@ -885,18 +939,24 @@ Ally::Ally()
 		case 0:
 			wPos.x = 6;
 			wPos.z = 7;
+			defaultBPos.x = 1;
+			defaultBPos.z = 0;
 			bPos.x = 1;
 			bPos.z = 0;
 			break;
 		case 1:
 			wPos.x = 0;
 			wPos.z = 0;
+			defaultBPos.x = 0;
+			defaultBPos.z = 0;
 			bPos.x = 0;
 			bPos.z = 0;
 			break;
 		case 2:
 			wPos.x = 0;
 			wPos.z = 0;
+			defaultBPos.x = 0;
+			defaultBPos.z = 1;
 			bPos.x = 0;
 			bPos.z = 1;
 			break;
@@ -1036,18 +1096,24 @@ Enemy::Enemy()
 				case 0:
 					wPos.x = 10;
     				wPos.z = 10;
+					defaultBPos.x = 8;
+					defaultBPos.z = 7;
 					bPos.x = 8;
 					bPos.z = 7;
 					break;
 				case 1:
 					wPos.x = -1;
     				wPos.z = -1;
+					defaultBPos.x = 8;
+					defaultBPos.z = 8;
 					bPos.x = 8;
 					bPos.z = 8;
 					break;
 				case 2:
 					wPos.x = -1;
     				wPos.z = -1;
+					defaultBPos.x = 7;
+					defaultBPos.z = 8;
 					bPos.x = 7;
 					bPos.z = 8;
 					break;
@@ -1058,18 +1124,24 @@ Enemy::Enemy()
 				case 3:
 					wPos.x = 15;
     				wPos.z = 13;
+					defaultBPos.x = 8;
+					defaultBPos.z = 7;
 					bPos.x = 8;
 					bPos.z = 7;
 					break;
 				case 4:
 					wPos.x = -1;
     				wPos.z = -1;
+					defaultBPos.x = 8;
+					defaultBPos.z = 8;
 					bPos.x = 8;
 					bPos.z = 8;
 					break;
 				case 5:
 					wPos.x = -1;
     				wPos.z = -1;
+					defaultBPos.x = 7;
+					defaultBPos.z = 8;
 					bPos.x = 7;
 					bPos.z = 8;
 					break;
@@ -1080,18 +1152,24 @@ Enemy::Enemy()
 				case 6:
 					wPos.x = 20;
     				wPos.z = 10;
+					defaultBPos.x = 8;
+					defaultBPos.z = 7;
 					bPos.x = 8;
 					bPos.z = 7;
 					break;
 				case 7:
 					wPos.x = -1;
     				wPos.z = -1;
+					defaultBPos.x = 8;
+					defaultBPos.z = 8;
 					bPos.x = 8;
 					bPos.z = 8;
 					break;
 				case 8:
 					wPos.x = -1;
     				wPos.z = -1;
+					defaultBPos.x = 7;
+					defaultBPos.z = 8;
 					bPos.x = 7;
 					bPos.z = 8;
 					break;
@@ -1213,6 +1291,8 @@ Player::Player(string c)
 	bYaw = 180.0;
 	wPos.x = 7;
 	wPos.z = 7;
+	defaultBPos.x = 1;
+	defaultBPos.z = 1;
 	bPos.x = 1;
 	bPos.z = 1;
     count++;
