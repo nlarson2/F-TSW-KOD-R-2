@@ -12,6 +12,9 @@ NJordGlobal njG;
 
 NJordGlobal::NJordGlobal()
 {
+#ifdef PROFILE
+	loadSoundTime = 0.0;
+#endif
 }
 
 void NJordGlobal::spawnEnemies(int amount)
@@ -67,7 +70,9 @@ void NJordGlobal::saveEntities(int save_number)
         allies->saveAllies(file);
 		saveEnemies(file);
     } else {
+	#ifdef UNIT
         printf("Could not locate file specified\n");
+	#endif
     }
     file.close();
     return;
@@ -83,7 +88,9 @@ bool NJordGlobal::loadEntities(int save_number)
         loadAllies(file);
         loadEnemies(file);
     } else {
+	#ifdef UNIT
         printf("Could not locate file specified\n");
+	#endif
         return false;
     }
     file.close();
@@ -125,7 +132,9 @@ void NJordGlobal::loadAllies(ifstream& file)
             }
         }
     } else {
+	#ifdef UNIT
         printf("Could not locate file specified\n");
+	#endif
     }
 }
 
@@ -138,7 +147,7 @@ void NJordGlobal::loadEnemies(ifstream& file)
         spawnEnemies(atoi(line.c_str()));
         if (enemyArrayCount > 0) {
             for (int i = 0; i < enemyArrayCount; i++) {
-				for (int j = 0; i < enemyCount/enemyArrayCount; i++) {
+				for (int j = 0; j < enemyCount/enemyArrayCount; j++) {
                 	//load combatType
                 	getline(file, line);
                 	enemies[i][j].loadEnemyCombatType(line);
@@ -165,7 +174,9 @@ void NJordGlobal::loadEnemies(ifstream& file)
             }
         }
     } else {
+	#ifdef UNIT
         printf("Could not locate file specified\n");
+	#endif
     }
 }
 
@@ -288,7 +299,9 @@ void NJordGlobal::saveEnemies(ofstream& file)
 			}
         }
     } else {
+	#ifdef UNIT
         printf("Could not locate file specified\n");
+	#endif
     }
 }
 
@@ -398,8 +411,11 @@ void Sound::initializeSounds()
 {
 	Log("Sound::initializeSounds()\n");
     alutInit(0, NULL);
-    if (alGetError() != AL_NO_ERROR)
-        printf("ERROR: alutInit()\n");
+    if (alGetError() != AL_NO_ERROR) {
+	#ifdef UNIT
+		printf("ERROR: alutInit()\n");
+	#endif
+	}
     alGetError();
     float vec[6] = {0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f};
     alListener3f(AL_POSITION, 0.0f, 0.0f, 0.0f);
@@ -451,9 +467,11 @@ void Sound::loadOGG(char *filename, vector<char> &buffer, ALenum &format, ALsize
 
 void Sound::loadSounds()
 {
+#ifdef PROFILE
+	struct timespec tstart, tend;
+	timeGet(&tstart);
+#endif
 	Log("Sound::loadSounds()\n");
-	//alBuffer[0] = alutCreateBufferFromFile("./sounds/click.wav");
-	//alBuffer[1] = alutCreateBufferFromFile("./sounds/grass_step.wav");
 	alGenBuffers(1, &alBuffer[0]);
 	char filename[] = "./sounds/click.ogg";
 	vector<char> bufferData;
@@ -589,8 +607,11 @@ void Sound::loadSounds()
 	alBufferData(alBuffer[14], format15, &bufferData15[0],
 				 static_cast<ALsizei>(bufferData15.size()), freq15);
 	
-	if (alGetError() == AL_INVALID_VALUE)
+	if (alGetError() == AL_INVALID_VALUE) {
+	#ifdef UNIT
     	printf("ERROR3: setting menu sound\n");
+	#endif
+	}
 
 	alGenSources(1, &menuSound);
     alGenSources(1, &moveSound);
@@ -607,7 +628,6 @@ void Sound::loadSounds()
     alGenSources(1, &gruntSound[7]);
     alGenSources(1, &gruntSound[8]);
     alGenSources(1, &gruntSound[9]);
-
     
 	alSourcei(menuSound, AL_BUFFER, alBuffer[0]);
     alSourcei(moveSound, AL_BUFFER, alBuffer[1]);
@@ -672,11 +692,17 @@ void Sound::loadSounds()
 	alSourcei(gruntSound[7], AL_LOOPING, AL_FALSE);
 	alSourcei(gruntSound[8], AL_LOOPING, AL_FALSE);
 	alSourcei(gruntSound[9], AL_LOOPING, AL_FALSE);
+#ifdef PROFILE
+	timeGet(&tend);
+	njG.loadSoundTime += timeDiff(&tstart, &tend);
+#endif
 }
 
 void Sound::playRandomGrunt()
 {
 	random_device generator;
+	// generate a random number between 0 to 9 to play a one of 
+	// 10 random grunt sounds
     uniform_int_distribution<int> distribution(0, 9);
     switch (distribution(generator)) {
 		case 0:
@@ -793,10 +819,13 @@ void Entity::dealDamage(Entity *target, Tile** tile)
     Log("Entity::dealDamage(Entity &target), target->ally = %i\n", target->getAlly());
     if (this->getAlly() != target->getAlly() && target->current_health > 0 &&
         this->current_health > 0 && 
-        (this->inWorldRange(target) || this->inBattleRange(target)))
+        (this->inWorldRange(target) || this->inBattleRange(target))) {
         target->current_health -= target->current_defense * this->current_damage;
-    else
+    } else {
+	#ifdef UNIT
         cout << "Cannot damage an ally!\n";
+	#endif
+	}
     if (target->current_health < 0) {
         target->current_health = 0;
 		tile[(int)target->bPos.x][(int)target->bPos.z].occ = false;
@@ -968,7 +997,9 @@ void Ally::saveAllies(ofstream& file)
             file << this[i].wPos.z << endl;
         }
     } else {
+#ifdef UNIT
         printf("Could not locate file specified\n");
+#endif
     }
 }
 

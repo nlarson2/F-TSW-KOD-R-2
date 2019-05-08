@@ -17,6 +17,9 @@
 
 #include "Image.h"
 #include "maps.h"
+#ifdef PROFILE
+#include "profiling.h"
+#endif
 
 #include "Game.h"
 #include "nickolasL.h"
@@ -26,7 +29,6 @@
 #include "adamO.h"
 
 using namespace std;
-
 
 /******Image Class Definitions********/
 Image::~Image() { delete [] data; }
@@ -201,6 +203,11 @@ int main()
 		x11.swapBuffers();
 	}
 	logClose();
+#ifdef PROFILE
+	printf("Program Complete\n\n");
+	printf("Profiling Times:\n");
+	printf("njG.sound.loadSounds(): %lf\n", njG.loadSoundTime);
+#endif
 	return 0;
 }
 

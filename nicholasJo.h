@@ -1,7 +1,8 @@
 // Fate: The Shadow Wizard: Kingdom of Darkness: Revived Two: The Second One
 // Program: nicholasJo.h
 // Author: Nicholas Jordan
-// Date: 02/24/2019
+// Modified By: Nickolas Larson
+// Date: 05/09/2019
 //
 /*==================[ IMPORTANT NOTES ]====================//
   - Entity is the parent class of Enemy, Ally, and Player
@@ -59,6 +60,9 @@
 #include "log.h"
 #include <random>
 #include <cmath>
+#ifdef PROFILE
+#include "profiling.h"
+#endif
 #ifdef SOUND
 #include <AL/alut.h>
 #include <AL/al.h>
@@ -179,6 +183,9 @@ class Player : public Entity {
 
 class NJordGlobal {
     public:
+#ifdef PROFILE
+    double loadSoundTime;
+#endif
 #ifdef SOUND
     Sound sound;
 #endif
