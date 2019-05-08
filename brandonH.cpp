@@ -58,12 +58,14 @@ BHglobal::BHglobal()
     };
     static Button pbtn[3] = {
         Button("Resume", RESUME),
-        Button("Save Game", SAVE_GAME),
+        //Button("Save Game", SAVE_GAME),
+        Button("Controls", CONTROLS),
         Button("Main Menu", PMAIN_MENU),
     };
     static Button bbtn[3] = {
         Button("Resume", RESUME),
-        Button("Save Game", SAVE_GAME),
+        Button("Controls", CONTROLS),
+        //Button("Save Game", SAVE_GAME),
         Button("Retreat", RETREAT),
     };
     static Button tbtn[3] = {
@@ -187,6 +189,7 @@ int PauseGS::procMouseInput(int x, int y)
             for(int i=0; i<njG.allies->count;i++) {
                 njG.allies[i].resetStats();
             }
+            njG.player->score -= 25;
             break;
     }
     return 0;
@@ -909,7 +912,14 @@ int CreditGS::procMouseInput(int x, int y)
 
 int CreditGS::procKeyInput(int key)
 {
-    return -4;
+#ifdef SOUND
+	alSourceStop(njG.sound.ambientSound);
+	alSourcePlay(njG.sound.menuSound);
+#endif
+    njG.player->resetInstance();
+	njG.resetAllies();
+	njG.resetEnemies();	
+	return -4;
 }
 
 void CreditGS::drawGameState()

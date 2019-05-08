@@ -975,17 +975,18 @@ int WorldGS::procMouseInput(int x, int y)
 			//pair<int,int> temp = pathStack.pop();
             path.push_back(pathStack.top());
             //denies player from moving through entities
-            if (njG.checkWorldCollision(pathStack.top().first, pathStack.top().second) > 1) {
-                if (pathStack.size() > 1)
-                    return 20;
-            }
+            //if (njG.checkWorldCollision(pathStack.top().first, pathStack.top().second) > 1) {
+            //    if (pathStack.size() > 1)
+            //        return 20;
+            //}
 			pathStack.pop();
 		}
         /*********NicholasJ addition************/
         while ((int)path.size() > njG.player->moveRange+1) {
             path.pop_back();
         }
-        int collision = njG.checkWorldCollision(path.back().first, path.back().second);
+        int collision = njG.checkWorldCollision(path.back().first,
+                        path.back().second, map.tile);
         switch (collision) {
             case 0:
             {
@@ -996,45 +997,6 @@ int WorldGS::procMouseInput(int x, int y)
             #ifdef SOUND
                 alSourcePlay(njG.sound.moveSound);
             #endif
-                /*
-                vec2 destination(njG.player->wPos.x, njG.player->wPos.z);
-                pathStack = Movement(size, map.tile, njG.allies[0].wPos.x,
-                                     njG.allies[0].wPos.z, destination);
-                path.clear();
-                while(!pathStack.empty()) {
-                    path.push_back(pathStack.top());
-                    if (njG.checkWorldCollision(pathStack.top().first,
-                                                pathStack.top().second, 1) > 1) {
-                        if (pathStack.size() > 1)
-                            return 0;
-                    }
-                    pathStack.pop();
-                }
-                while ((int)path.size()-1 > njG.allies[0].moveRange) {
-                    path.pop_back();
-                }
-                collision = njG.checkWorldCollision(path.back().first, 
-                                                    path.back().second, 1);
-                switch (collision) {
-                    case 0:
-						map.tile[(int)njG.allies[0].wPos.x][(int)njG.allies[0].wPos.z].occ = false;
-                        njG.allies[0].wPos.x = path.back().first;
-                        njG.allies[0].wPos.z = path.back().second;
-						map.tile[(int)njG.allies[0].wPos.x][(int)njG.allies[0].wPos.z].occ = true;
-                        break;
-                    case 1:
-                        path.pop_back();
-						map.tile[(int)njG.allies[0].wPos.x][(int)njG.allies[0].wPos.z].occ = false;
-                        njG.allies[0].wPos.x = path.back().first;
-                        njG.allies[0].wPos.z = path.back().second;
-						map.tile[(int)njG.allies[0].wPos.x][(int)njG.allies[0].wPos.z].occ = true;
-                        break;
-                    case 2:
-                        break;
-                    case 3:
-                        break;
-                }
-                break; */
             }
             case 1:
                 break;
@@ -1049,6 +1011,8 @@ int WorldGS::procMouseInput(int x, int y)
             case 5:
                 //use enemies[2] as enemies for battle state
                 return 7;
+            case 6:
+                return 9;
         }
         /***************************************/
 	}
@@ -1117,13 +1081,13 @@ void WorldGS::drawGameState()
 				if (njG.player->wPos.x == i && njG.player->wPos.z == j) {
 					map.tile[i][j].occ = true;
 				}
-				for ( int k = 0; k < njG.allies->count; k++) {
+				/*for ( int k = 0; k < njG.allies->count; k++) {
 					if ( njG.allies[k].wPos.x == i && njG.allies[k].wPos.z == j) {
 						map.tile[i][j].occ = true;
 					}
-				}
+				}*/
 				for ( int k = 0; k < njG.enemyArrayCount; k++) {
-                    for (int l = 0; l < njG.enemyCount; l++) {
+                    for (int l = 0; l < njG.enemyCount/njG.enemyArrayCount; l++) {
 					    if ( njG.enemies[k][l].wPos.x == i && njG.enemies[k][l].wPos.z == j)
 						    map.tile[i][j].occ = true;
 				    }
@@ -1149,11 +1113,13 @@ void WorldGS::drawGameState()
     if (njG.player->count != 0) {
         njG.player->drawWorld();
     }
-    if (njG.allies->count != 0) {
-       // njG.allies[0].drawWorld();
+    /*if (njG.allies->count != 0) {
+        njG.allies[0].drawWorld();
+    }*/
+    for (int i = 0; i < njG.enemyArrayCount; i++) {
+        if (!njG.enemiesAreDead(njG.enemies[i]))
+            njG.enemies[i][0].drawWorld();
     }
-    for (int i = 0; i < njG.enemyArrayCount; i++)
-        njG.enemies[i][0].drawWorld();
     camera.drawCamera(0);
 
 	glPushMatrix();/*
@@ -1204,25 +1170,20 @@ BattleGS::BattleGS(int ** mapArr,int sizex,int sizey,
 
 int BattleGS::procMouseInput(int x, int y)
 {   
-    if (njG.enemiesAreDead(njG.enemies[enemy])) {
-        njG.resetTurns(njG.enemies[enemy]);
-        njG.resetBPos();
-        return -1;
-    }
     if (count % turns == 0) {
         if (njG.player->moveRange > 0) {
 	        glMatrixMode(GL_MODELVIEW);
 	        pkr.update(projMatrix, camera, xres, yres, x, y);
 	        pick(pkr.getCurrentRay());
 	        vec2 chkPath = map.checkCollision(pickPos.x, pickPos.z);
-            pair<int,int> size(10, 11);
+            pair<int,int> size(10, 10);
 	        if ( chkPath.x > -1 && chkPath.y > -1) {
                     for (int i = 0; i < njG.enemyArrayCount; i++) {
                         for (int j = 0; j < njG.enemyCount; j++) {
                         if (chkPath.x == njG.enemies[i][j].bPos.x &&
                             chkPath.y == njG.enemies[i][j].bPos.z) {
                             if (njG.player->inBattleRange(&njG.enemies[i][j])) {
-                                njG.player->dealDamage(&njG.enemies[i][j],  map.tile);
+                                njG.player->dealDamage(&njG.enemies[i][j], map.tile);
                                 njG.player->moveRange--;
                             #ifdef SOUND
                                 njG.sound.playRandomGrunt();
@@ -1262,7 +1223,7 @@ int BattleGS::procMouseInput(int x, int y)
 	        pick(pkr.getCurrentRay());
 	        vec2 chkPath = map.checkCollision(pickPos.x, pickPos.z);
 	        //printf("chkPath %f %f\n", chkPath.x, chkPath.y);
-	        pair<int,int> size(10, 11);
+	        pair<int,int> size(10, 10);
 	        if ( chkPath.x > -1 && chkPath.y > -1) {
                 for (int i = 0; i < njG.enemyArrayCount; i++) {
                     for (int j = 0; j < njG.enemyCount; j++) {
@@ -1288,7 +1249,6 @@ int BattleGS::procMouseInput(int x, int y)
 			        path.push_back(pathStack.top());
 			        pathStack.pop();
                 }
-                /*********NicholasJ addition************/
                 while ((int)path.size()-1 > njG.allies[count-1].moveRange) {
                     path.pop_back();
                 }
@@ -1322,6 +1282,22 @@ int BattleGS::procKeyInput(int key)
 			break;
 		case XK_e:
 			//camera.rotate(4.0f);
+            if (njG.enemiesAreDead(njG.enemies[enemy])) {
+                njG.resetTurns(njG.enemies[enemy]);
+                njG.resetBPos();
+                njG.enemies[enemy][0].wPos.x = 0;
+                njG.enemies[enemy][0].wPos.z = 0;
+                njG.player->score += 100;
+                if (njG.allEnemiesAreDead()) {
+                    njG.player->score += 500;
+                    return 8;
+                }
+            #ifdef SOUND
+                alSourceStop(njG.sound.battleSound);
+                alSourcePlay(njG.sound.ambientSound);    
+            #endif
+                return -1;
+            }
             count++;
             if (count % turns == 0) {
                 count = 0;
