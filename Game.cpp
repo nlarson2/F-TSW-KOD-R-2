@@ -127,7 +127,8 @@ void Game::procKeyInput(int key)
 
 void Game::drawGameState()
 {
-	states.top()->drawGameState();
+	if(states.size() > 0)
+		states.top()->drawGameState();
 }
 
 #endif

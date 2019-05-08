@@ -849,7 +849,14 @@ int CreditGS::procMouseInput(int x, int y)
 
 int CreditGS::procKeyInput(int key)
 {
-    return -4;
+#ifdef SOUND
+	alSourceStop(njG.sound.ambientSound);
+	slSourcePlay(njG.sound.menuSound);
+#endif
+    	njG.player->resetInstance();
+	njG.resetAllies();
+	njG.resetEnemies();	
+	return -4;
 }
 
 void CreditGS::drawGameState()
