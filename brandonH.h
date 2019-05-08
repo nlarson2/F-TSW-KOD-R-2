@@ -6,6 +6,8 @@
 #ifndef BRANDON_H
 #define BRANDON_H
 
+#include "stack"
+#include <vector>
 #include "nickolasL.h"
 #include "nicholasJo.h"
 
@@ -54,6 +56,20 @@ struct BHglobal
     BHglobal();
 };
 
+class Game
+{
+    private:
+        int xres, yres;
+        stack<GameState*> states;
+    public:
+        Game(int x, int y);
+        void init();
+        void cleanUp();
+        void procMouseInput(int x, int y);
+        void procKeyInput(int key);
+        void drawGameState();
+};
+
 class TitleGS: public GameState {
     private:
         string title;
@@ -92,8 +108,8 @@ class MenuGS : public GameState {
         MenuGS(int, Button[5][5],int, int);
         ~MenuGS();
         int procMouseInput(int, int);
-		int procKeyInput(int);
-		void drawGameState();
+        int procKeyInput(int);
+        void drawGameState();
 };
 // May not need implementation
 class TownGS : public GameState {

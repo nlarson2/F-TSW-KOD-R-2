@@ -1,4 +1,4 @@
-#ifndef GAME_CPP
+/*#ifndef GAME_CPP
 #define GAME_CPP
 #include "Game.h"
 
@@ -27,7 +27,7 @@ void Game::procMouseInput(int x, int y)
 {
 	int changeState = states.top()->procMouseInput(x,y);
 
-    switch (changeState) {
+    swite (changeState) {
         case -4:
             while(states.size()-1 > 0) {
                 states.pop();
@@ -134,4 +134,4 @@ void Game::drawGameState()
 		states.top()->drawGameState();
 }
 
-#endif
+#endif*/
