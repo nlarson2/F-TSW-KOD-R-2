@@ -16,9 +16,12 @@
 extern NJordGlobal njG;
 
 AOglobal::AOglobal() {
-    Boxes box[8] = {
+    Boxes box[11] = {
         Boxes(BOX),
         Boxes(END_TURN),
+        Boxes(BOX),
+        Boxes(BOX),
+        Boxes(BOX),
         Boxes(BOX),
         Boxes(BOX),
         Boxes(BOX),
@@ -115,6 +118,27 @@ void uiboxes::posBoxes() {
     boxes[6].center.x = 110;
     boxes[6].center.y = 40;
     //
+
+    // Character Gold Count Background
+    boxes[7].width = 75;
+    boxes[7].height = 27.5;
+    boxes[7].center.x = xres-75;
+    boxes[7].center.y = 27.5;
+    //
+
+    // Character GOLD
+    boxes[8].width = 70;
+    boxes[8].height = 10;
+    boxes[8].center.x = xres-75;
+    boxes[8].center.y = 40;
+    //
+
+    // Character Gold Count
+    boxes[9].width = 70;
+    boxes[9].height = 10;
+    boxes[9].center.x = xres-75;
+    boxes[9].center.y = 15;
+    //
 }
 
 void battleboxes::posBattleBoxes(int x) {
@@ -185,12 +209,12 @@ void uiboxes::drawBoxes() {
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
 
-    for (int i = 0; i < 7; i++) {
+    for (int i = 0; i < 10; i++) {
         Boxes *s;
         glColor3ub(90, 140, 90);
         if (i > 3 || i == 1)
             glColor3ub(40,40,40);
-        if ( i == 2 || i == 3 || i == 0)
+        if ( i == 2 || i == 3 || i == 0 || i == 7)
             glColor3ub(130,130,130);
         if (i == 4)
             glColor3ub(20, 20, 100);
@@ -243,6 +267,10 @@ void uiboxes::drawBoxes() {
     string mv = to_string(player->moveRange);
     string mv2 = mv;
     ggprint16(&r, 16, 0xffffffff, mv2.c_str());
+
+    r.bot = 28;
+    r.left = xres - 75;
+    gprint16(&r, 16, 0xffffffff, "Gold");
     
     glPushMatrix();
     glTranslatef(boxes[2].center.x, boxes[2].center.y, 0);
@@ -424,9 +452,9 @@ void allyboxes::drawAllyBoxes() {
 //------------- UI BOXES --------------//
 //=====================================//
 
-uiboxes::uiboxes(Boxes b[7], float xres, float yres)
+uiboxes::uiboxes(Boxes b[10], float xres, float yres)
 {
-    size = 7;
+    size = 10;
     this->xres = xres;
     this->yres = yres;
     for(int i = 0; i < size; i++)
