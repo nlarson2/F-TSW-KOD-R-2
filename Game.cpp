@@ -79,7 +79,7 @@ void Game::procMouseInput(int x, int y)
         case 6:
             states.push(new MenuGS(5, bhg.menus,  xres, yres));
             break;
-        case 7:
+        case 8:
             states.push(new CreditGS(xres, yres));
             break;
     }
@@ -119,7 +119,7 @@ void Game::procKeyInput(int key)
         case 6:
             states.push(new MenuGS(5, bhg.menus,  xres, yres));
             break;
-        case 7:
+        case 8:
             states.push(new CreditGS(xres, yres));
             break;
     }

@@ -1079,7 +1079,7 @@ int WorldGS::procKeyInput(int key)
 				));
 			break;
         case XK_v:
-            return 7;
+            return 8;
             break;
 		case XK_Escape:
 			return 2;
