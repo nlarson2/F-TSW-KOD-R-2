@@ -82,6 +82,9 @@ void Game::procMouseInput(int x, int y)
         case 8:
             states.push(new CreditGS(xres, yres));
             break;
+        case 9:
+            states.push(new PauseGS(bhg.tmenu,xres,yres));
+            break;
     }
 }
 
@@ -114,7 +117,7 @@ void Game::procKeyInput(int key)
             states.push(new PauseGS(bhg.bmenu,xres,yres));
             break;
         case 5:
-            states.push(new PauseGS(bhg.tmenu,xres,yres));
+            //states.push(new PauseGS(bhg.tmenu,xres,yres));
             break;
         case 6:
             states.push(new MenuGS(5, bhg.menus,  xres, yres));

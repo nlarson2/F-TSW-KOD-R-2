@@ -975,17 +975,18 @@ int WorldGS::procMouseInput(int x, int y)
 			//pair<int,int> temp = pathStack.pop();
             path.push_back(pathStack.top());
             //denies player from moving through entities
-            if (njG.checkWorldCollision(pathStack.top().first, pathStack.top().second) > 1) {
-                if (pathStack.size() > 1)
-                    return 20;
-            }
+            //if (njG.checkWorldCollision(pathStack.top().first, pathStack.top().second) > 1) {
+            //    if (pathStack.size() > 1)
+            //        return 20;
+            //}
 			pathStack.pop();
 		}
         /*********NicholasJ addition************/
         while ((int)path.size() > njG.player->moveRange+1) {
             path.pop_back();
         }
-        int collision = njG.checkWorldCollision(path.back().first, path.back().second);
+        int collision = njG.checkWorldCollision(path.back().first,
+                        path.back().second, map.tile);
         switch (collision) {
             case 0:
             {
@@ -996,45 +997,6 @@ int WorldGS::procMouseInput(int x, int y)
             #ifdef SOUND
                 alSourcePlay(njG.sound.moveSound);
             #endif
-                /*
-                vec2 destination(njG.player->wPos.x, njG.player->wPos.z);
-                pathStack = Movement(size, map.tile, njG.allies[0].wPos.x,
-                                     njG.allies[0].wPos.z, destination);
-                path.clear();
-                while(!pathStack.empty()) {
-                    path.push_back(pathStack.top());
-                    if (njG.checkWorldCollision(pathStack.top().first,
-                                                pathStack.top().second, 1) > 1) {
-                        if (pathStack.size() > 1)
-                            return 0;
-                    }
-                    pathStack.pop();
-                }
-                while ((int)path.size()-1 > njG.allies[0].moveRange) {
-                    path.pop_back();
-                }
-                collision = njG.checkWorldCollision(path.back().first, 
-                                                    path.back().second, 1);
-                switch (collision) {
-                    case 0:
-						map.tile[(int)njG.allies[0].wPos.x][(int)njG.allies[0].wPos.z].occ = false;
-                        njG.allies[0].wPos.x = path.back().first;
-                        njG.allies[0].wPos.z = path.back().second;
-						map.tile[(int)njG.allies[0].wPos.x][(int)njG.allies[0].wPos.z].occ = true;
-                        break;
-                    case 1:
-                        path.pop_back();
-						map.tile[(int)njG.allies[0].wPos.x][(int)njG.allies[0].wPos.z].occ = false;
-                        njG.allies[0].wPos.x = path.back().first;
-                        njG.allies[0].wPos.z = path.back().second;
-						map.tile[(int)njG.allies[0].wPos.x][(int)njG.allies[0].wPos.z].occ = true;
-                        break;
-                    case 2:
-                        break;
-                    case 3:
-                        break;
-                }
-                break; */
             }
             case 1:
                 break;
@@ -1049,6 +1011,8 @@ int WorldGS::procMouseInput(int x, int y)
             case 5:
                 //use enemies[2] as enemies for battle state
                 return 7;
+            case 6:
+                return 9;
         }
         /***************************************/
 	}
@@ -1219,7 +1183,7 @@ int BattleGS::procMouseInput(int x, int y)
                         if (chkPath.x == njG.enemies[i][j].bPos.x &&
                             chkPath.y == njG.enemies[i][j].bPos.z) {
                             if (njG.player->inBattleRange(&njG.enemies[i][j])) {
-                                njG.player->dealDamage(&njG.enemies[i][j],  map.tile);
+                                njG.player->dealDamage(&njG.enemies[i][j], map.tile);
                                 njG.player->moveRange--;
                             #ifdef SOUND
                                 njG.sound.playRandomGrunt();
@@ -1324,6 +1288,10 @@ int BattleGS::procKeyInput(int key)
                 njG.enemies[enemy][0].wPos.x = 0;
                 njG.enemies[enemy][0].wPos.z = 0;
                 njG.player->score += 100;
+                if (njG.allEnemiesAreDead()) {
+                    njG.player->score += 500;
+                    return 8;
+                }
             #ifdef SOUND
                 alSourceStop(njG.sound.battleSound);
                 alSourcePlay(njG.sound.ambientSound);    

@@ -163,6 +163,7 @@ class Ally : public Entity {
 //singleton class
 class Player : public Entity {
     public:
+    int score;
 	static int count;
 	static Player* getInstance();
 	static Player* setInstance(string);
@@ -201,7 +202,7 @@ class NJordGlobal {
     void loadEnemies(ifstream&);
 	void saveEnemies(ofstream&);
     //int type: 0 = player, 1 = ally, 2 = enemy
-    int checkWorldCollision(int x , int y, int type = 0);
+    int checkWorldCollision(int x , int y, Tile**);
     bool checkBattleCollision(int x, int y, int position, int arrPos, int type);
     void controlTurns(Entity *target, int dest_x, int dest_z, int turn_amount, Tile**);
 };

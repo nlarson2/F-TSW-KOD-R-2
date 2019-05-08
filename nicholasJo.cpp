@@ -95,31 +95,31 @@ void NJordGlobal::loadAllies(ifstream& file)
     Log("NJordGlobal::loadAllies(ifstream& file)\n");
     string line;
     if (file) {
-        //load count - line 8
+        //load count
         getline(file, line);
         spawnAllies(atoi(line.c_str()));
         if (allies->count > 0) {
             for (int i = 0; i < allies->count; i++) {
-                //load combatType - line 9+7ii
+                //load combatType
                 getline(file, line);
                 allies[i].loadAllyCombatType(line);
-                //load current_health - line 10+7i
+                //load current_health
                 getline(file, line);
                 //strtof = string to float
                 allies[i].current_health = strtof(line.c_str(), NULL); 
-                //load current_defense - line 11+7i
+                //load current_defense
                 getline(file, line);
                 allies[i].current_defense = strtof(line.c_str(), NULL);
-                //load current_damage - line 12+7i
+                //load current_damage
                 getline(file, line);
                 allies[i].current_damage = strtof(line.c_str(), NULL);
-                //load wPos.x - line 13+7i
+                //load wPos.x
                 getline(file, line);
                 allies[i].wPos.x = strtof(line.c_str(), NULL);
-                //load wPos.y - line 14+7i
+                //load wPos.y
                 getline(file, line);
                 allies[i].wPos.y = strtof(line.c_str(), NULL);
-                //load wPos.z - line 15+7i
+                //load wPos.z
                 getline(file, line);
                 allies[i].wPos.z = strtof(line.c_str(), NULL);
             }
@@ -169,47 +169,34 @@ void NJordGlobal::loadEnemies(ifstream& file)
     }
 }
 
-int NJordGlobal::checkWorldCollision(int x, int z, int type)
+int NJordGlobal::checkWorldCollision(int x, int z, Tile **tile)
 {
-	switch (type) {
-		case 0: //player case
-    		if (x == player->wPos.x && z == player->wPos.z)
-        		return 1;
-    		for (int i = 0; i < allies->count; i++) {
-        		if (x == allies[i].wPos.x && z == allies[i].wPos.z)
-            		return 2;
-    		}
-    		for (int i = 0; i < enemyArrayCount; i++) {
-				for (int j = 0; j < enemyCount/enemyArrayCount; j++) {
-        			if (x == enemies[i][j].wPos.x && z == enemies[i][j].wPos.z) {
-						if ((abs(player->wPos.x - enemies[i][j].wPos.x) == 1 &&
-							abs(player->wPos.z - enemies[i][j].wPos.z) == 0) ||
-						(abs(player->wPos.x - enemies[i][j].wPos.x) == 0 &&
-							abs(player->wPos.z - enemies[i][j].wPos.z) == 1) ||
-						(abs(player->wPos.x - enemies[i][j].wPos.x) == 1 &&
-							abs(player->wPos.z - enemies[i][j].wPos.z) == 1)) {
-            				return i+3;
-        				}
-						return 2;
-					}
-				}
-    		}
-    		return 0;
-			break;
-		case 1: //ally case
-    		if (x == player->wPos.x && z == player->wPos.z) {
-        		return 1;
-    		}
-			for (int i = 0; i < enemyArrayCount; i++) {
-				for (int j = 0; j < enemyCount/enemyArrayCount; j++) {
-					if (x == enemies[i][j].wPos.x && z == enemies[i][j].wPos.z) {
-						return 2;
-					}
-				}
-			}
-			break;
+    if (x == player->wPos.x && z == player->wPos.z) {
+        return 1;
 	}
-	return -1;	
+	if (tile[x][z].modelID == 8 || tile[x][z].modelID == 7) {
+		return 6;
+	}
+    for (int i = 0; i < allies->count; i++) {
+    	if (x == allies[i].wPos.x && z == allies[i].wPos.z)
+            return 2;
+    }
+    for (int i = 0; i < enemyArrayCount; i++) {
+		for (int j = 0; j < enemyCount/enemyArrayCount; j++) {
+        	if (x == enemies[i][j].wPos.x && z == enemies[i][j].wPos.z) {
+				if ((abs(player->wPos.x - enemies[i][j].wPos.x) == 1 &&
+					abs(player->wPos.z - enemies[i][j].wPos.z) == 0) ||
+				(abs(player->wPos.x - enemies[i][j].wPos.x) == 0 &&
+					abs(player->wPos.z - enemies[i][j].wPos.z) == 1) ||
+				(abs(player->wPos.x - enemies[i][j].wPos.x) == 1 &&
+					abs(player->wPos.z - enemies[i][j].wPos.z) == 1)) {
+            		return i+3;
+        		}
+				return 2;
+			}
+		}
+    }
+    return 0;
 }
 
 bool NJordGlobal::checkBattleCollision(int x, int z, int position, int arrPos, int type)
@@ -641,7 +628,7 @@ void Sound::loadSounds()
 	alSourcef(menuSound, AL_GAIN, 0.5f);
     alSourcef(moveSound, AL_GAIN, 0.5f);
     alSourcef(ambientSound, AL_GAIN, 1.0f);
-    alSourcef(battleSound, AL_GAIN, 1.0f);
+    alSourcef(battleSound, AL_GAIN, 0.5f);
     alSourcef(hitSound, AL_GAIN, 1.0f);
     alSourcef(gruntSound[0], AL_GAIN, 1.0f);
     alSourcef(gruntSound[1], AL_GAIN, 1.0f);
@@ -970,15 +957,15 @@ void Ally::saveAllies(ofstream& file)
 {
     Log("Ally::saveAllies(ostream& file)\n");
     if (file) {
-        file << Ally::count << endl;                    //line 8
+        file << Ally::count << endl;
         for (int i = 0; i < Ally::count; i++) {
-            file << this[i].combatType << endl;         //line 9+7i
-            file << this[i].current_health << endl;     //line 10+7i
-            file << this[i].current_defense << endl;    //line 11+7i
-            file << this[i].current_damage << endl;     //line 12+7i
-            file << this[i].wPos.x << endl;             //line 13+7i
-            file << this[i].wPos.y << endl;             //line 14+7i
-            file << this[i].wPos.z << endl;             //line 15+7i
+            file << this[i].combatType << endl;
+            file << this[i].current_health << endl;
+            file << this[i].current_defense << endl;
+            file << this[i].current_damage << endl;
+            file << this[i].wPos.x << endl;
+            file << this[i].wPos.y << endl;
+            file << this[i].wPos.z << endl;
         }
     } else {
         printf("Could not locate file specified\n");
@@ -1295,6 +1282,7 @@ Player::Player(string c)
 	defaultBPos.z = 1;
 	bPos.x = 1;
 	bPos.z = 1;
+	score = 0;
     count++;
 }
 
@@ -1332,6 +1320,7 @@ void Player::saveInstance(ofstream &file)
         file << instance->wPos.x << endl;
         file << instance->wPos.y << endl;
         file << instance->wPos.z << endl;
+		file << instance->score << endl;
 
     } else {
         printf("Could not locate file specified\n");
@@ -1365,7 +1354,9 @@ void Player::loadInstance(ifstream &file)
         //load wPos.z - line 7
         getline(file, line);
         player->wPos.z = strtof(line.c_str(), NULL);
-        
+        //load count - line 8
+        getline(file, line);
+        player->score = atoi(line.c_str());
         player->count = 1;
     } else {
         printf("Could not locate file specified\n");

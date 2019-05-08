@@ -57,12 +57,14 @@ BHglobal::BHglobal() {
     };
     static Button pbtn[3] = {
         Button("Resume", RESUME),
-        Button("Save Game", SAVE_GAME),
+        //Button("Save Game", SAVE_GAME),
+        Button("Controls", CONTROLS),
         Button("Main Menu", PMAIN_MENU),
     };
     static Button bbtn[3] = {
         Button("Resume", RESUME),
-        Button("Save Game", SAVE_GAME),
+        Button("Controls", CONTROLS),
+        //Button("Save Game", SAVE_GAME),
         Button("Retreat", RETREAT),
     };
     static Button tbtn[3] = {
@@ -852,9 +854,9 @@ int CreditGS::procKeyInput(int key)
 {
 #ifdef SOUND
 	alSourceStop(njG.sound.ambientSound);
-	slSourcePlay(njG.sound.menuSound);
+	alSourcePlay(njG.sound.menuSound);
 #endif
-    	njG.player->resetInstance();
+    njG.player->resetInstance();
 	njG.resetAllies();
 	njG.resetEnemies();	
 	return -4;
