@@ -273,7 +273,7 @@ void uiboxes::drawBoxes() {
 
     r.bot = 28;
     r.left = xres - 75;
-    gprint16(&r, 16, 0xffffffff, "Gold");
+    ggprint16(&r, 16, 0xffffffff, "Gold");
     
     glPushMatrix();
     glTranslatef(boxes[2].center.x, boxes[2].center.y, 0);
