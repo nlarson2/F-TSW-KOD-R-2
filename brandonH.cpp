@@ -157,6 +157,7 @@ int PauseGS::procMouseInput(int x, int y)
             for(int i=0; i<njG.allies->count;i++) {
                 njG.allies[i].resetStats();
             }
+            njG.player->score -= 25;
             break;
     }
     return 0;
