@@ -100,6 +100,7 @@ class Global {
 		int n;
 		int count;
 	    bool ctrls = true;
+	    int done = 0;
 		Global() {
 			xres = 1200;
 			yres = 900;
@@ -188,13 +189,13 @@ int main()
 	njG.sound.loadSounds();
 #endif
 	//Main animation loop
-	int done = 0;
-	while (!done) {
+
+	while (!g.done) {
 		//Process external events.
 		while (x11.getXPending()) {
 			XEvent e = x11.getXNextEvent();
 			check_mouse(&e);
-			done = check_keys(&e);
+			g.done = check_keys(&e);
 		}
 		render();
 		x11.swapBuffers();

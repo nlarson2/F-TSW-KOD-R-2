@@ -16,11 +16,26 @@ void Game::init()
     states.push(new TitleGS(xres,yres));
 }
 
+void Game::cleanUp()
+{
+    while(!states.empty()) {
+        states.pop();
+    }
+}
+
 void Game::procMouseInput(int x, int y)
 {
 	int changeState = states.top()->procMouseInput(x,y);
 
     switch (changeState) {
+        case -4:
+            while(states.size()-1 > 0) {
+                states.pop();
+            }
+            break;
+        case -3:
+            cleanUp();
+            break;
         case -2:
             for (int i=0; i<2; i++)
             states.pop();
@@ -47,6 +62,9 @@ void Game::procMouseInput(int x, int y)
         case 6:
             states.push(new MenuGS(5, bhg.menus,  xres, yres));
             break;
+        case 7:
+            states.push(new CreditGS(xres, yres));
+            break;
     }
 }
 
@@ -54,6 +72,11 @@ void Game::procKeyInput(int key)
 {
 	int changeState = states.top()->procKeyInput(key);
     switch(changeState) {
+        case -4:
+            while(states.size()-1 > 0) {
+                states.pop();
+            }
+            break;
         case -2:
             for (int i=0; i<2; i++)
             states.pop();
@@ -78,6 +101,9 @@ void Game::procKeyInput(int key)
             break;
         case 6:
             states.push(new MenuGS(5, bhg.menus,  xres, yres));
+            break;
+        case 7:
+            states.push(new CreditGS(xres, yres));
             break;
     }
 }

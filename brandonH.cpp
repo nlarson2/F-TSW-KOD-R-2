@@ -1,7 +1,31 @@
 // Author: Brandon Hernandez
 // Spring 2019: CMPS 3350
 // Group Project: F-TSW-KOD-R-2
-// Last Updated: 5-5-2019
+// Last Updated: 5-7-2019
+
+//====================[TO DO LIST]====================//
+//               --------MAJOR--------
+// - Finish CreditGS
+//      - Currently displays a blank screen that can
+//      check any key and return to TitleGS but 
+//      causes a segfault when entering a new game
+// - Finish Cleanup
+//      - Needs to set Done in main so the game can
+//      perform a clean exit. Currently its case -4
+//      in Game.cpp.
+// -Configuration Menu
+//      - Need subset menu under controls which will
+//      bring up a set of options. Not sure which
+//      options to add here but sounds/screen size
+//      etc.
+//               --------MINOR--------
+// - Unit Test
+//      - Case around my couts for testing
+// - Profiling
+//      - Might not add in personal cpp, just in main
+// - Refactor K&R
+//      - Last thing to do
+//====================================================//
 
 #include "brandonH.h"
 
@@ -163,6 +187,10 @@ int PauseGS::procMouseInput(int x, int y)
 
 int PauseGS::procKeyInput(int key)
 {
+    switch(key) {
+        case XK_Escape:
+            return -1;
+    };
     return 0;//read keys
 }
 
@@ -284,7 +312,8 @@ int MenuGS::procMouseInput(int x, int y)
             alSourcePlay(njG.sound.menuSound); 
             njG.sound.clearSounds();
 #endif
-            exit(0);
+            //exit(0);
+            return -3;
             break;
         case ARCHER:
             {
@@ -720,6 +749,12 @@ int TownGS::procMouseInput(int x, int y)
 
 int TownGS::procKeyInput(int key)
 {
+    switch(key) {
+        case XK_Escape:
+            return -1;
+        default:
+                break;;
+    }
     return 0;//read keys
 }
 
@@ -796,26 +831,33 @@ void TitleGS::drawGameState()
     ggprint16(&r, 16, 0xFFFFFFFF, "Press any key");
 }
 
+//=================================================//
+//--------------- START OF CREDITGS ----------------//
+//=================================================//
+CreditGS::CreditGS(int xres, int yres)
+{
+    this->xres = xres;
+    this->yres = yres;
+}
 
+int CreditGS::procMouseInput(int x, int y)
+{
+    return 0;
+}
 
+int CreditGS::procKeyInput(int key)
+{
+    return -4;
+}
 
+void CreditGS::drawGameState()
+{
+    glClear(GL_COLOR_BUFFER_BIT);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(0,xres,0,yres,-1,1);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    // SHOW PICTURE FUNCTIONS
+}
