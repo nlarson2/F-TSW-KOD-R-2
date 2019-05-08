@@ -5,6 +5,7 @@
 // Last Update: May 3, 2019
 #include "adamO.h"
 #include "nicholasJo.h"
+#include "brandonH.h"
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <GL/gl.h>
@@ -14,6 +15,7 @@
 #include <string>
 
 extern NJordGlobal njG;
+extern BHglobal bhg;
 
 AOglobal::AOglobal() {
     Boxes box[11] = {
@@ -241,7 +243,8 @@ void uiboxes::drawBoxes() {
     Player *player = Player::getInstance(); 
     r.bot = 78;
     r.left = 110;
-    ggprint16(&r, 16, 0xffffffff, player->combatType.c_str());
+    const char* pname = bhg.name.c_str();
+    ggprint16(&r, 16, 0xffffffff, pname);
     
     r.bot = 53;
     r.left = 90;
@@ -274,6 +277,11 @@ void uiboxes::drawBoxes() {
     r.bot = 28;
     r.left = xres - 75;
     ggprint16(&r, 16, 0xffffffff, "Gold");
+    
+    r.bot = 3;
+    r.left = xres - 75;
+    string gold = to_string(player->score);
+    ggprint16(&r, 16, 0xffffff00, gold.c_str());
     
     glPushMatrix();
     glTranslatef(boxes[2].center.x, boxes[2].center.y, 0);
