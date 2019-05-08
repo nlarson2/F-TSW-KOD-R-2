@@ -951,12 +951,13 @@ void draw_brandonHCredit(int x, int y, GLuint texture)
 	glTexCoord2f(1.0f, 0.0f); glVertex2i(wid, wid);
 	glTexCoord2f(1.0f, 1.0f); glVertex2i(wid, -wid);
 	glEnd();
+    glBindTexture(GL_TEXTURE_2D, 0);
 	glTranslatef(wid,0,0);
 	r.bot = 0;
 	r.left = 10;
 	r.center = 0;
 	ggprint8b(&r, 16, 0x00000000, "Brandon Hernandez");
-	glPopMatrix;
+	glPopMatrix();
 }
 
 

@@ -117,5 +117,5 @@ class CreditGS : public GameState {
         int procKeyInput(int);
         void drawGameState();
 };
-
+void draw_brandonHCredits(int,int,GLuint);
 #endif
