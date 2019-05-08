@@ -17,6 +17,9 @@
 
 #include "Image.h"
 #include "maps.h"
+#ifdef PROFILE
+#include "profiling.h"
+#endif
 
 #include "Game.h"
 #include "nickolasL.h"
@@ -26,7 +29,6 @@
 #include "adamO.h"
 
 using namespace std;
-
 
 /******Image Class Definitions********/
 Image::~Image() { delete [] data; }
@@ -100,6 +102,7 @@ class Global {
 		int n;
 		int count;
 	    bool ctrls = true;
+	    int done = 0;
 		Global() {
 			xres = 1200;
 			yres = 900;
@@ -176,7 +179,7 @@ extern NJordGlobal njG;
 // MAIN FUNCTION IS HERE
 //=====================================
 int main()
-{	int score = 6;
+{
 	system("./serverCon www.cs.csub.edu /~nlarson/3350/lab1/lab1.php?score=5");	
 	logOpen();
 	Log("main()\n");
@@ -188,18 +191,23 @@ int main()
 	njG.sound.loadSounds();
 #endif
 	//Main animation loop
-	int done = 0;
-	while (!done) {
+
+	while (!g.done) {
 		//Process external events.
 		while (x11.getXPending()) {
 			XEvent e = x11.getXNextEvent();
 			check_mouse(&e);
-			done = check_keys(&e);
+			g.done = check_keys(&e);
 		}
 		render();
 		x11.swapBuffers();
 	}
 	logClose();
+#ifdef PROFILE
+	printf("Program Complete\n\n");
+	printf("Profiling Times:\n");
+	printf("njG.sound.loadSounds(): %lf\n", njG.loadSoundTime);
+#endif
 	return 0;
 }
 

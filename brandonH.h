@@ -1,5 +1,8 @@
-//Brandon Hernandez
-//
+// Author: Brandon Hernandez
+// Spring 2019: CMPS 3350
+// Group Project: F-TSW-KOD-R-2
+// Last Updated: 5-7-2019
+
 #ifndef BRANDON_H
 #define BRANDON_H
 
@@ -47,6 +50,7 @@ struct BHglobal
     Button pmenu[3];
     Button bmenu[3];
     Button tmenu[3];
+    string name;
     BHglobal();
 };
 
@@ -82,7 +86,6 @@ class MenuGS : public GameState {
         int state;
         int size;
         bool clicked;
-        string name;
         Button ** buttons;
         float xres, yres;
     public:
@@ -104,5 +107,15 @@ class TownGS : public GameState {
         int procKeyInput(int);
         void drawGameState();
 };
-
+class CreditGS : public GameState {
+    private:
+        float xres, yres;
+    public:
+        CreditGS(int, int);
+        ~CreditGS();
+        int procMouseInput(int, int);
+        int procKeyInput(int);
+        void drawGameState();
+};
+void draw_brandonHCredits(int,int,GLuint);
 #endif

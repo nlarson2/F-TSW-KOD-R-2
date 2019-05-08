@@ -233,10 +233,11 @@ protected:
 	allyboxes AB;
     int turns;
     int count;
+    int enemy;
 public:
 	BattleGS(int ** mapArr,int sizex,int sizey,
 	float camRot, int posx, int posz,
-	float xres, float yres);
+	float xres, float yres, int enemy);
 	int procMouseInput(int x, int y);
 	int procKeyInput(int key);
 	void drawPath();

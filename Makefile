@@ -1,4 +1,4 @@
-FFLAGS = main.cpp nicholasJo.cpp brandonH.cpp nickolasL.cpp marbienJ.cpp adamO.cpp Game.cpp maps.cpp log.cpp
+FFLAGS = main.cpp nicholasJo.cpp brandonH.cpp nickolasL.cpp marbienJ.cpp adamO.cpp Game.cpp maps.cpp log.cpp profiling.cpp
 HFLAGS = nicholasJo.h brandonH.h nickolasL.h marbienJ.h adamO.h Game.h maps.h
 CFLAGS = libggfonts.a -Wall -o game -lX11 -lGL -lGLU -lm
 SFLAGS = -D SOUND \
@@ -9,14 +9,24 @@ all: game
 
 game: $(FFLAGS) $(HFLAGS)
 	g++ -g $(FFLAGS) $(CFLAGS) -o game
-	g++ serverCon.cpp -Wall -oserverCon -lssl -lcrypto	
+	g++ serverCon.cpp -Wall -oserverCon -lssl -lcrypto
 
 sound: $(FFLAGS) $(HFLAGS)
 	g++ -g $(FFLAGS) $(CFLAGS) $(SFLAGS) -o sound
-	g++ serverCon.cpp -Wall -oserverCon -lssl -lcrypto	
+	g++ serverCon.cpp -Wall -oserverCon -lssl -lcrypto
+
+unit: $(FFLAGS) $(HFLAGS)
+	g++ -g $(FFLAGS) $(CFLAGS) -o unit -D UNIT_TEST -D UNIT
+	g++ serverCon.cpp -Wall -oserverCon -lssl -lcrypto
+
+profile: $(FFLAGS) $(HFLAGS)
+	g++ -g $(FFLAGS) $(CFLAGS) -o profiling -D PROFILE
+	g++ serverCon.cpp -Wall -oserverCon -lssl -lcrypto
 
 clean:
 	rm -f game
 	rm -f sound
+	rm -f profiling
+	rm -f unit
 	rm -f *.o
 

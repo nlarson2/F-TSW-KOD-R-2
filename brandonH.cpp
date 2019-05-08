@@ -1,7 +1,31 @@
 // Author: Brandon Hernandez
 // Spring 2019: CMPS 3350
 // Group Project: F-TSW-KOD-R-2
-// Last Updated: 5-5-2019
+// Last Updated: 5-7-2019
+
+//====================[TO DO LIST]====================//
+//               --------MAJOR--------
+// - Finish CreditGS
+//      - Currently displays a blank screen that can
+//      check any key and return to TitleGS but 
+//      causes a segfault when entering a new game
+// - Finish Cleanup
+//      - Needs to set Done in main so the game can
+//      perform a clean exit. Currently its case -4
+//      in Game.cpp.
+// -Configuration Menu
+//      - Need subset menu under controls which will
+//      bring up a set of options. Not sure which
+//      options to add here but sounds/screen size
+//      etc.
+//               --------MINOR--------
+// - Unit Test
+//      - Case around my couts for testing
+// - Profiling
+//      - Might not add in personal cpp, just in main
+// - Refactor K&R
+//      - Last thing to do
+//====================================================//
 
 #include "brandonH.h"
 
@@ -9,7 +33,8 @@ extern NJordGlobal njG;
 //=================================================//
 //--------------- START OF BHglobal ---------------//
 //=================================================//
-BHglobal::BHglobal() {
+BHglobal::BHglobal() 
+{
     static Button btn[5] = {
         Button("New Game", NEW_GAME),
         Button("Load Game",LOAD_GAME),
@@ -33,12 +58,14 @@ BHglobal::BHglobal() {
     };
     static Button pbtn[3] = {
         Button("Resume", RESUME),
-        Button("Save Game", SAVE_GAME),
+        //Button("Save Game", SAVE_GAME),
+        Button("Controls", CONTROLS),
         Button("Main Menu", PMAIN_MENU),
     };
     static Button bbtn[3] = {
         Button("Resume", RESUME),
-        Button("Save Game", SAVE_GAME),
+        Button("Controls", CONTROLS),
+        //Button("Save Game", SAVE_GAME),
         Button("Retreat", RETREAT),
     };
     static Button tbtn[3] = {
@@ -65,25 +92,28 @@ BHglobal::BHglobal() {
         bmenu[i] = bbtn[i];
         tmenu[i] = tbtn[i];
     }
+    name = "";
 } BHglobal bhg;
 
 //=================================================//
 //---------------- START OF BUTTON ----------------//
 //=================================================//
 
-Button::Button() {
-}
+Button::Button() {}
 
-Button::Button(string n, ButtonID _bid) {
+Button::Button(string n, ButtonID _bid) 
+{
     name = n;
     bid = _bid;
 }
-Button::Button(string n, pButtonID _bid) {
+
+Button::Button(string n, pButtonID _bid) 
+{
     name = n;
     pbid = _bid;
 }
-Button::~Button() {
-}
+
+Button::~Button() {}
 
 //=================================================//
 //---------------- START OF PAUSEGS ---------------//
@@ -118,7 +148,9 @@ int PauseGS::procMouseInput(int x, int y)
                 x < buttons[i].center.x + buttons[i].width &&
                 x > buttons[i].center.x - buttons[i].width) {
             // Output which button and its corressponding ID to verify button clicks
+#ifdef UNIT            
             cout << "Count: " << i << " Button: " << buttons[i].name << endl;
+#endif
             btn = buttons[i].pbid;
         }
     }
@@ -144,6 +176,8 @@ int PauseGS::procMouseInput(int x, int y)
             njG.resetAllies();
             njG.resetEnemies();
         case RETREAT:
+            njG.resetTurns();
+            njG.resetBPos();
 #ifdef SOUND
             alSourceStop(njG.sound.battleSound);
             alSourcePlay(njG.sound.ambientSound);
@@ -155,6 +189,7 @@ int PauseGS::procMouseInput(int x, int y)
             for(int i=0; i<njG.allies->count;i++) {
                 njG.allies[i].resetStats();
             }
+            njG.player->score -= 25;
             break;
     }
     return 0;
@@ -163,7 +198,11 @@ int PauseGS::procMouseInput(int x, int y)
 
 int PauseGS::procKeyInput(int key)
 {
-    return 0;//read keys
+    switch(key) {
+        case XK_Escape:
+            return -1;
+    };
+    return 0;
 }
 
 void PauseGS::drawGameState()
@@ -210,7 +249,6 @@ MenuGS::MenuGS(int s, Button b[5][5], int xres, int yres)
 {
     state = 0;
     size = s;
-    name = "NAME";
     buttons = new Button*[5];
     for (int i=0; i<5; i++)
         buttons[i] = new Button[5];
@@ -238,17 +276,19 @@ MenuGS::~MenuGS()
 int MenuGS::procMouseInput(int x, int y) 
 {
     ButtonID btn;
-    for(int i=0;i<size;i++) {
-        if(yres - y < buttons[state][i].center.y + buttons[state][i].height &&
+    for (int i=0;i<size;i++) {
+        if (yres - y < buttons[state][i].center.y + buttons[state][i].height &&
                 yres - y > buttons[state][i].center.y - buttons[state][i].height &&
                 x < buttons[state][i].center.x + buttons[state][i].width &&
                 x > buttons[state][i].center.x - buttons[state][i].width) {
             // Output which button and its corressponding ID to verify button clicks
+#ifdef UNIT
             cout << "Count: " << i << " Button: " << buttons[state][i].name << endl;
+#endif
             btn = buttons[state][i].bid;
         }
     }
-    switch(btn) {
+    switch (btn) {
         case MAIN_MENU:
 #ifdef SOUND
             alSourcePlay(njG.sound.menuSound);
@@ -284,7 +324,8 @@ int MenuGS::procMouseInput(int x, int y)
             alSourcePlay(njG.sound.menuSound); 
             njG.sound.clearSounds();
 #endif
-            exit(0);
+            //exit(0);
+            return -3;
             break;
         case ARCHER:
             {
@@ -416,198 +457,249 @@ int MenuGS::procMouseInput(int x, int y)
 
 int MenuGS::procKeyInput(int key)
 {
-    switch(key) {
-        if(state == 0) {
+    switch (key) {
+        if (state == 0) {
             case XK_Escape:
                 return -1;
         }
         case XK_a:
         case XK_A:
-        if(state == 1 && name.size() < 4) {
-            name = name +"A";
+        if (state == 1 && bhg.name.size() < 3) {
+            bhg.name = bhg.name +"A";
+#ifdef UNIT_TEST
             cout << "Inserting A" << endl;
-            cout << this->state << " " << name.size() << endl;
-
+            cout << this->state << " " << bhg.name.size() << endl;
+#endif
         }
         break;
         case XK_b:
         case XK_B:
-        if(state == 1 && name.size() < 4) {
-            name = name +"B";
+        if (state == 1 && bhg.name.size() < 3) {
+            bhg.name = bhg.name +"B";
+#ifdef UNIT_TEST
             cout << "Inserting B" << endl;
+#endif
         }
             break;
         case XK_c:
         case XK_C:
-        if(state == 1 && name.size() < 4) {
-            name = name +"C";
+        if (state == 1 && bhg.name.size() < 3) {
+            bhg.name = bhg.name +"C";
+#ifdef UNIT_TEST
             cout << "Inserting C" << endl;
+#endif
         }
             break;
         case XK_d:
         case XK_D:
-        if(state == 1 && name.size() < 4) {
-            name = name +"D";
+        if (state == 1 && bhg.name.size() < 3) {
+            bhg.name = bhg.name +"D";
+#ifdef UNIT_TEST
             cout << "Inserting D" << endl;
+#endif
         }
             break;
         case XK_e:
         case XK_E:
-        if(state == 1 && name.size() < 4) {
-            name = name +"E";
+        if (state == 1 && bhg.name.size() < 3) {
+            bhg.name = bhg.name +"E";
+#ifdef UNIT_TEST
             cout << "Inserting E" << endl;
+#endif
         }
             break;
         case XK_f:
         case XK_F:
-        if(state == 1 && name.size() < 4) {
-            name = name +"F";
+        if (state == 1 && bhg.name.size() < 3) {
+            bhg.name = bhg.name +"F";
+#ifdef UNIT_TEST
             cout << "Inserting F" << endl;
+#endif
         }
             break;
         case XK_g:
         case XK_G:
-        if(state == 1 && name.size() < 4) {
-            name = name +"G";
+        if (state == 1 && bhg.name.size() < 3) {
+            bhg.name = bhg.name +"G";
+#ifdef UNIT_TEST
             cout << "Inserting G" << endl;
+#endif
         }
             break;
         case XK_h:
         case XK_H:
-        if(state == 1 && name.size() < 4) {
-            name = name +"H";
+        if (state == 1 && bhg.name.size() < 3) {
+            bhg.name = bhg.name +"H";
+#ifdef UNIT_TEST
             cout << "Inserting H" << endl;
+#endif
         }
             break;
         case XK_i:
         case XK_I:
-        if(state == 1 && name.size() < 4) {
-            name = name +"I";
+        if (state == 1 && bhg.name.size() < 3) {
+            bhg.name = bhg.name +"I";
+#ifdef UNIT_TEST
             cout << "Inserting I" << endl;
+#endif
         }
             break;
         case XK_j:
         case XK_J:
-        if(state == 1 && name.size() < 4) {
-            name = name +"J";
+        if (state == 1 && bhg.name.size() < 3) {
+            bhg.name = bhg.name +"J";
+#ifdef UNIT_TEST
             cout << "Inserting J" << endl;
+#endif
         }
             break;
         case XK_k:
         case XK_K:
-        if(state == 1 && name.size() < 4) {
-            name = name +"K";
+        if (state == 1 && bhg.name.size() < 3) {
+            bhg.name = bhg.name +"K";
+#ifdef UNIT_TEST
             cout << "Inserting K" << endl;
+#endif
         }
             break;
         case XK_l:
         case XK_L:
-        if(state == 1 && name.size() < 4) {
-            name = name +"L";
+        if (state == 1 && bhg.name.size() < 3) {
+            bhg.name = bhg.name +"L";
+#ifdef UNIT_TEST
             cout << "Inserting L" << endl;
+#endif
         }
             break;
         case XK_m:
         case XK_M:
-        if(state == 1 && name.size() < 4) {
-            name = name +"M";
+        if (state == 1 && bhg.name.size() < 3) {
+            bhg.name = bhg.name +"M";
+#ifdef UNIT_TEST
             cout << "Inserting M" << endl;
+#endif
         }
             break;
         case XK_n:
         case XK_N:
-        if(state == 1 && name.size() < 4) {
-            name = name +"N";
+        if (state == 1 && bhg.name.size() < 3) {
+            bhg.name = bhg.name +"N";
+#ifdef UNIT_TEST
             cout << "Inserting N" << endl;
+#endif
         }
             break;
         case XK_o:
         case XK_O:
-        if(state == 1 && name.size() < 4) {
-            name = name +"O";
+        if (state == 1 && bhg.name.size() < 3) {
+            bhg.name = bhg.name +"O";
+#ifdef UNIT_TEST
             cout << "Inserting O" << endl;
+#endif
         }
             break;
         case XK_p:
         case XK_P:
-        if(state == 1 && name.size() < 4) {
-            name = name +"P";
+        if (state == 1 && bhg.name.size() < 3) {
+            bhg.name = bhg.name +"P";
+#ifdef UNIT_TEST
             cout << "Inserting P" << endl;
+#endif
         }
             break;
         case XK_q:
         case XK_Q:
-        if(state == 1 && name.size() < 4) {
-            name = name +"Q";
+        if (state == 1 && bhg.name.size() < 3) {
+            bhg.name = bhg.name +"Q";
+#ifdef UNIT_TEST
             cout << "Inserting Q" << endl;
+#endif
         }
             break;
         case XK_r:
         case XK_R:
-        if(state == 1 && name.size() < 4) {
-            name = name +"R";
+        if (state == 1 && bhg.name.size() < 3) {
+            bhg.name = bhg.name +"R";
+#ifdef UNIT_TEST
             cout << "Inserting R" << endl;
+#endif
         }
             break;
         case XK_s:
         case XK_S:
-        if(state == 1 && name.size() < 4) {
-            name = name +"S";
+        if (state == 1 && bhg.name.size() < 3) {
+            bhg.name = bhg.name +"S";
+#ifdef UNIT_TEST
             cout << "Inserting S" << endl;
+#endif
         }
             break;
         case XK_t:
         case XK_T:
-        if(state == 1 && name.size() < 4) {
-            name = name +"T";
+        if (state == 1 && bhg.name.size() < 3) {
+            bhg.name = bhg.name +"T";
+#ifdef UNIT_TEST
             cout << "Inserting T" << endl;
+#endif
         }
             break;
         case XK_u:
         case XK_U:
-        if(state == 1 && name.size() < 4) {
-            name = name +"U";
+        if (state == 1 && bhg.name.size() < 3) {
+            bhg.name = bhg.name +"U";
+#ifdef UNIT_TEST
             cout << "Inserting U" << endl;
+#endif
         }
             break;
         case XK_v:
         case XK_V:
-        if(state == 1 && name.size() < 4) {
-            name = name +"V";
+        if (state == 1 && bhg.name.size() < 3) {
+            bhg.name = bhg.name +"V";
+#ifdef UNIT_TEST
             cout << "Inserting V" << endl;
+#endif
         }
             break;
         case XK_w:
         case XK_W:
-        if(state == 1 && name.size() < 4) {
-            name = name +"W";
+        if (state == 1 && bhg.name.size() < 3) {
+            bhg.name = bhg.name +"W";
+#ifdef UNIT_TEST
             cout << "Inserting W" << endl;
+#endif
         }
             break;
         case XK_x:
         case XK_X:
-        if(state == 1 && name.size() < 4) {
-            name = name +"X";
+        if (state == 1 && bhg.name.size() < 3) {
+            bhg.name = bhg.name +"X";
+#ifdef UNIT_TEST
             cout << "Inserting X" << endl;
+#endif
         }
             break;
         case XK_y:
         case XK_Y:
-        if(state == 1 && name.size() < 4) {
-            name = name +"Y";
+        if (state == 1 && bhg.name.size() < 3) {
+            bhg.name = bhg.name +"Y";
+#ifdef UNIT_TEST
             cout << "Inserting Y" << endl;
+#endif
         }
             break;
         case XK_z:
         case XK_Z:
-        if(state == 1 && name.size() < 4) {
-            name = name +"Z";
+        if (state == 1 && bhg.name.size() < 3) {
+            bhg.name = bhg.name +"Z";
+#ifdef UNIT_TEST
             cout << "Inserting Z" << endl;
+#endif
         }
             break;
         case XK_BackSpace:
-        if(state == 1 && name.size() > 0) {
-            name.pop_back();
+        if (state == 1 && bhg.name.size() > 0) {
+            bhg.name.pop_back();
 
         }
             break;
@@ -659,7 +751,7 @@ void MenuGS::drawGameState()
         r.left = xres/2;
         ggprint16(&r, 16, 0xFFFFFFFF, "Name:");
         r.bot = yres/1.3;
-        ggprint16(&r, 16, 0xFFFFFFFF, this->name.c_str());
+        ggprint16(&r, 16, 0xFFFFFFFF, bhg.name.c_str());
     }
 }
 
@@ -696,7 +788,9 @@ int TownGS::procMouseInput(int x, int y)
                 x < buttons[i].center.x + buttons[i].width &&
                 x > buttons[i].center.x - buttons[i].width) {
             // Output which button and its corressponding ID to verify button clicks
+#ifdef UNIT
             cout << "Count: " << i << " Button: " << buttons[i].name << endl;
+#endif
             btn = buttons[i].pbid;
         }
     }
@@ -720,6 +814,12 @@ int TownGS::procMouseInput(int x, int y)
 
 int TownGS::procKeyInput(int key)
 {
+    switch(key) {
+        case XK_Escape:
+            return -1;
+        default:
+                break;;
+    }
     return 0;//read keys
 }
 
@@ -796,22 +896,69 @@ void TitleGS::drawGameState()
     ggprint16(&r, 16, 0xFFFFFFFF, "Press any key");
 }
 
+//=================================================//
+//-------------- START OF CREDITGS ----------------//
+//=================================================//
+CreditGS::CreditGS(int xres, int yres)
+{
+    this->xres = xres;
+    this->yres = yres;
+}
+
+int CreditGS::procMouseInput(int x, int y)
+{
+    return 0;
+}
+
+int CreditGS::procKeyInput(int key)
+{
+#ifdef SOUND
+	alSourceStop(njG.sound.ambientSound);
+	alSourcePlay(njG.sound.menuSound);
+#endif
+    njG.player->resetInstance();
+	njG.resetAllies();
+	njG.resetEnemies();	
+	return -4;
+}
+
+void CreditGS::drawGameState()
+{
+    glClear(GL_COLOR_BUFFER_BIT);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(0,xres,0,yres,-1,1);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    // SHOW PICTURE FUNCTIONS
+}
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//=================================================//
+//--------------- START OF ShowPic ----------------//
+//=================================================//
+void draw_brandonHCredit(int x, int y, GLuint texture)
+{
+	Rect r;
+	float wid = 50;
+	glPushMatrix();
+	glColor3f(1.0f,1.0f,1.0f);
+	glBindTexture(GL_TEXTURE_2D, texture);
+	glBegin(GL_QUADS);
+	glTexCoord2f(0.0f, 1.0f); glVertex2i(-wid, -wid);
+	glTexCoord2f(0.0f, 0.0f); glVertex2i(-wid, wid);
+	glTexCoord2f(1.0f, 0.0f); glVertex2i(wid, wid);
+	glTexCoord2f(1.0f, 1.0f); glVertex2i(wid, -wid);
+	glEnd();
+    glBindTexture(GL_TEXTURE_2D, 0);
+	glTranslatef(wid,0,0);
+	r.bot = 0;
+	r.left = 10;
+	r.center = 0;
+	ggprint8b(&r, 16, 0x00000000, "Brandon Hernandez");
+	glPopMatrix();
+}
 
 
 
