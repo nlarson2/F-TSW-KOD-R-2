@@ -15,6 +15,10 @@ sound: $(FFLAGS) $(HFLAGS)
 	g++ -g $(FFLAGS) $(CFLAGS) $(SFLAGS) -o sound
 	g++ serverCon.cpp -Wall -oserverCon -lssl -lcrypto	
 
+unit: $(FFLAGS) $(HFLAGS)
+	g++ -g $(FFLAGS) $(CFLAGS) -o game -D UNIT_TEST
+	g++ serverCon.cpp -Wall -oserverCon -lssl -lcrypto	
+
 clean:
 	rm -f game
 	rm -f sound

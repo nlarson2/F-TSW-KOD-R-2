@@ -50,6 +50,7 @@ struct BHglobal
     Button pmenu[3];
     Button bmenu[3];
     Button tmenu[3];
+    string name;
     BHglobal();
 };
 
@@ -85,7 +86,6 @@ class MenuGS : public GameState {
         int state;
         int size;
         bool clicked;
-        string name;
         Button ** buttons;
         float xres, yres;
     public:
