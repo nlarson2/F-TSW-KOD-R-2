@@ -1078,6 +1078,9 @@ int WorldGS::procKeyInput(int key)
 				njG.player->wPos.z * ZOFFSET
 				));
 			break;
+        case XK_v:
+            return 8;
+            break;
 		case XK_Escape:
 			return 2;
             break;

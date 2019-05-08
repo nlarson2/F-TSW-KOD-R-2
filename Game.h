@@ -16,6 +16,7 @@ class Game
 	public:
 		Game(int x, int y);
         void init();
+        void cleanUp();
 		void procMouseInput(int x, int y);
 		void procKeyInput(int key);
 		void drawGameState();

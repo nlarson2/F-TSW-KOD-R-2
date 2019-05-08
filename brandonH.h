@@ -1,5 +1,8 @@
-//Brandon Hernandez
-//
+// Author: Brandon Hernandez
+// Spring 2019: CMPS 3350
+// Group Project: F-TSW-KOD-R-2
+// Last Updated: 5-7-2019
+
 #ifndef BRANDON_H
 #define BRANDON_H
 
@@ -100,6 +103,16 @@ class TownGS : public GameState {
     public:
         TownGS(Button[2], int, int);
         ~TownGS();
+        int procMouseInput(int, int);
+        int procKeyInput(int);
+        void drawGameState();
+};
+class CreditGS : public GameState {
+    private:
+        float xres, yres;
+    public:
+        CreditGS(int, int);
+        ~CreditGS();
         int procMouseInput(int, int);
         int procKeyInput(int);
         void drawGameState();
