@@ -9,27 +9,49 @@
 //      - Currently displays a blank screen that can
 //      check any key and return to TitleGS but 
 //      causes a segfault when entering a new game
+//          - FIXED: Segfault on New Game
 // - Finish Cleanup
 //      - Needs to set Done in main so the game can
-//      perform a clean exit. Currently its case -4
+//      perform a clean exit. Currently its case ?
 //      in Game.cpp.
-// -Configuration Menu
+// -<N/A>Configuration Menu
 //      - Need subset menu under controls which will
 //      bring up a set of options. Not sure which
 //      options to add here but sounds/screen size
 //      etc.
+//          - Wont make it in time.
 //               --------MINOR--------
-// - Unit Test
+// -<COMPLETE> Unit Test 
 //      - Case around my couts for testing
-// - Profiling
+// -<N/A> Profiling
 //      - Might not add in personal cpp, just in main
-// - Refactor K&R
+// -<COMPLETE> Refactor K&R
 //      - Last thing to do
 //====================================================//
 
 #include "brandonH.h"
 
 extern NJordGlobal njG;
+extern NLarsGlobal * nlG;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //=================================================//
 //--------------- START OF BHglobal ---------------//
 //=================================================//
@@ -480,7 +502,7 @@ int MenuGS::procKeyInput(int key)
             cout << "Inserting B" << endl;
 #endif
         }
-            break;
+        break;
         case XK_c:
         case XK_C:
         if (state == 1 && bhg.name.size() < 3) {
@@ -489,7 +511,7 @@ int MenuGS::procKeyInput(int key)
             cout << "Inserting C" << endl;
 #endif
         }
-            break;
+        break;
         case XK_d:
         case XK_D:
         if (state == 1 && bhg.name.size() < 3) {
@@ -498,7 +520,7 @@ int MenuGS::procKeyInput(int key)
             cout << "Inserting D" << endl;
 #endif
         }
-            break;
+        break;
         case XK_e:
         case XK_E:
         if (state == 1 && bhg.name.size() < 3) {
@@ -507,7 +529,7 @@ int MenuGS::procKeyInput(int key)
             cout << "Inserting E" << endl;
 #endif
         }
-            break;
+        break;
         case XK_f:
         case XK_F:
         if (state == 1 && bhg.name.size() < 3) {
@@ -516,7 +538,7 @@ int MenuGS::procKeyInput(int key)
             cout << "Inserting F" << endl;
 #endif
         }
-            break;
+        break;
         case XK_g:
         case XK_G:
         if (state == 1 && bhg.name.size() < 3) {
@@ -525,7 +547,7 @@ int MenuGS::procKeyInput(int key)
             cout << "Inserting G" << endl;
 #endif
         }
-            break;
+        break;
         case XK_h:
         case XK_H:
         if (state == 1 && bhg.name.size() < 3) {
@@ -534,7 +556,7 @@ int MenuGS::procKeyInput(int key)
             cout << "Inserting H" << endl;
 #endif
         }
-            break;
+        break;
         case XK_i:
         case XK_I:
         if (state == 1 && bhg.name.size() < 3) {
@@ -543,7 +565,7 @@ int MenuGS::procKeyInput(int key)
             cout << "Inserting I" << endl;
 #endif
         }
-            break;
+        break;
         case XK_j:
         case XK_J:
         if (state == 1 && bhg.name.size() < 3) {
@@ -552,7 +574,7 @@ int MenuGS::procKeyInput(int key)
             cout << "Inserting J" << endl;
 #endif
         }
-            break;
+        break;
         case XK_k:
         case XK_K:
         if (state == 1 && bhg.name.size() < 3) {
@@ -561,7 +583,7 @@ int MenuGS::procKeyInput(int key)
             cout << "Inserting K" << endl;
 #endif
         }
-            break;
+        break;
         case XK_l:
         case XK_L:
         if (state == 1 && bhg.name.size() < 3) {
@@ -570,7 +592,7 @@ int MenuGS::procKeyInput(int key)
             cout << "Inserting L" << endl;
 #endif
         }
-            break;
+        break;
         case XK_m:
         case XK_M:
         if (state == 1 && bhg.name.size() < 3) {
@@ -579,7 +601,7 @@ int MenuGS::procKeyInput(int key)
             cout << "Inserting M" << endl;
 #endif
         }
-            break;
+        break;
         case XK_n:
         case XK_N:
         if (state == 1 && bhg.name.size() < 3) {
@@ -588,7 +610,7 @@ int MenuGS::procKeyInput(int key)
             cout << "Inserting N" << endl;
 #endif
         }
-            break;
+        break;
         case XK_o:
         case XK_O:
         if (state == 1 && bhg.name.size() < 3) {
@@ -597,7 +619,7 @@ int MenuGS::procKeyInput(int key)
             cout << "Inserting O" << endl;
 #endif
         }
-            break;
+        break;
         case XK_p:
         case XK_P:
         if (state == 1 && bhg.name.size() < 3) {
@@ -606,7 +628,7 @@ int MenuGS::procKeyInput(int key)
             cout << "Inserting P" << endl;
 #endif
         }
-            break;
+        break;
         case XK_q:
         case XK_Q:
         if (state == 1 && bhg.name.size() < 3) {
@@ -615,7 +637,7 @@ int MenuGS::procKeyInput(int key)
             cout << "Inserting Q" << endl;
 #endif
         }
-            break;
+        break;
         case XK_r:
         case XK_R:
         if (state == 1 && bhg.name.size() < 3) {
@@ -624,7 +646,7 @@ int MenuGS::procKeyInput(int key)
             cout << "Inserting R" << endl;
 #endif
         }
-            break;
+        break;
         case XK_s:
         case XK_S:
         if (state == 1 && bhg.name.size() < 3) {
@@ -633,7 +655,7 @@ int MenuGS::procKeyInput(int key)
             cout << "Inserting S" << endl;
 #endif
         }
-            break;
+        break;
         case XK_t:
         case XK_T:
         if (state == 1 && bhg.name.size() < 3) {
@@ -642,7 +664,7 @@ int MenuGS::procKeyInput(int key)
             cout << "Inserting T" << endl;
 #endif
         }
-            break;
+        break;
         case XK_u:
         case XK_U:
         if (state == 1 && bhg.name.size() < 3) {
@@ -651,7 +673,7 @@ int MenuGS::procKeyInput(int key)
             cout << "Inserting U" << endl;
 #endif
         }
-            break;
+        break;
         case XK_v:
         case XK_V:
         if (state == 1 && bhg.name.size() < 3) {
@@ -660,7 +682,7 @@ int MenuGS::procKeyInput(int key)
             cout << "Inserting V" << endl;
 #endif
         }
-            break;
+        break;
         case XK_w:
         case XK_W:
         if (state == 1 && bhg.name.size() < 3) {
@@ -669,7 +691,7 @@ int MenuGS::procKeyInput(int key)
             cout << "Inserting W" << endl;
 #endif
         }
-            break;
+        break;
         case XK_x:
         case XK_X:
         if (state == 1 && bhg.name.size() < 3) {
@@ -678,7 +700,7 @@ int MenuGS::procKeyInput(int key)
             cout << "Inserting X" << endl;
 #endif
         }
-            break;
+        break;
         case XK_y:
         case XK_Y:
         if (state == 1 && bhg.name.size() < 3) {
@@ -687,7 +709,7 @@ int MenuGS::procKeyInput(int key)
             cout << "Inserting Y" << endl;
 #endif
         }
-            break;
+        break;
         case XK_z:
         case XK_Z:
         if (state == 1 && bhg.name.size() < 3) {
@@ -696,15 +718,15 @@ int MenuGS::procKeyInput(int key)
             cout << "Inserting Z" << endl;
 #endif
         }
-            break;
+        break;
         case XK_BackSpace:
         if (state == 1 && bhg.name.size() > 0) {
             bhg.name.pop_back();
 
         }
-            break;
+        break;
         default:
-            break;
+        break;
     };
     return 0;
 }
@@ -818,7 +840,7 @@ int TownGS::procKeyInput(int key)
         case XK_Escape:
             return -1;
         default:
-                break;;
+            break;;
     }
     return 0;//read keys
 }
@@ -913,13 +935,13 @@ int CreditGS::procMouseInput(int x, int y)
 int CreditGS::procKeyInput(int key)
 {
 #ifdef SOUND
-	alSourceStop(njG.sound.ambientSound);
-	alSourcePlay(njG.sound.menuSound);
+    alSourceStop(njG.sound.ambientSound);
+    alSourcePlay(njG.sound.menuSound);
 #endif
     njG.player->resetInstance();
-	njG.resetAllies();
-	njG.resetEnemies();	
-	return -4;
+    njG.resetAllies();
+    njG.resetEnemies();	
+    return -4;
 }
 
 void CreditGS::drawGameState()
@@ -940,25 +962,175 @@ void CreditGS::drawGameState()
 //=================================================//
 void draw_brandonHCredit(int x, int y, GLuint texture)
 {
-	Rect r;
-	float wid = 50;
-	glPushMatrix();
-	glColor3f(1.0f,1.0f,1.0f);
-	glBindTexture(GL_TEXTURE_2D, texture);
-	glBegin(GL_QUADS);
-	glTexCoord2f(0.0f, 1.0f); glVertex2i(-wid, -wid);
-	glTexCoord2f(0.0f, 0.0f); glVertex2i(-wid, wid);
-	glTexCoord2f(1.0f, 0.0f); glVertex2i(wid, wid);
-	glTexCoord2f(1.0f, 1.0f); glVertex2i(wid, -wid);
-	glEnd();
+    Rect r;
+    float wid = 50;
+    glPushMatrix();
+    glColor3f(1.0f,1.0f,1.0f);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glBegin(GL_QUADS);
+    glTexCoord2f(0.0f, 1.0f); glVertex2i(-wid, -wid);
+    glTexCoord2f(0.0f, 0.0f); glVertex2i(-wid, wid);
+    glTexCoord2f(1.0f, 0.0f); glVertex2i(wid, wid);
+    glTexCoord2f(1.0f, 1.0f); glVertex2i(wid, -wid);
+    glEnd();
     glBindTexture(GL_TEXTURE_2D, 0);
-	glTranslatef(wid,0,0);
-	r.bot = 0;
-	r.left = 10;
-	r.center = 0;
-	ggprint8b(&r, 16, 0x00000000, "Brandon Hernandez");
-	glPopMatrix();
+    glTranslatef(wid,0,0);
+    r.bot = 0;
+    r.left = 10;
+    r.center = 0;
+    ggprint8b(&r, 16, 0x00000000, "Brandon Hernandez");
+    glPopMatrix();
 }
+
+
+//=================================================//
+//----------------- START OF GAME -----------------//
+//=================================================//
+Game::Game(int x, int y)
+{
+    xres = x;
+    yres = y;
+}
+
+void Game::init()
+{
+    states.push(new TitleGS(xres,yres));
+}
+
+void Game::cleanUp()
+{
+    while(!states.empty()) {
+        states.pop();
+    }
+}
+
+void Game::procMouseInput(int x, int y)
+{
+    int changeState = states.top()->procMouseInput(x,y);
+
+    switch (changeState) {
+        case -4:
+            while(states.size()-1 > 0) {
+                states.pop();
+            }
+            break;
+        case -3:
+            cleanUp();
+            break;
+        case -2:
+            for (int i=0; i<2; i++)
+                states.pop();
+            break;
+        case -1:
+            states.pop();
+            break;
+        case 1:
+            states.push(new WorldGS(nlG->MainMap, 25 ,25, 180, 7, 7, xres, yres));
+            break;
+        case 2:
+            states.push(new PauseGS(bhg.pmenu,xres,yres));
+            break;
+
+        case 4:
+                states.push(new PauseGS(bhg.bmenu,xres,yres));
+            break;
+        case 3:
+            states.push(new BattleGS(nlG->BattleMap1, 10 ,10, 180, 0, 0,
+                        xres, yres, 0));
+#ifdef SOUND
+            alSourceStop(njG.sound.ambientSound);
+            alSourcePlay(njG.sound.battleSound);
+#endif
+            break;
+        case 5:
+            states.push(new BattleGS(nlG->BattleMap1, 10 ,10, 180, 0, 0,
+                        xres, yres, 1));
+#ifdef SOUND
+            alSourceStop(njG.sound.ambientSound);
+            alSourcePlay(njG.sound.battleSound);
+#endif
+            break;
+        case 7:
+            states.push(new BattleGS(nlG->BattleMap1, 10 ,10, 180, 0, 0,
+                        xres, yres, 2));
+#ifdef SOUND
+            alSourceStop(njG.sound.ambientSound);
+            alSourcePlay(njG.sound.battleSound);
+#endif
+            break;
+        case 6:
+            states.push(new MenuGS(5, bhg.menus,  xres, yres));
+            break;
+        case 8:
+            states.push(new CreditGS(xres, yres));
+            break;
+        case 9:
+            states.push(new PauseGS(bhg.tmenu,xres,yres));
+            break;
+    }
+}
+
+void Game::procKeyInput(int key)
+{
+    int changeState = states.top()->procKeyInput(key);
+    switch(changeState) {
+        case -4:
+            while(states.size()-1 > 0) {
+                states.pop();
+            }
+            break;
+        case -2:
+            for (int i=0; i<2; i++)
+            states.pop();
+            break;
+        case -1:
+            states.pop();
+            break;
+        case 1:
+            states.push(new WorldGS(nlG->MainMap,25 ,25, 180, 0, 0, xres, yres));
+            break;
+        case 2:
+            states.push(new PauseGS(bhg.pmenu,xres,yres));
+            break;
+        //case 3:
+            //states.push(new BattleGS(nlG->BattleMap1,10 ,10, 180, 0, 0, xres, yres));
+            //break;
+        case 4:
+            states.push(new PauseGS(bhg.bmenu,xres,yres));
+            break;
+        case 5:
+            //states.push(new PauseGS(bhg.tmenu,xres,yres));
+            break;
+        case 6:
+            states.push(new MenuGS(5, bhg.menus,  xres, yres));
+            break;
+        case 8:
+            states.push(new CreditGS(xres, yres));
+            break;
+    }
+}
+
+void Game::drawGameState()
+{
+    if(states.size() > 0)
+        states.top()->drawGameState();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
