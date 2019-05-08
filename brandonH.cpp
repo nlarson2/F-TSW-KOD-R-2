@@ -168,6 +168,8 @@ int PauseGS::procMouseInput(int x, int y)
             njG.resetAllies();
             njG.resetEnemies();
         case RETREAT:
+            njG.resetTurns();
+            njG.resetBPos();
 #ifdef SOUND
             alSourceStop(njG.sound.battleSound);
             alSourcePlay(njG.sound.ambientSound);

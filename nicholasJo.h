@@ -132,9 +132,8 @@ class Entity {
     float wYaw;
     float bYaw;
 	vec3 wPos; //world position
+    vec3 defaultBPos;
 	vec3 bPos; //battle position
-
-	/*NickolasL additions*/
 	int moveRange;
 	int attackRange;
 };
@@ -143,7 +142,7 @@ class Enemy : public Entity {
     public:
 	Enemy();
 	static int count;
-	void saveEnemies(ofstream&);
+    static int arrayCount;
 	void loadEnemyCombatType(string);
     private:
 	void setEnemyCombatType();
@@ -183,9 +182,15 @@ class NJordGlobal {
     Sound sound;
 #endif
 	Player *player;
-	Enemy *enemies;
+	Enemy **enemies;
+    int enemyCount;
+    int enemyArrayCount;
 	Ally *allies;
 	NJordGlobal();
+    bool enemiesAreDead(Enemy*);
+    bool allEnemiesAreDead();
+    void resetTurns(Enemy *target = 0);
+    void resetBPos();
 	void spawnEnemies(int);
 	void spawnAllies(int);
 	void resetAllies();
@@ -194,9 +199,10 @@ class NJordGlobal {
     bool loadEntities(int);
 	void loadAllies(ifstream&);
     void loadEnemies(ifstream&);
+	void saveEnemies(ofstream&);
     //int type: 0 = player, 1 = ally, 2 = enemy
     int checkWorldCollision(int x , int y, int type = 0);
-    bool checkBattleCollision(int x, int y, int position = 0, int type = 0);
+    bool checkBattleCollision(int x, int y, int position, int arrPos, int type);
     void controlTurns(Entity *target, int dest_x, int dest_z, int turn_amount, Tile**);
 };
 
