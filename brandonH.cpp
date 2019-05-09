@@ -780,7 +780,7 @@ void MenuGS::drawGameState()
 //---------------- START OF TOWNGS ----------------//
 //=================================================//
 
-TownGS::TownGS(Button b[3],int xres, int yres)
+TownGS::TownGS(Button b[3], int xres, int yres)
 {
     buttons = new Button[3];
     this->xres = xres;
