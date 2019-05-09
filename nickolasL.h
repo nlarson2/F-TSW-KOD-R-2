@@ -170,7 +170,6 @@ public:
 	Camera(float rot, int posx, int posz);
 	void update();
 	
-	void drawCamera(GLuint);
 	void rotate(float direction);
 	void translate(int key);
 	void updateVectors();

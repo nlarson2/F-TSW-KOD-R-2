@@ -54,6 +54,7 @@ struct BHglobal
     Button tmenu[3];
     string name;
     bool ctrls;
+    GLuint MMTex;
     BHglobal();
 };
 

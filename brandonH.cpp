@@ -39,6 +39,7 @@ extern NLarsGlobal * nlG;
 //=================================================//
 BHglobal::BHglobal() 
 {
+    GenerateGLTexture(MMTex, "images/title2.png", true);
     static Button btn[5] = {
         Button("New Game", NEW_GAME),
         Button("Load Game",LOAD_GAME),
@@ -479,10 +480,11 @@ int MenuGS::procMouseInput(int x, int y)
 int MenuGS::procKeyInput(int key)
 {
     switch (key) {
-        if (state == 0) {
-            case XK_Escape:
-                return -1;
-        }
+        case XK_Escape:
+            if (state == 0) {
+                    return -1;
+            }
+            break;
         case XK_a:
         case XK_A:
         if (state == 1 && bhg.name.size() < 3) {
@@ -738,6 +740,16 @@ void MenuGS::drawGameState()
     glOrtho(0,xres,0,yres,-1,1);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
+    glBindTexture(GL_TEXTURE_2D, bhg.MMTex);
+    glBegin(GL_QUADS);
+   
+        glTexCoord2f(0.0f, 0.0f);glVertex2i(0, 0);
+	    glTexCoord2f(0.0f, 1.0f);glVertex2i(0, 900);
+	    glTexCoord2f(1.0f, 1.0f);glVertex2i( 1200, 900);
+    	glTexCoord2f(1.0f, 0.0f);glVertex2i( 1200, 0);
+    glEnd();
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glColor3f(1.0f, 1.0f, 1.0f);
     for (int i=0; i<size; i++) {
         //Draw Buttons
         Button *s;
@@ -773,7 +785,7 @@ void MenuGS::drawGameState()
         ggprint16(&r, 16, 0xFFFFFFFF, "Name:");
         r.bot = yres/1.3;
         ggprint16(&r, 16, 0xFFFFFFFF, bhg.name.c_str());
-    }
+    } 
 }
 
 //=================================================//

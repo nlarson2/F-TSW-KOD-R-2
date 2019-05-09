@@ -26,7 +26,7 @@ extern AOglobal aog;
 NLarsGlobal* NLarsGlobal::instance = 0;
 NLarsGlobal* NLarsGlobal::GetInstance()
 {
-	if( !instance )
+	if (!instance)
 		instance = new NLarsGlobal();
 	return instance;
 	
@@ -37,21 +37,21 @@ NLarsGlobal::NLarsGlobal()
 	MainMap = new int*[25];
 	for ( int i = 0 ; i < 25 ; i++) {
 		MainMap[i] = new int[25];
-		for(int j = 0 ; j < 25 ; j++) {
+		for (int j = 0 ; j < 25 ; j++) {
 			MainMap[i][j] = mainMap[i][j];
 		}
 	}
 	BattleMap1 = new int*[10];
 	for ( int i = 0 ; i < 10 ; i++) {
 		BattleMap1[i] = new int[10];
-		for(int j = 0 ; j < 10 ; j++) {
+		for (int j = 0 ; j < 10 ; j++) {
 			BattleMap1[i][j] = battleMap1[i][j];
 		}
 	}
 	BattleMap2 = new int*[10];
 	for ( int i = 0 ; i < 10 ; i++) {
 		BattleMap2[i] = new int[10];
-		for(int j = 0 ; j < 10 ; j++) {
+		for (int j = 0 ; j < 10 ; j++) {
 			BattleMap2[i][j] = battleMap2[i][j];
 		}
 	}
@@ -189,7 +189,7 @@ vec4::vec4(float _x, float _y, float _z, float _w)
 }
 vec4 operator*(Matrix & mat, vec4 vec)
 {
-	if(mat.N != 4)
+	if (mat.N != 4)
 		return vec4(0,0,0,0);
 
 	return vec4(
@@ -213,7 +213,7 @@ Matrix::Matrix()
 //identity
 Matrix::Matrix(int size)
 {
-	if(size == 1) throw -1;
+	if (size == 1) throw -1;
 	N = size;
 	m_size = size*size;
 	m_arr = new float[m_size];
@@ -223,7 +223,7 @@ Matrix::Matrix(int size)
 
 Matrix::Matrix(int size, float  arr[])
 {
-	if(size == 1) throw -1;
+	if (size == 1) throw -1;
 	N = size;
 	m_size = size*size;
 	m_arr = new float[m_size];
@@ -251,8 +251,8 @@ Matrix::~Matrix()
 }
 float Matrix::operator()(int row, int col)
 {
-	if(row > m_size - 1 || col > m_size -1 ) throw -1;
-	if(row < 0 || col < 0) throw -1;
+	if (row > m_size - 1 || col > m_size -1 ) throw -1;
+	if (row < 0 || col < 0) throw -1;
 	return m_arr[(N * row) + col];
 }
 Matrix Matrix::operator =(Matrix right)
@@ -345,7 +345,7 @@ void Matrix::transpose()
 	for (int i = 0; i < m_size; i++)
 	{
 		transpose[i] = m_arr[(N * row++) + col];
-		if(row == N) {
+		if (row == N) {
 			row = 0;
 			col++;
 		}
@@ -356,17 +356,17 @@ void Matrix::transpose()
 Matrix Matrix::matrixMinor(int col, int row)
 {
 	
-	if(row >= N || row < 0) throw -1;
-	if(col >= N || col < 0) throw -1;
+	if (row >= N || row < 0) throw -1;
+	if (col >= N || col < 0) throw -1;
 
 	float * matVals;
 	//number of elements of n-1 x n-1 matrix
 	int newMatSize = (N - 1) * (N - 1);
 	matVals = new float[ newMatSize ];
 	int matInd = 0;
-	for(int j = 0 ; j < m_size ; j++ ) {
+	for (int j = 0 ; j < m_size ; j++ ) {
 			//(nxn) columns   && skip first row(Just in case)
-			if(  j/N != col && j%N != row) {
+			if (  j/N != col && j%N != row) {
 				matVals[matInd++] = m_arr[j];
 			}
 	}
@@ -381,8 +381,8 @@ void Matrix::matrixCofactor(Matrix & mat)
 	for ( int i = 0 ; i < mat.m_size ; i++ ) {
 		
 		//even rows = false
-		if(i%mat.N == 0) {
-			if((i/mat.N) % 2 == 0 )
+		if (i%mat.N == 0) {
+			if ((i/mat.N) % 2 == 0 )
 				neg = false;
 			else
 				neg = true;
@@ -395,9 +395,9 @@ void Matrix::matrixCofactor(Matrix & mat)
 float Matrix::determinant(Matrix & mat)
 {
 	//mat.print();
-	if(mat.N < 2 ) throw -1;
+	if (mat.N < 2 ) throw -1;
 	// determinant of a 2x2 matrix
-	if(mat.N == 2)
+	if (mat.N == 2)
 		return mat(0,0)*mat(1,1) - mat(1,0)*mat(0,1);
 	
 	//det of nxn | n > 2
@@ -496,20 +496,20 @@ void draw_nickLCredit(int x, int y, GLuint texture)
 Model::Model() {
 	const char * objFile = "models/characters/Tank.obj";
 	const char * texFile = "models/characters/ModelTexturePlayer.png";
-	if(!GenerateModel(objFile)) {
+	if (!GenerateModel(objFile)) {
 		printf("Failed to generate model\n");
 	}
-	if(!GenerateTexture(texFile)) {
+	if (!GenerateTexture(texFile)) {
 		printf("Failed to load texture\n");
 	}
 }
 
 Model::Model( const char * objFile, const char * texFile )
 {
-	if(!GenerateModel(objFile)) {
+	if (!GenerateModel(objFile)) {
 		printf("Failed to generate model\n");
 	}
-	if(!GenerateTexture(texFile)) {
+	if (!GenerateTexture(texFile)) {
 		printf("Failed to load texture\n");
 	}
 }
@@ -523,7 +523,7 @@ void Model::draw(int x, int z, float y, float yaw)
 	float posz = z * ZOFFSET;
 	float posy = y; 
 	
-	if(z%2 == 0)
+	if (z%2 == 0)
 		posx -= 1.0f;
 	glTranslatef(posx, posy, posz);
 	
@@ -532,7 +532,7 @@ void Model::draw(int x, int z, float y, float yaw)
 	}	
 	glBegin(GL_TRIANGLES);
 
-	for( unsigned int i = 0 ; i < vIndices.size() ; i+=3 ) {
+	for ( unsigned int i = 0 ; i < vIndices.size() ; i+=3 ) {
 		glTexCoord2f(vertTex[vtIndices.at(i)-1].x,
 				vertTex[vtIndices.at(i)-1].y);
 		glVertex3f(vert[vIndices.at(i)-1].x ,
@@ -569,35 +569,35 @@ static Model tiles[8] = {
 
 bool Model::GenerateModel( const char * objFile) {
 	FILE * inFile= fopen(objFile,"r");
-	if(!inFile){
+	if (!inFile){
 		cout<<"Could Not Locate File Specified\n";
 		return 0;
 	}
 	cout << "File opened succesfully\n";
 
-	while(1){
+	while (1){
 
 		char line[128];
-		if(fscanf(inFile,"%s",line)==EOF) {
+		if (fscanf(inFile,"%s",line)==EOF) {
 			break;
 		}
 
 		//v=vertices vt=textureCoords vn=normals f=faces(holds multiple datas
-		if(strcmp(line,"v")==0){
+		if (strcmp(line,"v")==0){
 			vec3 vertex;
 			fscanf(inFile,"%f %f %f\n",
 					&vertex.x,&vertex.y,&vertex.z);
 			vert.push_back(vertex);
-		}else if(strcmp(line,"vt")==0){
+		} else if (strcmp(line,"vt")==0){
 			vec2 texture;
 			fscanf(inFile,"%f %f\n",
 					&texture.x,&texture.y);
 			vertTex.push_back(texture);
-		}else if(strcmp(line,"vn")==0){
+		} else if (strcmp(line,"vn")==0){
 			vec3 norm;
 			fscanf(inFile,"%f %f %f\n", &norm.x, &norm.y, &norm.z);
 			vertNorm.push_back(norm);
-		}else if(strcmp(line,"f")==0){
+		} else if (strcmp(line,"f")==0){
 			string vertex1, vertex2, vertex3;
 			unsigned int vertexIndex[3],
 			textureIndex[3],normalIndex[3];
@@ -635,7 +635,7 @@ bool Model::GenerateTexture ( const char * texFile ) {
 bool Tile::collisionDetect(float x, float z) {
 	float width = (this->x * -2.0f);
 	float height = (this->z * -1.70710378118f);
-	if(this->z%2 == 0) width -= 1.0f;
+	if (this->z%2 == 0) width -= 1.0f;
 	width -= x;
 	height -= z;
 	float distance = sqrt((width*width) + (height*height));
@@ -650,13 +650,13 @@ Map::Map(int ** map, int _width, int _height){
 	mapW = _width;
 	mapH = _height;
 	tile = new Tile *[mapH];
-	for(int i = 0; i<mapW;i++){
+	for (int i = 0; i<mapW;i++){
 		tile[i] = new Tile[mapH];
 	}
 	int count = 0;
-	for(int i = 0; i < mapH; i++){
+	for (int i = 0; i < mapH; i++){
 
-		for(int j = 0; j < mapW ; j++){
+		for (int j = 0; j < mapW ; j++){
 			//printf("%d\n",count);
 			tile[i][j].modelID = map[i][j];
 			tile[i][j].x = i;
@@ -665,7 +665,7 @@ Map::Map(int ** map, int _width, int _height){
 
 			//tile[i][j].x = 2.0*j;
 			//tile[i][j].z = 1.70710378118f*i;
-			/*if(i%2 == 0)
+			/*if (i%2 == 0)
 			  tile[i][j].x -= 1.0f;*/
 			count++;
 		}
@@ -673,13 +673,13 @@ Map::Map(int ** map, int _width, int _height){
 }
 Map::~Map()
 {
-	for(int i = 0 ; i < mapH ; i++)
+	for (int i = 0 ; i < mapH ; i++)
 		delete[] tile[i];
 	delete[] tile;
 }
 void Map::draw(){
-	for(int i = 0; i < mapH; i++){
-		for(int j = 0; j< mapW; j++){
+	for (int i = 0; i < mapH; i++){
+		for (int j = 0; j< mapW; j++){
 			//tiles[tile[i][j].modelID].pos.x = tile[i][j].x;
 			//tiles[tile[i][j].modelID].pos.z = tile[i][j].z; 
 			if ( tile[i][j].occ) {
@@ -698,15 +698,19 @@ vec2 Map::checkCollision( float x, float z) {
 	int xPos, yPos;
 	vec2 ret(-1,-1);
 	yPos = abs(z / 1.70710378118f);
-	if(yPos%2 == 0)
-		xPos -= 1.0f;
-	xPos = abs(x / 2);
-	//printf("X:%d Y:%d\n", xPos , yPos);
+	xPos = abs(x / 2);/*
+	if (yPos%2 == 0)
+		xPos -= 1.0f;*/
+#ifdef UNIT_TEST
+	printf("X:%d Y:%d\n", xPos , yPos);
+#endif
 	for (int i = -1; i < 2 ; i++) {
 		for (int j = -1; j < 2 ; j++) {
-			if( xPos+i >= 0 && xPos+i < mapH && yPos+j >= 0 && yPos+j < mapW) {
-				//printf("i:%d j:%d\n", i , j);
-				if(tile[xPos+i][yPos+j].collisionDetect( x, z)) {
+			if ( xPos+i >= 0 && xPos+i < mapH && yPos+j >= 0 && yPos+j < mapW) {
+#ifdef UNIT_TEST
+				printf("i:%d j:%d\n", i , j);
+#endif
+				if (tile[xPos+i][yPos+j].collisionDetect( x, z)) {
 					ret = vec2(xPos+i, yPos+j);
 				    printf("Collided with x:%d y:%d\n",xPos+i,yPos+j);
 					return ret;
@@ -751,7 +755,6 @@ Camera::Camera(float rot, int posx, int posz):
 void Camera::update()
 {
 	updateVectors();
-	//printf("UP::: X: %f Y: %f Z: %f\n", up.x, up.y, up.z);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	gluLookAt(
@@ -761,33 +764,12 @@ void Camera::update()
 	);
 }
 
-void Camera::drawCamera(GLuint texture)
-{	
-	/*
-	glBindTexture( GL_TEXTURE_2D, texture);
-	glPushMatrix();
-	glBegin(GL_QUADS);
-	glTexCoord2f(1, 1);
-	glVertex3f(wPos.x+1, 0.5f , wPos.z+1);display
-	glTexCoord2f(1, 0);
-	glVertex3f(wPos.x+1, 0.5f , wPos.z-1);display
-	glTexCoord2f(0, 0);
-	glVertex3f(wPos.x-1, 0.5f , wPos.z-1);
-	glTexCoord2f(0, 1);
-	glVertex3f(wPos.x-1, 0.5f , wPos.z+1);
-	glColor3f(1.0f,1.0f,1.0f);
-	glEnd();
-	glPopMatrix();
-	glBindTexture( GL_TEXTURE_2D, 0);
-	*/
-}
-
 void Camera::rotate(float direction)
 {
 	yaw -= direction;
-	if(yaw < 0)
+	if (yaw < 0)
 		yaw = 360;
-	else if(yaw > 360)
+	else if (yaw > 360)
 		yaw = 0;
 	camPos.x = sin(yaw * PI / 180)*radius;	
 	camPos.z = cos(yaw * PI / 180)*radius;
@@ -795,13 +777,13 @@ void Camera::rotate(float direction)
 void Camera::translate(int key)
 {
 	vec3 direction(camPos.x/radius, 0, camPos.z/radius);
-	if( key == XK_w )
+	if ( key == XK_w )
 		wPos += direction * 0.8f;
-	else if( key == XK_s )
+	else if ( key == XK_s )
 		wPos -= direction * 0.8f;
-	else if( key == XK_a )
+	else if ( key == XK_a )
 		wPos -= vec3::Normalize(vec3::crossProd(direction, wUp)) * 0.8f;
-	else if( key == XK_d )
+	else if ( key == XK_d )
 		wPos += vec3::Normalize(vec3::crossProd(direction, wUp)) * 0.8f;
 }
 void Camera::updateVectors()
@@ -816,16 +798,10 @@ void Camera::updateVectors()
 	//front
 	front = vec3(
 		camPos + direction
-		/*cos(RAD(yaw)) * cos(RAD(pitch)),
-		sin(RAD(pitch)),
-		sin(RAD(yaw)) * cos(RAD(pitch))*/
-	
 	);
 	//view
 	vec3::Normalize(front);
 	view = vec3(front+wPos);
-	//view = vec3::Normalized(vec3((camPos+wPos) - wPos));
-	//vec3::Normalize(view);
 	//right
 	right = vec3(vec3::Normalize(vec3::crossProd(view, wUp)));
 	//up
@@ -946,7 +922,7 @@ void WorldGS::pick(vec3 ray)
 	int count = 0;
 	ray.y -= 0.01f;
 	vec3 pos = camera.getPos();
-	while(pos.y > 0.5f  && ++count != 1000) {
+	while (pos.y > 0.5f  && ++count != 1000) {
 		
 		pos.x += ray.x;
 		pos.y += ray.y;// > 0 ? -ray.y : ray.y;
@@ -1055,13 +1031,13 @@ int WorldGS::procKeyInput(int key)
 	return 0;
 }
 void WorldGS::drawPath() {
-	if(path.empty()) return;
+	if (path.empty()) return;
 
 	for (int i = 0; i < (int)path.size(); i++) {
 		//printf("X: %d  Z: %d\n", path[i].first, path[i].second);
 		float posx = path[i].first * XOFFSET;
 		float posy = path[i].second * ZOFFSET;
-		if(path[i].second%2 == 0)
+		if (path[i].second%2 == 0)
 			posx -= 1.0f;
 		glBegin(GL_QUADS);
 		glColor3f(1.0f, 0, 0);
@@ -1120,7 +1096,6 @@ void WorldGS::drawGameState()
         if (!njG.enemiesAreDead(njG.enemies[i]))
             njG.enemies[i][0].drawWorld();
     }
-    camera.drawCamera(0);
 
 	glPushMatrix();/*
 	glBegin(GL_QUADS);
@@ -1137,7 +1112,6 @@ void WorldGS::drawGameState()
 	glEnd();*/
 	glBegin(GL_LINES);
 		glColor3f(1.0f, 0, 0);
-		vec3 pos = camera.getPos();
 		glVertex3f(pickPos.x, 5.0f, pickPos.z);
 		
 		glVertex3f(pickPos.x, pickPos.y, pickPos.z);
@@ -1319,13 +1293,13 @@ int BattleGS::procKeyInput(int key)
 	return 0;
 }
 void BattleGS::drawPath() {
-	if(path.empty()) return;
+	if (path.empty()) return;
 
 	for (int i = 0; i < (int)path.size(); i++) {
 		//printf("X: %d  Z: %d\n", path[i].first, path[i].second);
 		float posx = path[i].first * XOFFSET;
 		float posy = path[i].second * ZOFFSET;
-		if(path[i].second%2 == 0)
+		if (path[i].second%2 == 0)
 			posx -= 1.0f;
 		glBegin(GL_QUADS);
 		glColor3f(1.0f, 0, 0);
@@ -1391,24 +1365,9 @@ void BattleGS::drawGameState()
 				njG.enemies[enemy][i].drawBattle();
 			}
     }
-	camera.drawCamera(0);
-
-	glPushMatrix();/*
-	glBegin(GL_QUADS);
-		glColor3f(1.0f, 0, 0);
-		glTexCoord2f(1, 1);
-		glVertex3f(pickPos.x+1, 0.5f , pickPos.z+1);	
-		glTexCoord2f(1, 0);
-		glVertex3f(pickPos.x+1, 0.5f , pickPos.z-1);
-		glTexCoord2f(0, 0);
-		glVertex3f(pickPos.x-1, 0.5f , pickPos.z-1);
-		glTexCoord2f(0, 1);
-		glVertex3f(pickPos.x-1, 0.5f , pickPos.z+1);
-		glColor3f(1.0f,1.0f,1.0f);
-	glEnd();*/
+	glPushMatrix();
 	glBegin(GL_LINES);
 		glColor3f(1.0f, 0, 0);
-		vec3 pos = camera.getPos();
 		glVertex3f(pickPos.x, 5.0f, pickPos.z);
 		
 		glVertex3f(pickPos.x, pickPos.y, pickPos.z);
@@ -1416,7 +1375,6 @@ void BattleGS::drawGameState()
 		glEnd();
 	glPopMatrix();
 
-	//set ortho
 
 	//draw UI
 	UI.drawBoxes();
@@ -1473,7 +1431,7 @@ void GenerateGLTexture(GLuint & texture, const char * dataSrc, bool inverted)
 	//IMAGE CLASS NEEDS DEFINITION	
 	Image data(dataSrc);
 	//flip image data because openGL is inverted on the Y
-	if(inverted)
+	if (inverted)
 		data.invertY();
 
 	int width = data.width;
@@ -1493,12 +1451,12 @@ void sendScore( string name, int score) {
 	string requestStr = "./serverCon www.cs.csub.edu /~nlarson/3350/game/game.php\?";
 	string dataStr = "n="+name;
 	string scoreStr;
-	while( score > 0 ) {
+	while ( score > 0 ) {
 	    scoreStr += (char)score%10 + 48;
 	    score/=10;
 	}
 	string copy = scoreStr;
-	for (int i = 0; i < scoreStr.length(); i++) {
+	for (unsigned int i = 0; i < scoreStr.length(); i++) {
 		scoreStr[i] = copy[copy.length()-1-i];
 	}
 	requestStr += dataStr + "\\&s=" + scoreStr;
