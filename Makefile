@@ -20,7 +20,7 @@ unit: $(FFLAGS) $(HFLAGS)
 	g++ serverCon.cpp -Wall -oserverCon -lssl -lcrypto
 
 profile: $(FFLAGS) $(HFLAGS)
-	g++ -g $(FFLAGS) $(CFLAGS) -o profiling -D PROFILE
+	g++ -g $(FFLAGS) $(CFLAGS) $(SFLAGS) -o profiling -D PROFILE
 	g++ serverCon.cpp -Wall -oserverCon -lssl -lcrypto
 
 clean:
