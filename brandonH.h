@@ -25,7 +25,8 @@ enum pButtonID
 {
     RESUME,PCONTROLS,PMAIN_MENU,
     RETREAT,
-    REST, SAVE_GAME
+    REST, SAVE_GAME,
+    //CONTINUE,EMAIN_MENU
 };
 
 
@@ -52,6 +53,7 @@ struct BHglobal
     Button pmenu[3];
     Button bmenu[3];
     Button tmenu[3];
+    Button emenu[2];
     bool ctrls;
     int count;
     GLuint logo;
@@ -114,6 +116,7 @@ class MenuGS : public GameState {
         int size;
         bool clicked;
         Button ** buttons;
+        Button select;
         float xres, yres;
     public:
         MenuGS(int, Button[5][5],int, int);
@@ -134,6 +137,7 @@ class TownGS : public GameState {
         int procKeyInput(int);
         void drawGameState();
 };
+ 
 class CreditGS : public GameState {
     private:
         float xres, yres;
@@ -144,5 +148,7 @@ class CreditGS : public GameState {
         int procKeyInput(int);
         void drawGameState();
 };
+
 void brandonHCredit(int,int,GLuint);
+
 #endif
