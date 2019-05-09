@@ -103,12 +103,25 @@ class Global {
 		int count;
 	    bool ctrls = true;
 	    int done = 0;
+		static Global * GetInstance()
+		{
+			if (!instance)
+				instance = new Global();
+			return instance;
+		}
+	private:
+		static Global * instance;
 		Global() {
 			xres = 1200;
 			yres = 900;
 			count = 0;
 		}
-}g;
+		Global(Global const& copy);
+		Global & operator=(Global const& copy);
+
+};
+Global* Global::instance = 0;
+Global * g = Global::GetInstance();
 
 class X11_wrapper {
 	private:
@@ -122,7 +135,7 @@ class X11_wrapper {
 		}
 		X11_wrapper() {
 			GLint att[] = { GLX_RGBA, GLX_DEPTH_SIZE, 24, GLX_DOUBLEBUFFER, None };
-			int w = g.xres, h = g.yres;
+			int w = g->xres, h = g->yres;
 			dpy = XOpenDisplay(NULL);
 			if (dpy == NULL) {
 				cout << "\n\tcannot connect to X server\n" << endl;
@@ -173,7 +186,7 @@ void init_opengl(void);
 void check_mouse(XEvent *e);
 int check_keys(XEvent *e);
 void render();
-Game game(g.xres, g.yres);
+Game game(g->xres, g->yres);
 extern NJordGlobal njG;
 //=====================================
 // MAIN FUNCTION IS HERE
@@ -197,7 +210,7 @@ int main()
 		while (x11.getXPending()) {
 			XEvent e = x11.getXNextEvent();
 			check_mouse(&e);
-			g.done = check_keys(&e);
+			g->done = check_keys(&e);
 		}
 		render();
 		x11.swapBuffers();
@@ -215,10 +228,10 @@ void init_opengl(void)
 {
 	Log("init_opengl()\n");
 	//OpenGL initialization
-	glViewport(0, 0, g.xres, g.yres);
+	glViewport(0, 0, g->xres, g->yres);
 	//Initialize matrices
 
-	glOrtho(0, g.xres, 0, g.yres, -1, 1);
+	glOrtho(0, g->xres, 0, g->yres, -1, 1);
 
 	//Set the screen background color
 	glClearColor(0.1, 0.1, 0.1, 1.0);
@@ -234,12 +247,12 @@ void init_opengl(void)
 void init_opengl3D(void)
 {
 	//OpenGL initialization
-	glViewport(0, 0, g.xres, g.yres);
+	glViewport(0, 0, g->xres, g->yres);
 	//Initialize matrices
 	//3D perspective view
 
 	glMatrixMode(GL_PROJECTION); glLoadIdentity();
-	gluPerspective(45.0f,(GLfloat)g.xres/(GLfloat)g.yres,0.1f,100.0f);
+	gluPerspective(45.0f,(GLfloat)g->xres/(GLfloat)g->yres,0.1f,100.0f);
 
 	glShadeModel(GL_SMOOTH);//enables smooth shading
 
@@ -315,11 +328,11 @@ void render()
 	glPushMatrix();
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
-		glOrtho(0, g.xres, 0, g.yres, -1, 1);
+		glOrtho(0, g->xres, 0, g->yres, -1, 1);
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 		glDisable(GL_LIGHTING);
-		r.bot = g.yres - 20;
+		r.bot = g->yres - 20;
 		r.left = 10;
 		r.center = 0;
 		ggprint8b(&r, 16, 0xFFFFFFFF, "-----Controls-----");
