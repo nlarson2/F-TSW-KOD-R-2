@@ -820,6 +820,8 @@ int TownGS::procMouseInput(int x, int y)
             return -1;
             break;
         case REST:
+        case PCONTROLS:
+            break;
             njG.player->resetStats();
             break;
         case SAVE_GAME:

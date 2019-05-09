@@ -23,9 +23,9 @@ enum ButtonID
 
 enum pButtonID
 {
-    RESUME,SAVE_GAME,PMAIN_MENU,
+    RESUME,PCONTROLS,PMAIN_MENU,
     RETREAT,
-    REST,
+    REST, SAVE_GAME
 };
 
 
@@ -53,6 +53,7 @@ struct BHglobal
     Button bmenu[3];
     Button tmenu[3];
     string name;
+    bool ctrls;
     BHglobal();
 };
 
