@@ -973,8 +973,8 @@ void TitleGS::drawGameState()
 	glDepthFunc(GL_LEQUAL);//The type of depth test to do
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);//??makes the perspective view better??
     glClear(GL_DEPTH_BUFFER_BIT);
-    pModel[0].drawTitleModel(-3.0f, -2.0f, -15.0f, yawR);
-    pModel[1].drawTitleModel(3.0f, -2.0f, -15.0f, yawL);
+    pModel[0].drawTitleModel(-3.0f, -3.5f, -15.0f, yawR);
+    pModel[1].drawTitleModel(3.0f, -3.5f, -15.0f, yawL);
     yawL += 0.65f;
     yawR -= 0.65f;
     
@@ -988,8 +988,10 @@ void TitleGS::drawGameState()
     r.bot = yres/4;
     r.left = xres/2;
     bhg.count++;
+    #ifdef UNIT
     cout << bhg.count << endl;
-    if((bhg.count%20) > 10)
+    #endif
+    if ((bhg.count%60) > 30)
         ggprint16(&r, 16, 0xFFFFFFFF, "Press any key");
 }
 

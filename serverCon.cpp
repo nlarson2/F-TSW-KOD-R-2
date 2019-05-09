@@ -132,7 +132,7 @@ int main(int argc, char *argv[])
   //A non-blocking socket will make the ssl_read() not block.
   set_non_blocking(sd);
   //
-  printf("%s\n",pagename);
+ //printf("%s\n",pagename);
   get_a_page(ssl, hostname, pagename);
   //Cleanup.
   SSL_free(ssl);
@@ -159,16 +159,16 @@ void show_cert_data(SSL *ssl, BIO *outbio, const char *hostname)
 {
   //Display ssl certificate data here.
   //Get the remote certificate into the X509 structure
-  printf("--------------------------------------------------------------\n");
-  printf("Certificate data...\n");
+ //printf("--------------------------------------------------------------\n");
+ //printf("Certificate data...\n");
   X509 *cert;
   X509_NAME *certname;
-  printf("calling SSL_get_peer_certificate(ssl)\n");
+ //printf("calling SSL_get_peer_certificate(ssl)\n");
   cert = SSL_get_peer_certificate(ssl);
   if (cert == nullptr) {
-    printf("Error: Could not get a certificate from: %s.\n", hostname);
+   //printf("Error: Could not get a certificate from: %s.\n", hostname);
   } else {
-    printf("Retrieved the server's certificate from: %s.\n", hostname);
+   //printf("Retrieved the server's certificate from: %s.\n", hostname);
   }
   //extract various certificate information
   certname = X509_NAME_new();
@@ -181,7 +181,7 @@ void show_cert_data(SSL *ssl, BIO *outbio, const char *hostname)
   if (BIO_printf(outbio, "\n\n") < 0) {
     fprintf(stderr, "ERROR: BIO_printf\n");
   }
-  printf("--------------------------------------------------------------\n");
+ //printf("--------------------------------------------------------------\n");
 }
 
 void set_non_blocking(const int sock)
@@ -212,7 +212,7 @@ void get_a_page( SSL *ssl, char * hostname, char * pagename )
   sprintf(req, "GET /%s HTTP/1.1\r\nHost: %s\r\nUser-Agent: %s\r\n\r\n",
       "/~nlarson/CS2680/lab1/lab1.html",hostname , USERAGENT);
 #else
-  printf("%s%s%s\n",pagename, hostname, USERAGENT);
+ //printf("%s%s%s\n",pagename, hostname, USERAGENT);
   sprintf(req, "GET /%s HTTP/1.1\r\nHost: %s\r\nUser-Agent: %s\r\n\r\n",
       pagename, hostname, USERAGENT);
 #endif
@@ -252,7 +252,7 @@ void get_a_page( SSL *ssl, char * hostname, char * pagename )
     //A slight pause can cause fewer reads to be needed.
     usleep(20000);
   }
-  printf("\nn calls to ssl_read(): %i\n", nreads); 
+ //printf("\nn calls to ssl_read(): %i\n", nreads); 
   fflush(stdout);
 
 }
