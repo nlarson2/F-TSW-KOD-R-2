@@ -196,6 +196,7 @@ int PauseGS::procMouseInput(int x, int y)
             break;
         case PMAIN_MENU:
 #ifdef SOUND
+            alSourcePlay(njG.sound.menuMusic);
             alSourceStop(njG.sound.ambientSound);
             alSourcePlay(njG.sound.menuSound); 
 #endif
@@ -365,7 +366,8 @@ int MenuGS::procMouseInput(int x, int y)
         case ARCHER:
             {
 #ifdef SOUND
-                alSourcePlay(njG.sound.menuSound); 
+                alSourcePlay(njG.sound.menuSound);
+                alSourceStop(njG.sound.menuMusic);
                 alSourcePlay(njG.sound.ambientSound);
 #endif
                 if (Player::count != 0) {
@@ -384,6 +386,7 @@ int MenuGS::procMouseInput(int x, int y)
             {
 #ifdef SOUND
                 alSourcePlay(njG.sound.menuSound); 
+                alSourceStop(njG.sound.menuMusic);
                 alSourcePlay(njG.sound.ambientSound);
 #endif
                 if (Player::count != 0) {
@@ -402,6 +405,7 @@ int MenuGS::procMouseInput(int x, int y)
             {
 #ifdef SOUND
                 alSourcePlay(njG.sound.menuSound); 
+                alSourceStop(njG.sound.menuMusic);
                 alSourcePlay(njG.sound.ambientSound);
 #endif
                 if (Player::count != 0) {
@@ -420,6 +424,7 @@ int MenuGS::procMouseInput(int x, int y)
             {
 #ifdef SOUND
                 alSourcePlay(njG.sound.menuSound); 
+                alSourceStop(njG.sound.menuMusic);
                 alSourcePlay(njG.sound.ambientSound);
 #endif
                 if (Player::count != 0) {
@@ -438,6 +443,7 @@ int MenuGS::procMouseInput(int x, int y)
             {
 #ifdef SOUND
                 alSourcePlay(njG.sound.menuSound); 
+                alSourceStop(njG.sound.menuMusic);
                 alSourcePlay(njG.sound.ambientSound);
 #endif
                 if (njG.loadEntities(1)) {
@@ -451,6 +457,7 @@ int MenuGS::procMouseInput(int x, int y)
             {
 #ifdef SOUND
                 alSourcePlay(njG.sound.menuSound); 
+                alSourceStop(njG.sound.menuMusic);
                 alSourcePlay(njG.sound.ambientSound);
 #endif
                 if (njG.loadEntities(2)) {
@@ -464,6 +471,7 @@ int MenuGS::procMouseInput(int x, int y)
             {
 #ifdef SOUND
                 alSourcePlay(njG.sound.menuSound); 
+                alSourceStop(njG.sound.menuMusic);
                 alSourcePlay(njG.sound.ambientSound);
 #endif
                 if (njG.loadEntities(3)) {
@@ -477,6 +485,7 @@ int MenuGS::procMouseInput(int x, int y)
             {
 #ifdef SOUND
                 alSourcePlay(njG.sound.menuSound); 
+                alSourceStop(njG.sound.menuMusic);
                 alSourcePlay(njG.sound.ambientSound);
 #endif
                 if (njG.loadEntities(4)) {
