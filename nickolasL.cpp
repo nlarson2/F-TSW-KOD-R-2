@@ -208,7 +208,10 @@ Matrix::Matrix()
 {
 	m_arr = NULL;
 	m_size = 0;
+#ifdef UNIT_TEST
 	std::cout << "Created Matrix" << std::endl;
+
+#endif
 }
 //identity
 Matrix::Matrix(int size)
@@ -601,10 +604,14 @@ static Model tiles[8] = {
 bool Model::GenerateModel( const char * objFile) {
 	FILE * inFile= fopen(objFile,"r");
 	if (!inFile){
+#ifdef UNIT_TEST
 		cout<<"Could Not Locate File Specified\n";
+#endif
 		return 0;
 	}
+#ifdef UNIT_TEST
 	cout << "File opened succesfully\n";
+#endif
 
 	while (1){
 
@@ -638,7 +645,9 @@ bool Model::GenerateModel( const char * objFile) {
 					&vertexIndex[1], &textureIndex[1], &normalIndex[1],
 					&vertexIndex[2], &textureIndex[2], &normalIndex[2] );
 			if (matches != 9){
+#ifdef UNIT_TEST
 				printf("%d Failed to read\n",matches);
+#endif
 				return false;
 			}
 			//save all the data where it needs to be stored
@@ -670,8 +679,9 @@ bool Tile::collisionDetect(float x, float z) {
 	width -= x;
 	height -= z;
 	float distance = sqrt((width*width) + (height*height));
-	//printf("ThisX:%f X:%f Y:%f");
-	//printf("distance: %f thisX:%d thisZ:%d\n",distance, this->x, this->z);
+#ifdef UNIT_TEST
+	printf("distance: %f thisX:%d thisZ:%d\n",distance, this->x, this->z);
+#endif
 	return distance > radius ? false : true;
 }
 
@@ -688,16 +698,11 @@ Map::Map(int ** map, int _width, int _height){
 	for (int i = 0; i < mapH; i++){
 
 		for (int j = 0; j < mapW ; j++){
-			//printf("%d\n",count);
 			tile[i][j].modelID = map[i][j];
 			tile[i][j].x = i;
 			tile[i][j].z = j;
 			tile[i][j].occ = false;
 
-			//tile[i][j].x = 2.0*j;
-			//tile[i][j].z = 1.70710378118f*i;
-			/*if (i%2 == 0)
-			  tile[i][j].x -= 1.0f;*/
 			count++;
 		}
 	}
@@ -743,7 +748,9 @@ vec2 Map::checkCollision( float x, float z) {
 #endif
 				if (tile[xPos+i][yPos+j].collisionDetect( x, z)) {
 					ret = vec2(xPos+i, yPos+j);
+#ifdef UNIT_TEST
 				    printf("Collided with x:%d y:%d\n",xPos+i,yPos+j);
+#endif
 					return ret;
 				}
 			}
@@ -805,7 +812,7 @@ void Camera::rotate(float direction)
 	camPos.x = sin(yaw * PI / 180)*radius;	
 	camPos.z = cos(yaw * PI / 180)*radius;
 }
-void Camera::translate(int key)
+void Camera::translate(int key, int size)
 {
 	vec3 direction(camPos.x/radius, 0, camPos.z/radius);
 	if ( key == XK_w )
@@ -816,6 +823,15 @@ void Camera::translate(int key)
 		wPos -= vec3::Normalize(vec3::crossProd(direction, wUp)) * 0.8f;
 	else if ( key == XK_d )
 		wPos += vec3::Normalize(vec3::crossProd(direction, wUp)) * 0.8f;
+
+	if(wPos.z < (size+1) * ZOFFSET)
+		wPos.z = (size+1) * ZOFFSET;
+	if(wPos.z > -ZOFFSET)
+		wPos.z = -ZOFFSET;
+	if(wPos.x < (size+1) * XOFFSET)
+		wPos.x = (size+1) * XOFFSET;
+	if(wPos.x > -XOFFSET)
+		wPos.x = -XOFFSET;
 }
 void Camera::updateVectors()
 {
@@ -956,13 +972,10 @@ void WorldGS::pick(vec3 ray)
 	while (pos.y > 0.5f  && ++count != 1000) {
 		
 		pos.x += ray.x;
-		pos.y += ray.y;// > 0 ? -ray.y : ray.y;
+		pos.y += ray.y;
 		pos.z += ray.z;
-		//printf("Y: %f\n", ray.y);
 	}
-	//vec3 direction(pos.x/10, 0, pos.z/10);
 	pickPos = vec3(pos.x, 0, pos.z);
-	//pickPos -= direction;
 }
 
 int WorldGS::procMouseInput(int x, int y)
@@ -971,7 +984,9 @@ int WorldGS::procMouseInput(int x, int y)
 	pkr.update(projMatrix, camera, xres, yres, x, y);
 	pick(pkr.getCurrentRay());
 	vec2 chkPath = map.checkCollision(pickPos.x, pickPos.z);
-	//printf("chkPath %f %f\n", chkPath.x, chkPath.y);
+#ifdef UNIT_TEST
+	printf("chkPath %f %f\n", chkPath.x, chkPath.y);
+#endif
 	pair<int,int> size(25,25);
 	if ( chkPath.x > -1 && chkPath.y > -1) {
 		stack<pair<int,int>> pathStack = 
@@ -1023,7 +1038,9 @@ int WorldGS::procMouseInput(int x, int y)
         }
         /***************************************/
 	}
-	//printf("X: %f  Z: %f\n", pickPos.x, pickPos.z);
+#ifdef UNIT_TEST
+	printf("X: %f  Z: %f\n", pickPos.x, pickPos.z);
+#endif
 	return 0;
 	//picking/UI
 }
@@ -1034,7 +1051,7 @@ int WorldGS::procKeyInput(int key)
 			//Key 1 was pressed
 			break;
 		case XK_a: case XK_d: case XK_w: case XK_s:
-			camera.translate(key);
+			camera.translate(key, map.mapH);
 			break;
 		case XK_q:
 			//camera.rotate(-4.0f);
@@ -1065,7 +1082,6 @@ void WorldGS::drawPath() {
 	if (path.empty()) return;
 
 	for (int i = 0; i < (int)path.size(); i++) {
-		//printf("X: %d  Z: %d\n", path[i].first, path[i].second);
 		float posx = path[i].first * XOFFSET;
 		float posy = path[i].second * ZOFFSET;
 		if (path[i].second%2 == 0)
@@ -1227,7 +1243,9 @@ int BattleGS::procMouseInput(int x, int y)
 	        pkr.update(projMatrix, camera, xres, yres, x, y);
 	        pick(pkr.getCurrentRay());
 	        vec2 chkPath = map.checkCollision(pickPos.x, pickPos.z);
-	        //printf("chkPath %f %f\n", chkPath.x, chkPath.y);
+#ifdef UNIT_TEST
+	        printf("chkPath %f %f\n", chkPath.x, chkPath.y);
+#endif
 	        pair<int,int> size(10, 10);
 	        if ( chkPath.x > -1 && chkPath.y > -1) {
                 for (int i = 0; i < njG.enemyArrayCount; i++) {
@@ -1269,7 +1287,9 @@ int BattleGS::procMouseInput(int x, int y)
 	        }
         }
     }
-	//printf("X: %f  Z: %f\n", pickPos.x, pickPos.z);
+#ifdef UNIT_TEST
+	printf("X: %f  Z: %f\n", pickPos.x, pickPos.z);
+#endif
 	return 0;
 	//picking/UI
 }
@@ -1280,7 +1300,7 @@ int BattleGS::procKeyInput(int key)
 			//Key 1 was pressed
 			break;
 		case XK_a: case XK_d: case XK_w: case XK_s:
-			camera.translate(key);
+			camera.translate(key, map.mapH);
 			break;
 		case XK_q:
 			//camera.rotate(-4.0f);
@@ -1328,7 +1348,6 @@ void BattleGS::drawPath() {
 	if (path.empty()) return;
 
 	for (int i = 0; i < (int)path.size(); i++) {
-		//printf("X: %d  Z: %d\n", path[i].first, path[i].second);
 		float posx = path[i].first * XOFFSET;
 		float posy = path[i].second * ZOFFSET;
 		if (path[i].second%2 == 0)
@@ -1487,7 +1506,9 @@ void sendScore(string name, int score)
 	requestStr += dataStr + "\\&s=" + scoreStr;
 	const char * request;
 	request = requestStr.c_str();
+#ifdef UNIT_TEST
 	printf("\n%s\n",request);
+#endif
 	system(request);	
 }
 

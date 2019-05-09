@@ -172,7 +172,7 @@ public:
 	void update();
 	
 	void rotate(float direction);
-	void translate(int key);
+	void translate(int key, int size);
 	void updateVectors();
 	void setCameraPosition(vec3 newPos);
 	vec3 getPos();
