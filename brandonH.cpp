@@ -952,8 +952,8 @@ void TitleGS::drawGameState()
     glClear(GL_DEPTH_BUFFER_BIT);
     pModel[0].drawTitleModel(-3.0f, -1.0f, -15.0f, yawR);
     pModel[1].drawTitleModel(3.0f, -1.0f, -15.0f, yawL);
-    yawL += 0.4f;
-    yawR -= 0.4f;
+    yawL += 0.65f;
+    yawR -= 0.65f;
 
 }
 
