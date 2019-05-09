@@ -43,7 +43,14 @@ Model("models/characters/Spearman.obj","models/characters/ModelTextureEnemy.png"
 
 BHglobal::BHglobal() 
 {
+    
     GenerateGLTexture(MMTex, "images/title2.png", true);
+    GenerateGLTexture(BHTex, "images/brandonH.png", false);
+    GenerateGLTexture(NLTex, "images/nickLCreditPic.jpg", false);
+    GenerateGLTexture(NJTex, "images/nicholasJo.png", false);
+    GenerateGLTexture(MJTex, "images/marbienJPicture.png", false);
+    GenerateGLTexture(AOTex, "images/aopic.png", false);
+    
     static Button btn[5] = {
         Button("New Game", NEW_GAME),
         Button("Load Game",LOAD_GAME),
@@ -991,19 +998,28 @@ void CreditGS::drawGameState()
     glOrtho(0,xres,0,yres,-1,1);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-
+    extern void Display_NicholasJordan(int,int,GLuint);
+    extern void draw_nickLCredit(int,int,GLuint);
+    extern void showAdamPicture(int,int, GLuint);
+    extern void showMarbienPicture(int,int,GLuint);
     // SHOW PICTURE FUNCTIONS
+    brandonHCredit(xres/2, yres-100, bhg.BHTex);
+    Display_NicholasJordan(xres/2,yres-250, bhg.NJTex);
+    showAdamPicture(xres/2,yres-400, bhg.AOTex);
+    draw_nickLCredit(xres/2,yres-550,bhg.NLTex);
+    showMarbienPicture(xres/2,yres-700,bhg.MJTex);
 }
 
 
 //=================================================//
 //--------------- START OF ShowPic ----------------//
 //=================================================//
-void draw_brandonHCredit(int x, int y, GLuint texture)
+void brandonHCredit(int x, int y, GLuint texture)
 {
     Rect r;
     float wid = 50;
     glPushMatrix();
+    glTranslatef(x,y,0);
     glColor3f(1.0f,1.0f,1.0f);
     glBindTexture(GL_TEXTURE_2D, texture);
     glBegin(GL_QUADS);
@@ -1017,7 +1033,7 @@ void draw_brandonHCredit(int x, int y, GLuint texture)
     r.bot = 0;
     r.left = 10;
     r.center = 0;
-    ggprint8b(&r, 16, 0x00000000, "Brandon Hernandez");
+    ggprint8b(&r, 16, 0xFFFFFFFF, "Brandon Hernandez");
     glPopMatrix();
 }
 

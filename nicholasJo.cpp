@@ -1480,7 +1480,7 @@ void Display_NicholasJordan(int x, int y, GLuint textid)
 	r.bot = 0;
 	r.left = 10;
 	r.center = 0;
-	ggprint8b(&r, 16, 0x00000000, "Nicholas Jordan");
+	ggprint8b(&r, 16, 0xffffffff, "Nicholas Jordan");
 	glPopMatrix();
 }
 #endif

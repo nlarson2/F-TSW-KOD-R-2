@@ -55,6 +55,11 @@ struct BHglobal
     string name;
     bool ctrls;
     GLuint MMTex;
+    GLuint BHTex;
+    GLuint NLTex;
+    GLuint NJTex;
+    GLuint MJTex;
+    GLuint AOTex;
     BHglobal();
 };
 
@@ -138,5 +143,5 @@ class CreditGS : public GameState {
         int procKeyInput(int);
         void drawGameState();
 };
-void draw_brandonHCredits(int,int,GLuint);
+void brandonHCredit(int,int,GLuint);
 #endif
