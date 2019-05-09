@@ -34,24 +34,6 @@
 extern NJordGlobal njG;
 extern NLarsGlobal * nlG;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //=================================================//
 //--------------- START OF BHglobal ---------------//
 //=================================================//
@@ -990,6 +972,12 @@ Game::Game(int x, int y)
 {
     xres = x;
     yres = y;
+    done = false;
+}
+
+bool Game::getDone()
+{
+    return done;
 }
 
 void Game::init()
@@ -1002,6 +990,7 @@ void Game::cleanUp()
     while(!states.empty()) {
         states.pop();
     }
+    done = true;
 }
 
 void Game::procMouseInput(int x, int y)
@@ -1115,26 +1104,4 @@ void Game::drawGameState()
     if(states.size() > 0)
         states.top()->drawGameState();
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

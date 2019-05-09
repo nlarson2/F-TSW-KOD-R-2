@@ -192,7 +192,7 @@ int main()
 #endif
 	//Main animation loop
 
-	while (!g.done) {
+	while (!game.getDone()) {
 		//Process external events.
 		while (x11.getXPending()) {
 			XEvent e = x11.getXNextEvent();
