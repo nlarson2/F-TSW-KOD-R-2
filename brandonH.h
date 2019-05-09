@@ -55,6 +55,7 @@ struct BHglobal
     Button tmenu[3];
     Button emenu[2];
     bool ctrls;
+    bool hs;
     int count;
     GLuint logo;
     GLuint MMTex;

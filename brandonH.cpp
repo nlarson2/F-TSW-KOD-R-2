@@ -117,6 +117,7 @@ BHglobal::BHglobal()
         //emenu[i] = ebtn[i];
     }
 
+    hs = false;
     ctrls = false;
     count = 0;
 } BHglobal bhg;
@@ -349,6 +350,10 @@ int MenuGS::procMouseInput(int x, int y)
             alSourcePlay(njG.sound.menuSound); 
 #endif
             //state = HIGH_SCORES;
+            if(bhg.hs == false)
+                bhg.hs = true;
+            else
+                bhg.hs = false;
             break;
         case CONTROLS:
 #ifdef SOUND
@@ -1050,6 +1055,12 @@ void CreditGS::drawGameState()
     showAdamPicture(xres/2,yres-400, bhg.AOTex);
     draw_nickLCredit(xres/2,yres-550,bhg.NLTex);
     showMarbienPicture(xres/2,yres-700,bhg.MJTex);
+    
+    Rect r;
+    r.bot = yres/8;
+    r.left = xres/2;
+    ggprint8b(&r, 16, 0xFFFFFFFF, "Your High Scores are located at https://cs.csub.edu/~nlarson/3350/game/");
+    
 }
 
 
