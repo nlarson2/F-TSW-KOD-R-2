@@ -555,6 +555,37 @@ void Model::draw(int x, int z, float y, float yaw)
 }
 
 
+void Model::drawTitleModel(float x, float y, float z, float yaw) {
+	glBindTexture(GL_TEXTURE_2D, texture);
+	glPushMatrix();
+	glColor3f(1.0f,1.0f,1.0f);
+	glTranslatef(x, y, z);
+	glRotatef(yaw, 0, 1.0f, 0);
+		
+	glBegin(GL_TRIANGLES);
+
+	for ( unsigned int i = 0 ; i < vIndices.size() ; i+=3 ) {
+		glTexCoord2f(vertTex[vtIndices.at(i)-1].x,
+				vertTex[vtIndices.at(i)-1].y);
+		glVertex3f(vert[vIndices.at(i)-1].x ,
+				vert[vIndices.at(i)-1].y,
+				vert[vIndices.at(i)-1].z);
+		glTexCoord2f(vertTex[vtIndices.at(i+1)-1].x,
+				vertTex[vtIndices.at(i+1)-1].y);
+		glVertex3f(vert[vIndices.at(i+1)-1].x,
+				vert[vIndices.at(i+1)-1].y,
+				vert[vIndices.at(i+1)-1].z);
+		glTexCoord2f(vertTex[vtIndices.at(i+2)-1].x,
+				vertTex[vtIndices.at(i+2)-1].y);
+		glVertex3f(vert[vIndices.at(i+2)-1].x,
+				vert[vIndices.at(i+2)-1].y,
+				vert[vIndices.at(i+2)-1].z);
+	}
+	glEnd();
+	glPopMatrix();
+	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
 static Model tiles[8] = {  
 	Model( "models/tiles/waterTile.obj" , "models/tiles/waterTexture.png" ),
 	Model( "models/tiles/grassTile.obj" , "models/tiles/grassTexture.png" ),

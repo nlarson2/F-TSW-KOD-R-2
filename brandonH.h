@@ -78,6 +78,7 @@ class TitleGS: public GameState {
         string title;
         string req;
         float xres, yres;
+        float yawL, yawR;
     public:
         TitleGS(int, int);
         ~TitleGS();

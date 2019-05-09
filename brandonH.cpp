@@ -34,9 +34,13 @@
 extern NJordGlobal njG;
 extern NLarsGlobal * nlG;
 
+Model pModel[2] = {
+Model("models/characters/Tank.obj","models/characters/ModelTexturePlayer.png"),
+Model("models/characters/Spearman.obj","models/characters/ModelTextureEnemy.png")};
 //=================================================//
 //--------------- START OF BHglobal ---------------//
 //=================================================//
+
 BHglobal::BHglobal() 
 {
     GenerateGLTexture(MMTex, "images/title2.png", true);
@@ -902,6 +906,8 @@ TitleGS::TitleGS(int xres, int yres)
 {
     this->xres = xres;
     this->yres = yres;
+    yawL = 0;
+    yawR = 180;
 }
 
 int TitleGS::procMouseInput(int,int)
@@ -930,6 +936,26 @@ void TitleGS::drawGameState()
     r.bot = yres/2;
     r.left = xres/2;
     ggprint16(&r, 16, 0xFFFFFFFF, "Press any key");
+
+    //swap to 3d
+    glMatrixMode(GL_PROJECTION); glLoadIdentity();
+	gluPerspective(45.0f,(GLfloat)xres/(GLfloat)yres,0.1f,100.0f);
+    
+	glMatrixMode(GL_MODELVIEW); glLoadIdentity();
+	//discussed futher in later tutorial
+	//glShadeModel(GL_SMOOTH);//enables smooth shading
+
+	// sets the depth buffer//stop elements from drawing over others
+	glClearDepth(1.0f);//Depth buffer setup
+	glEnable(GL_DEPTH_TEST);//Enables Depth Testing
+	glDepthFunc(GL_LEQUAL);//The type of depth test to do
+	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);//??makes the perspective view better??
+    glClear(GL_DEPTH_BUFFER_BIT);
+    pModel[0].drawTitleModel(-3.0f, -1.0f, -15.0f, yawR);
+    pModel[1].drawTitleModel(3.0f, -1.0f, -15.0f, yawL);
+    yawL += 0.65f;
+    yawR -= 0.65f;
+
 }
 
 //=================================================//

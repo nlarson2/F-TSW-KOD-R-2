@@ -121,6 +121,7 @@ struct Model {
 	Model ();
 	Model ( const char * objFile, const char * texFile);
 	void draw(int x, int z, float y=0, float yaw = 0);
+	void drawTitleModel(float x, float y, float z, float yaw);
 	bool GenerateModel( const char * objFile );
 	bool GenerateTexture( const char * texFile );
 private:
