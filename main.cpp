@@ -335,6 +335,12 @@ void render()
 		ggprint8b(&r, 16, 0xFFFFFFFF, "---Battle Controls---");
 		ggprint8b(&r, 16, 0xFFFFFFFF, "E - End Turn");
 		ggprint8b(&r, 16, 0xFFFFFFFF, "Left Click - Move/Attack");
-		glPopMatrix();
+		
+		ggprint8b(&r, 16, 0xFFFFFFFF, "-----Objective-----");
+		ggprint8b(&r, 16, 0xFFFFFFFF, "Defeat all enemies on the map");
+		ggprint8b(&r, 16, 0xFFFFFFFF, "Do not let your hero die.");
+		ggprint8b(&r, 16, 0xFFFFFFFF, "Heal after battle via towns.");
+
+        glPopMatrix();
 	}
 }
