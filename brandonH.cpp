@@ -1002,7 +1002,7 @@ void TitleGS::drawGameState()
     #ifdef UNIT
     cout << bhg.count << endl;
     #endif
-    if ((bhg.count%60) > 30)
+    if ((bhg.count%80) > 40)
         ggprint16(&r, 16, 0xFFFFFFFF, "Press any key");
 }
 
@@ -1111,7 +1111,8 @@ void Game::cleanUp()
 void Game::procMouseInput(int x, int y)
 {
     int changeState = states.top()->procMouseInput(x,y);
-
+    srand(time(0));
+    int random;
     switch (changeState) {
         case -4:
             while(states.size()-1 > 0) {
@@ -1139,24 +1140,28 @@ void Game::procMouseInput(int x, int y)
                 states.push(new PauseGS(bhg.bmenu,xres,yres));
             break;
         case 3:
-            states.push(new BattleGS(nlG->BattleMap1, 10 ,10, 180, 0, 0,
-                        xres, yres, 0));
+            random = rand()%2;
+            states.push(new BattleGS(random>0 ? nlG->BattleMap2 : nlG->BattleMap1,
+             10 ,10, 180, 0, 0, xres, yres, 0));
+                        
 #ifdef SOUND
             alSourceStop(njG.sound.ambientSound);
             alSourcePlay(njG.sound.battleSound);
 #endif
             break;
         case 5:
-            states.push(new BattleGS(nlG->BattleMap1, 10 ,10, 180, 0, 0,
-                        xres, yres, 1));
+            random = rand()%2;
+            states.push(new BattleGS(random>0 ? nlG->BattleMap2 : nlG->BattleMap1,
+             10 ,10, 180, 0, 0, xres, yres, 1));
 #ifdef SOUND
             alSourceStop(njG.sound.ambientSound);
             alSourcePlay(njG.sound.battleSound);
 #endif
             break;
         case 7:
-            states.push(new BattleGS(nlG->BattleMap1, 10 ,10, 180, 0, 0,
-                        xres, yres, 2));
+            random = rand()%2;
+            states.push(new BattleGS(random>0 ? nlG->BattleMap2 : nlG->BattleMap1,
+             10 ,10, 180, 0, 0, xres, yres, 2));
 #ifdef SOUND
             alSourceStop(njG.sound.ambientSound);
             alSourcePlay(njG.sound.battleSound);

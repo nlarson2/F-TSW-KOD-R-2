@@ -714,17 +714,18 @@ Map::~Map()
 	delete[] tile;
 }
 void Map::draw(){
-	for (int i = 0; i < mapH; i++){
-		for (int j = 0; j< mapW; j++){
-			//tiles[tile[i][j].modelID].pos.x = tile[i][j].x;
-			//tiles[tile[i][j].modelID].pos.z = tile[i][j].z; 
-			if ( tile[i][j].occ) {
-				//glColor3f(1.0f,0,0);
-			}
-			if (tile[i][j].modelID == 8) {
-				tiles[7].draw(i, j, 0, 120);
+	for (int i = -10; i < mapH + 10; i++){
+		for (int j = -11; j< mapW + 11; j++){
+			if( i < 0 || j < 0) {
+				tiles[0].draw(i,j);
+			} else if ( i > mapH-1 || j > mapW -1) {
+				tiles[0].draw(i,j);
 			} else {
-				tiles[tile[i][j].modelID].draw(i,j);
+				if (tile[i][j].modelID == 8) {
+					tiles[7].draw(i, j, 0, 120);
+				} else {
+					tiles[tile[i][j].modelID].draw(i,j);
+				}
 			}
 			glColor3f(1.0f,1.0f,1.0f);
 		}
@@ -1312,6 +1313,12 @@ int BattleGS::procKeyInput(int key)
 			break;
 		case XK_e:
 			//camera.rotate(4.0f);
+			if(njG.player->current_health <= 0) {
+			    njG.player->resetInstance();
+    			njG.resetAllies();
+    			njG.resetEnemies();	
+				return -4;
+			} 
             if (njG.enemiesAreDead(njG.enemies[enemy])) {
                 njG.resetTurns(njG.enemies[enemy]);
                 njG.resetBPos();
@@ -1322,7 +1329,7 @@ int BattleGS::procKeyInput(int key)
                     njG.player->score += 500;
                     //sendScore(njG.name, njG.player->score);
                     return 8;
-                }
+            	}
             #ifdef SOUND
                 alSourceStop(njG.sound.battleSound);
                 alSourcePlay(njG.sound.ambientSound);    
