@@ -53,6 +53,7 @@ struct BHglobal
     Button bmenu[3];
     Button tmenu[3];
     bool ctrls;
+    GLuint logo;
     GLuint MMTex;
     BHglobal();
 };

@@ -44,6 +44,7 @@ Model("models/characters/Spearman.obj","models/characters/ModelTextureEnemy.png"
 BHglobal::BHglobal() 
 {
     GenerateGLTexture(MMTex, "images/title2.png", true);
+    GenerateGLTexture(logo, "images/FTSWKODR2_logo.png", true);
     static Button btn[5] = {
         Button("New Game", NEW_GAME),
         Button("Load Game",LOAD_GAME),
@@ -764,6 +765,9 @@ void MenuGS::drawGameState()
     glEnd();
     glBindTexture(GL_TEXTURE_2D, 0);
     glColor3f(1.0f, 1.0f, 1.0f);
+
+    
+
     for (int i=0; i<size; i++) {
         //Draw Buttons
         Button *s;
@@ -946,6 +950,16 @@ void TitleGS::drawGameState()
     r.left = xres/2;
     ggprint16(&r, 16, 0xFFFFFFFF, "Press any key");
 
+    glBindTexture(GL_TEXTURE_2D, bhg.logo);
+    glBegin(GL_QUADS);
+        glTexCoord2f(0.0f, 0.0f);glVertex2i(0, 0);
+	    glTexCoord2f(0.0f, 1.0f);glVertex2i(0, 900);
+	    glTexCoord2f(1.0f, 1.0f);glVertex2i( 1200, 900);
+    	glTexCoord2f(1.0f, 0.0f);glVertex2i( 1200, 0);
+    glEnd();
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glColor3f(1.0f, 1.0f, 1.0f);
+
     //swap to 3d
     glMatrixMode(GL_PROJECTION); glLoadIdentity();
 	gluPerspective(45.0f,(GLfloat)xres/(GLfloat)yres,0.1f,100.0f);
@@ -960,8 +974,8 @@ void TitleGS::drawGameState()
 	glDepthFunc(GL_LEQUAL);//The type of depth test to do
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);//??makes the perspective view better??
     glClear(GL_DEPTH_BUFFER_BIT);
-    pModel[0].drawTitleModel(-3.0f, -1.0f, -15.0f, yawR);
-    pModel[1].drawTitleModel(3.0f, -1.0f, -15.0f, yawL);
+    pModel[0].drawTitleModel(-3.0f, -2.0f, -15.0f, yawR);
+    pModel[1].drawTitleModel(3.0f, -2.0f, -15.0f, yawL);
     yawL += 0.65f;
     yawR -= 0.65f;
 
