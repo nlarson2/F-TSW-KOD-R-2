@@ -188,6 +188,7 @@ int main()
 #ifdef SOUND
 	njG.sound.initializeSounds();
 	njG.sound.loadSounds();
+	alSourcePlay(njG.sound.menuMusic);
 #endif
 	//Main animation loop
 

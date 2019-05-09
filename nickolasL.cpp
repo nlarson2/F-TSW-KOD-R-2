@@ -1174,7 +1174,7 @@ BattleGS::BattleGS(int ** mapArr,int sizex,int sizey,
 }
 
 int BattleGS::procMouseInput(int x, int y)
-{   
+{ 
     if (count % turns == 0) {
         if (njG.player->moveRange > 0) {
 	        glMatrixMode(GL_MODELVIEW);
@@ -1212,8 +1212,8 @@ int BattleGS::procMouseInput(int x, int y)
                 }
                 if (njG.checkBattleCollision(path.back().first,
                     path.back().second, 0, enemy, 0)) {
-                    njG.controlTurns(njG.player, 
-                                    path.back().first, path.back().second, 
+                    njG.controlTurns(njG.player,
+                                    path.back().first, path.back().second,
                                     (int)path.size(), map.tile);
                 #ifdef SOUND
                     alSourcePlay(njG.sound.moveSound);
