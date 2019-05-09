@@ -94,7 +94,9 @@ int main(int argc, char *argv[])
     strcpy(hostname, argv[1]);
   }
   if (argc > 2) {
-    strcpy(pagename, argv[2]);
+    //strcpy(pagename, argv[2]);
+	
+    printf("%s\n", argv[2]);
   }
   //
   //Setup the SSL BIO
@@ -132,6 +134,7 @@ int main(int argc, char *argv[])
   //A non-blocking socket will make the ssl_read() not block.
   set_non_blocking(sd);
   //
+  printf("%s\n",pagename);
   get_a_page(ssl, hostname, pagename);
   //Cleanup.
   SSL_free(ssl);
@@ -211,6 +214,7 @@ void get_a_page( SSL *ssl, char * hostname, char * pagename )
   sprintf(req, "GET /%s HTTP/1.1\r\nHost: %s\r\nUser-Agent: %s\r\n\r\n",
       "/~nlarson/CS2680/lab1/lab1.html",hostname , USERAGENT);
 #else
+  printf("%s%s%s\n",pagename, hostname, USERAGENT);
   sprintf(req, "GET /%s HTTP/1.1\r\nHost: %s\r\nUser-Agent: %s\r\n\r\n",
       pagename, hostname, USERAGENT);
 #endif
