@@ -198,6 +198,7 @@ class NJordGlobal {
 #endif
         Player *player;
         Enemy **enemies;
+        string name;
         int enemyCount;
         int enemyArrayCount;
         Ally *allies;

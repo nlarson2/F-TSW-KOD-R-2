@@ -1264,6 +1264,7 @@ int BattleGS::procKeyInput(int key)
                 njG.player->score += 100;
                 if (njG.allEnemiesAreDead()) {
                     njG.player->score += 500;
+                    //sendScore(njG.name, njG.player->score);
                     return 8;
                 }
             #ifdef SOUND
@@ -1447,18 +1448,20 @@ void GenerateGLTexture(GLuint & texture, const char * dataSrc, bool inverted)
 	glBindTexture( GL_TEXTURE_2D, 0);
 }
 
-void sendScore( string name, int score) { 
+void sendScore(string name, int score)
+{
 	string requestStr = "./serverCon www.cs.csub.edu /~nlarson/3350/game/game.php\?";
 	string dataStr = "n="+name;
 	string scoreStr;
-	while ( score > 0 ) {
+	/*while ( score > 0 ) {
 	    scoreStr += (char)score%10 + 48;
 	    score/=10;
 	}
 	string copy = scoreStr;
 	for (unsigned int i = 0; i < scoreStr.length(); i++) {
 		scoreStr[i] = copy[copy.length()-1-i];
-	}
+	}*/
+    scoreStr = to_string(score);
 	requestStr += dataStr + "\\&s=" + scoreStr;
 	const char * request;// = new char[requestStr.length()];
 	request = requestStr.c_str();
