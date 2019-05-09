@@ -180,7 +180,6 @@ extern NJordGlobal njG;
 //=====================================
 int main()
 {
-	system("./serverCon www.cs.csub.edu /~nlarson/3350/lab1/lab1.php?score=5");	
 	logOpen();
 	Log("main()\n");
 	game.init(); 

@@ -107,7 +107,7 @@ struct vec3 {
 
 
 void GenerateGLTexture(GLuint & texture, const char * dataSrc, bool inverted);
-
+void sendScore( string name, int score);
 void draw_nickLCredit(int x, int y, GLuint texture);
 
 struct Model {
