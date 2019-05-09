@@ -45,7 +45,6 @@ double calculateHValue(int row, int col, Pair dest)
 // trace path from the source to destination
 stack<Pair> tracePath(Pair size, CellGroup cellDetails, Pair dest) 
 { 
-    printf ("\nThe Path is: \n"); 
     int row = dest.first; 
     int col = dest.second; 
   
@@ -99,25 +98,33 @@ stack<Pair> aStarSearch(Pair size, Tile ** grid, Pair src, Pair dest)
     
     // source is out of range? 
     if (isValid (src.first, src.second) == false) { 
-        printf ("Source is invalid\n"); 
+#ifdef UNIT_TEST
+        printf ("Source is invalid\n");
+#endif	
         return(tracePath(size, cellDetails, src)); 
     }  
 
     // destination is out of range? 
-    if (isValid (dest.first, dest.second) == false) { 
-        printf ("Destination is invalid\n"); 
+    if (isValid (dest.first, dest.second) == false) {
+#ifdef UNIT_TEST 
+        printf ("Destination is invalid\n");
+#endif	
         return(tracePath(size, cellDetails, src)); 
     } 
   
     // source or the destination is blocked? 
-    if (isUnBlocked(size, grid, src.first, src.second) == false || isUnBlocked(size, grid, dest.first, dest.second) == false) { 
-        printf ("Source or the destination is blocked\n"); 
+    if (isUnBlocked(size, grid, src.first, src.second) == false || isUnBlocked(size, grid, dest.first, dest.second) == false) {
+#ifdef UNIT_TEST 
+        printf ("Source or the destination is blocked\n");
+#endif	
         return(tracePath(size, cellDetails, src)); 
     } 
   
     // destination cell = source cell? 
     if (isDestination(src.first, src.second, dest) == true) { 
+#ifdef UNIT_TEST
         printf ("We are already at the destination\n"); 
+#endif
         return(tracePath(size, cellDetails, src)); 
     } 
   
@@ -157,7 +164,9 @@ stack<Pair> aStarSearch(Pair size, Tile ** grid, Pair src, Pair dest)
             if (isDestination(i, j+1, dest) == true) { 
                 cellDetails[i][j+1].parent_i = i; 
                 cellDetails[i][j+1].parent_j = j; 
-                printf("The destination cell is found\n");  
+#ifdef UNIT_TEST
+                printf("The destination cell is found\n");
+#endif	
                 foundDest = true; 
                 return(tracePath (size, cellDetails, dest)); 
             }
@@ -181,7 +190,9 @@ stack<Pair> aStarSearch(Pair size, Tile ** grid, Pair src, Pair dest)
             if (isDestination(i, j-1, dest) == true) { 
                 cellDetails[i][j-1].parent_i = i; 
                 cellDetails[i][j-1].parent_j = j; 
-                printf("The destination cell is found\n"); 
+#ifdef UNIT_TEST
+                printf("The destination cell is found\n");
+#endif	
                 foundDest = true; 
                 return(tracePath (size, cellDetails, dest)); 
             } 
@@ -205,8 +216,10 @@ stack<Pair> aStarSearch(Pair size, Tile ** grid, Pair src, Pair dest)
             if (isValid(i-1, j+1) == true) { 
                 if (isDestination(i-1, j+1, dest) == true) { 
                     cellDetails[i-1][j+1].parent_i = i; 
-                    cellDetails[i-1][j+1].parent_j = j; 
-                    printf ("The destination cell is found\n"); 
+                    cellDetails[i-1][j+1].parent_j = j;
+#ifdef UNIT_TEST 
+                    printf ("The destination cell is found\n");
+#endif 
                     foundDest = true; 
                     return(tracePath (size, cellDetails, dest)); 
                 } 
@@ -229,8 +242,10 @@ stack<Pair> aStarSearch(Pair size, Tile ** grid, Pair src, Pair dest)
             if (isValid(i-1, j) == true) { 
                if (isDestination(i-1, j, dest) == true) { 
                     cellDetails[i-1][j].parent_i = i; 
-                    cellDetails[i-1][j].parent_j = j; 
-                    printf ("The destination cell is found\n"); 
+                    cellDetails[i-1][j].parent_j = j;
+#ifdef UNIT_TEST 
+                    printf ("The destination cell is found\n");
+#endif 
                     foundDest = true; 
                     return(tracePath (size, cellDetails, dest)); 
                 } 
@@ -255,8 +270,10 @@ stack<Pair> aStarSearch(Pair size, Tile ** grid, Pair src, Pair dest)
             if (isValid (i-1, j) == true) { 
                 if (isDestination (i-1, j, dest) == true) { 
                     cellDetails[i-1][j].parent_i = i; 
-                    cellDetails[i-1][j].parent_j = j; 
+                    cellDetails[i-1][j].parent_j = j;
+#ifdef UNIT_TEST 
                     printf ("The destination cell is found\n"); 
+#endif
                     foundDest = true; 
                     return(tracePath (size, cellDetails, dest)); 
                 } 
@@ -280,8 +297,10 @@ stack<Pair> aStarSearch(Pair size, Tile ** grid, Pair src, Pair dest)
             if (isValid (i-1, j-1) == true) { 
                 if (isDestination (i-1, j-1, dest) == true) { 
                     cellDetails[i-1][j-1].parent_i = i; 
-                    cellDetails[i-1][j-1].parent_j = j; 
+                    cellDetails[i-1][j-1].parent_j = j;
+#ifdef UNIT_TEST 
                     printf ("The destination cell is found\n"); 
+#endif
                     foundDest = true; 
                     return(tracePath (size, cellDetails, dest)); 
                 } 
@@ -307,8 +326,10 @@ stack<Pair> aStarSearch(Pair size, Tile ** grid, Pair src, Pair dest)
             if (isValid(i+1, j+1) == true) { 
                 if (isDestination(i+1, j+1, dest) == true) { 
                     cellDetails[i+1][j+1].parent_i = i; 
-                    cellDetails[i+1][j+1].parent_j = j; 
-                    printf ("The destination cell is found\n");  
+                    cellDetails[i+1][j+1].parent_j = j;
+#ifdef UNIT_TEST 
+                    printf ("The destination cell is found\n");
+#endif  
                     foundDest = true; 
                     return(tracePath (size, cellDetails, dest)); 
                 } 
@@ -331,8 +352,10 @@ stack<Pair> aStarSearch(Pair size, Tile ** grid, Pair src, Pair dest)
             if (isValid(i+1, j) == true) { 
                 if (isDestination(i+1, j, dest) == true) { 
                     cellDetails[i+1][j].parent_i = i; 
-                    cellDetails[i+1][j].parent_j = j; 
+                    cellDetails[i+1][j].parent_j = j;
+#ifdef UNIT_TEST 
                     printf ("The destination cell is found\n"); 
+#endif
                     foundDest = true; 
                     return(tracePath (size, cellDetails, dest)); 
                 } 
@@ -357,8 +380,10 @@ stack<Pair> aStarSearch(Pair size, Tile ** grid, Pair src, Pair dest)
             if (isValid (i+1, j) == true) { 
                 if (isDestination(i+1, j, dest) == true) { 
                     cellDetails[i+1][j].parent_i = i; 
-                    cellDetails[i+1][j].parent_j = j; 
+                    cellDetails[i+1][j].parent_j = j;
+#ifdef UNIT_TEST 
                     printf("The destination cell is found\n"); 
+#endif
                     foundDest = true; 
                     return(tracePath (size, cellDetails, dest)); 
                 } 
@@ -381,8 +406,10 @@ stack<Pair> aStarSearch(Pair size, Tile ** grid, Pair src, Pair dest)
             if (isValid (i+1, j-1) == true) { 
                 if (isDestination(i+1, j-1, dest) == true) { 
                     cellDetails[i+1][j-1].parent_i = i; 
-                    cellDetails[i+1][j-1].parent_j = j; 
+                    cellDetails[i+1][j-1].parent_j = j;
+#ifdef UNIT_TEST 
                     printf("The destination cell is found\n"); 
+#endif
                     foundDest = true; 
                     return(tracePath (size, cellDetails, dest)); 
                 } 
@@ -403,7 +430,9 @@ stack<Pair> aStarSearch(Pair size, Tile ** grid, Pair src, Pair dest)
         }
     } 
     if (foundDest == false) {
-        printf("Failed to find the Destination Cell\n"); 
+#ifdef UNIT_TEST
+        printf("Failed to find the Destination Cell\n");
+#endif	
         stack<Pair> noMove;
         noMove.push(src);
         return noMove;
