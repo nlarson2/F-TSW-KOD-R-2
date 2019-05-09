@@ -34,24 +34,6 @@
 extern NJordGlobal njG;
 extern NLarsGlobal * nlG;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //=================================================//
 //--------------- START OF BHglobal ---------------//
 //=================================================//
@@ -81,7 +63,7 @@ BHglobal::BHglobal()
     static Button pbtn[3] = {
         Button("Resume", RESUME),
         //Button("Save Game", SAVE_GAME),
-        Button("Controls", CONTROLS),
+        Button("Controls",  PCONTROLS),
         Button("Main Menu", PMAIN_MENU),
     };
     static Button bbtn[3] = {
@@ -114,7 +96,10 @@ BHglobal::BHglobal()
         bmenu[i] = bbtn[i];
         tmenu[i] = tbtn[i];
     }
+
     name = "";
+    ctrls = false;
+
 } BHglobal bhg;
 
 //=================================================//
@@ -188,6 +173,14 @@ int PauseGS::procMouseInput(int x, int y)
             alSourcePlay(njG.sound.menuSound); 
 #endif
             njG.saveEntities(1);
+            break;
+        case PCONTROLS:
+            if(bhg.ctrls == true) {
+                bhg.ctrls = false;
+            }    
+            else {    
+                bhg.ctrls = true;
+            }
             break;
         case PMAIN_MENU:
 #ifdef SOUND
@@ -339,6 +332,12 @@ int MenuGS::procMouseInput(int x, int y)
 #ifdef SOUND
             alSourcePlay(njG.sound.menuSound); 
 #endif
+            if(bhg.ctrls == true) {
+                bhg.ctrls = false;
+            }    
+            else {    
+                bhg.ctrls = true;
+            }
             //state = CONTROLS;
             break;
         case EXIT:
@@ -821,6 +820,8 @@ int TownGS::procMouseInput(int x, int y)
             return -1;
             break;
         case REST:
+        case PCONTROLS:
+            break;
             njG.player->resetStats();
             break;
         case SAVE_GAME:
@@ -990,6 +991,12 @@ Game::Game(int x, int y)
 {
     xres = x;
     yres = y;
+    done = false;
+}
+
+bool Game::getDone()
+{
+    return done;
 }
 
 void Game::init()
@@ -1002,6 +1009,7 @@ void Game::cleanUp()
     while(!states.empty()) {
         states.pop();
     }
+    done = true;
 }
 
 void Game::procMouseInput(int x, int y)
@@ -1115,26 +1123,4 @@ void Game::drawGameState()
     if(states.size() > 0)
         states.top()->drawGameState();
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

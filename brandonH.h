@@ -23,9 +23,9 @@ enum ButtonID
 
 enum pButtonID
 {
-    RESUME,SAVE_GAME,PMAIN_MENU,
+    RESUME,PCONTROLS,PMAIN_MENU,
     RETREAT,
-    REST,
+    REST, SAVE_GAME
 };
 
 
@@ -53,6 +53,7 @@ struct BHglobal
     Button bmenu[3];
     Button tmenu[3];
     string name;
+    bool ctrls;
     BHglobal();
 };
 
@@ -60,11 +61,13 @@ class Game
 {
     private:
         int xres, yres;
+        bool done;
         stack<GameState*> states;
     public:
         Game(int x, int y);
         void init();
         void cleanUp();
+        bool getDone();
         void procMouseInput(int x, int y);
         void procKeyInput(int key);
         void drawGameState();

@@ -192,7 +192,7 @@ int main()
 #endif
 	//Main animation loop
 
-	while (!g.done) {
+	while (!game.getDone()) {
 		//Process external events.
 		while (x11.getXPending()) {
 			XEvent e = x11.getXNextEvent();
@@ -309,7 +309,8 @@ void render()
 {
 	game.drawGameState();
     // Placeholder control display while in testing
-	if(g.ctrls) {
+    extern BHglobal bhg;
+    if(bhg.ctrls) {
         Rect r;
 	glPushMatrix();
 		glMatrixMode(GL_PROJECTION);
@@ -321,18 +322,20 @@ void render()
 		r.bot = g.yres - 20;
 		r.left = 10;
 		r.center = 0;
-		ggprint8b(&r, 16, 0xFFFFFFFF, "Controls");
+		ggprint8b(&r, 16, 0xFFFFFFFF, "-----Controls-----");
 		ggprint8b(&r, 16, 0xFFFFFFFF, "W - Camera Up");
 		ggprint8b(&r, 16, 0xFFFFFFFF, "A - Camera Left");
 		ggprint8b(&r, 16, 0xFFFFFFFF, "S - Camera Down");
 		ggprint8b(&r, 16, 0xFFFFFFFF, "D - Camera Right");
-		ggprint8b(&r, 16, 0xFFFFFFFF, "Q - Rotate Left");
-		ggprint8b(&r, 16, 0xFFFFFFFF, "E - Rotate Right");
-		ggprint8b(&r, 16, 0xFFFFFFFF, "B - Enter Battle State");
 		ggprint8b(&r, 16, 0xFFFFFFFF, "C - Center On Player");
-		ggprint8b(&r, 16, 0xFFFFFFFF, "Left Click - Move");
-		ggprint8b(&r, 16, 0xFFFFFFFF, "(In World)Esc - Pause Game");
-		ggprint8b(&r, 16, 0xFFFFFFFF, "(In Battle)Esc - Return To World");
+		ggprint8b(&r, 16, 0xFFFFFFFF, "Esc - Pause Game");
+
+        ggprint8b(&r, 16, 0xFFFFFFFF, "---World Controls---");
+		ggprint8b(&r, 16, 0xFFFFFFFF, "Left Click - Move/Interact");
+
+		ggprint8b(&r, 16, 0xFFFFFFFF, "---Battle Controls---");
+		ggprint8b(&r, 16, 0xFFFFFFFF, "E - End Turn");
+		ggprint8b(&r, 16, 0xFFFFFFFF, "Left Click - Move/Attack");
 		glPopMatrix();
 	}
 }
