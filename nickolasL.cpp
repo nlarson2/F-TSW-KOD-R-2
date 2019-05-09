@@ -1410,7 +1410,9 @@ void BattleGS::drawGameState()
 	glLoadIdentity();
 	camera.update();
 	map.draw();
+#ifdef UNIT_TEST
 	drawPath();
+#endif
     njG.player = Player::getInstance();
     if (njG.player->count != 0) {
         count == 0 ? glColor4f(0, 0, 0.75, 0.1) : glColor3f(255, 255, 255);
