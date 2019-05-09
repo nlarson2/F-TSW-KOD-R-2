@@ -52,8 +52,9 @@ struct BHglobal
     Button pmenu[3];
     Button bmenu[3];
     Button tmenu[3];
-    string name;
     bool ctrls;
+    int count;
+    GLuint logo;
     GLuint MMTex;
     GLuint BHTex;
     GLuint NLTex;

@@ -481,11 +481,11 @@ void draw_nickLCredit(int x, int y, GLuint texture)
 
 
 	glTranslatef(wid,0,0);
-	//unsigned int c = 0x00000000;
+	unsigned int c = 0xffffffff;
 	r.bot = 0;
 	r.left = 10;
 	r.center = 0;
-	ggprint8b(&r, 16, 0x00000000, "Nickolas Larson");
+	ggprint8b(&r, 16, c, "Nickolas Larson");
 
 
 	glPopMatrix();
@@ -1295,6 +1295,7 @@ int BattleGS::procKeyInput(int key)
                 njG.player->score += 100;
                 if (njG.allEnemiesAreDead()) {
                     njG.player->score += 500;
+                    //sendScore(njG.name, njG.player->score);
                     return 8;
                 }
             #ifdef SOUND
@@ -1478,20 +1479,13 @@ void GenerateGLTexture(GLuint & texture, const char * dataSrc, bool inverted)
 	glBindTexture( GL_TEXTURE_2D, 0);
 }
 
-void sendScore( string name, int score) { 
+void sendScore(string name, int score)
+{
 	string requestStr = "./serverCon www.cs.csub.edu /~nlarson/3350/game/game.php\?";
 	string dataStr = "n="+name;
-	string scoreStr;
-	while ( score > 0 ) {
-	    scoreStr += (char)score%10 + 48;
-	    score/=10;
-	}
-	string copy = scoreStr;
-	for (unsigned int i = 0; i < scoreStr.length(); i++) {
-		scoreStr[i] = copy[copy.length()-1-i];
-	}
+	string scoreStr = to_string(score);
 	requestStr += dataStr + "\\&s=" + scoreStr;
-	const char * request;// = new char[requestStr.length()];
+	const char * request;
 	request = requestStr.c_str();
 	printf("\n%s\n",request);
 	system(request);	

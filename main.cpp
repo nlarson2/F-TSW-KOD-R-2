@@ -205,7 +205,7 @@ int main()
 #ifdef PROFILE
 	printf("Program Complete\n\n");
 	printf("Profiling Times:\n");
-	printf("njG.sound.loadSounds(): %lf\n", njG.loadSoundTime);
+	printf("njG.sound.loadSounds(): %lf nanoseconds\n", njG.loadSoundTime / 10e9);
 #endif
 	return 0;
 }

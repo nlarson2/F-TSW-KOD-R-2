@@ -51,6 +51,7 @@ BHglobal::BHglobal()
     GenerateGLTexture(MJTex, "images/marbienJPicture.png", false);
     GenerateGLTexture(AOTex, "images/aopic.png", false);
     
+    GenerateGLTexture(logo, "images/FTSWKODR2_logo.png", true);
     static Button btn[5] = {
         Button("New Game", NEW_GAME),
         Button("Load Game",LOAD_GAME),
@@ -109,9 +110,8 @@ BHglobal::BHglobal()
         tmenu[i] = tbtn[i];
     }
 
-    name = "";
     ctrls = false;
-
+    count = 0;
 } BHglobal bhg;
 
 //=================================================//
@@ -212,11 +212,13 @@ int PauseGS::procMouseInput(int x, int y)
             return -2;
             break;
         case REST:
-            njG.player->resetStats();
-            for(int i=0; i<njG.allies->count;i++) {
-                njG.allies[i].resetStats();
+            if (njG.player->score > 25) {
+                njG.player->resetStats();
+                for(int i=0; i<njG.allies->count;i++) {
+                    njG.allies[i].resetStats();
+                }
+                njG.player->score -= 25;
             }
-            njG.player->score -= 25;
             break;
     }
     return 0;
@@ -288,7 +290,7 @@ MenuGS::MenuGS(int s, Button b[5][5], int xres, int yres)
             buttons[j][i].width = 100;
             buttons[j][i].height = 20;
             buttons[j][i].center.x = xres/2;
-            buttons[j][i].center.y = yres/1.4 - (i+1)*60;
+            buttons[j][i].center.y = yres/1.7 - (i+1)*60;
         }
     }
 }
@@ -498,18 +500,18 @@ int MenuGS::procKeyInput(int key)
             break;
         case XK_a:
         case XK_A:
-        if (state == 1 && bhg.name.size() < 3) {
-            bhg.name = bhg.name +"A";
+        if (state == 1 && njG.name.size() < 3) {
+            njG.name = njG.name +"A";
 #ifdef UNIT_TEST
             cout << "Inserting A" << endl;
-            cout << this->state << " " << bhg.name.size() << endl;
+            cout << this->state << " " << njG.name.size() << endl;
 #endif
         }
         break;
         case XK_b:
         case XK_B:
-        if (state == 1 && bhg.name.size() < 3) {
-            bhg.name = bhg.name +"B";
+        if (state == 1 && njG.name.size() < 3) {
+            njG.name = njG.name +"B";
 #ifdef UNIT_TEST
             cout << "Inserting B" << endl;
 #endif
@@ -517,8 +519,8 @@ int MenuGS::procKeyInput(int key)
         break;
         case XK_c:
         case XK_C:
-        if (state == 1 && bhg.name.size() < 3) {
-            bhg.name = bhg.name +"C";
+        if (state == 1 && njG.name.size() < 3) {
+            njG.name = njG.name +"C";
 #ifdef UNIT_TEST
             cout << "Inserting C" << endl;
 #endif
@@ -526,8 +528,8 @@ int MenuGS::procKeyInput(int key)
         break;
         case XK_d:
         case XK_D:
-        if (state == 1 && bhg.name.size() < 3) {
-            bhg.name = bhg.name +"D";
+        if (state == 1 && njG.name.size() < 3) {
+            njG.name = njG.name +"D";
 #ifdef UNIT_TEST
             cout << "Inserting D" << endl;
 #endif
@@ -535,8 +537,8 @@ int MenuGS::procKeyInput(int key)
         break;
         case XK_e:
         case XK_E:
-        if (state == 1 && bhg.name.size() < 3) {
-            bhg.name = bhg.name +"E";
+        if (state == 1 && njG.name.size() < 3) {
+            njG.name = njG.name +"E";
 #ifdef UNIT_TEST
             cout << "Inserting E" << endl;
 #endif
@@ -544,8 +546,8 @@ int MenuGS::procKeyInput(int key)
         break;
         case XK_f:
         case XK_F:
-        if (state == 1 && bhg.name.size() < 3) {
-            bhg.name = bhg.name +"F";
+        if (state == 1 && njG.name.size() < 3) {
+            njG.name = njG.name +"F";
 #ifdef UNIT_TEST
             cout << "Inserting F" << endl;
 #endif
@@ -553,8 +555,8 @@ int MenuGS::procKeyInput(int key)
         break;
         case XK_g:
         case XK_G:
-        if (state == 1 && bhg.name.size() < 3) {
-            bhg.name = bhg.name +"G";
+        if (state == 1 && njG.name.size() < 3) {
+            njG.name = njG.name +"G";
 #ifdef UNIT_TEST
             cout << "Inserting G" << endl;
 #endif
@@ -562,8 +564,8 @@ int MenuGS::procKeyInput(int key)
         break;
         case XK_h:
         case XK_H:
-        if (state == 1 && bhg.name.size() < 3) {
-            bhg.name = bhg.name +"H";
+        if (state == 1 && njG.name.size() < 3) {
+            njG.name = njG.name +"H";
 #ifdef UNIT_TEST
             cout << "Inserting H" << endl;
 #endif
@@ -571,8 +573,8 @@ int MenuGS::procKeyInput(int key)
         break;
         case XK_i:
         case XK_I:
-        if (state == 1 && bhg.name.size() < 3) {
-            bhg.name = bhg.name +"I";
+        if (state == 1 && njG.name.size() < 3) {
+            njG.name = njG.name +"I";
 #ifdef UNIT_TEST
             cout << "Inserting I" << endl;
 #endif
@@ -580,8 +582,8 @@ int MenuGS::procKeyInput(int key)
         break;
         case XK_j:
         case XK_J:
-        if (state == 1 && bhg.name.size() < 3) {
-            bhg.name = bhg.name +"J";
+        if (state == 1 && njG.name.size() < 3) {
+            njG.name = njG.name +"J";
 #ifdef UNIT_TEST
             cout << "Inserting J" << endl;
 #endif
@@ -589,8 +591,8 @@ int MenuGS::procKeyInput(int key)
         break;
         case XK_k:
         case XK_K:
-        if (state == 1 && bhg.name.size() < 3) {
-            bhg.name = bhg.name +"K";
+        if (state == 1 && njG.name.size() < 3) {
+            njG.name = njG.name +"K";
 #ifdef UNIT_TEST
             cout << "Inserting K" << endl;
 #endif
@@ -598,8 +600,8 @@ int MenuGS::procKeyInput(int key)
         break;
         case XK_l:
         case XK_L:
-        if (state == 1 && bhg.name.size() < 3) {
-            bhg.name = bhg.name +"L";
+        if (state == 1 && njG.name.size() < 3) {
+            njG.name = njG.name +"L";
 #ifdef UNIT_TEST
             cout << "Inserting L" << endl;
 #endif
@@ -607,8 +609,8 @@ int MenuGS::procKeyInput(int key)
         break;
         case XK_m:
         case XK_M:
-        if (state == 1 && bhg.name.size() < 3) {
-            bhg.name = bhg.name +"M";
+        if (state == 1 && njG.name.size() < 3) {
+            njG.name = njG.name +"M";
 #ifdef UNIT_TEST
             cout << "Inserting M" << endl;
 #endif
@@ -616,8 +618,8 @@ int MenuGS::procKeyInput(int key)
         break;
         case XK_n:
         case XK_N:
-        if (state == 1 && bhg.name.size() < 3) {
-            bhg.name = bhg.name +"N";
+        if (state == 1 && njG.name.size() < 3) {
+            njG.name = njG.name +"N";
 #ifdef UNIT_TEST
             cout << "Inserting N" << endl;
 #endif
@@ -625,8 +627,8 @@ int MenuGS::procKeyInput(int key)
         break;
         case XK_o:
         case XK_O:
-        if (state == 1 && bhg.name.size() < 3) {
-            bhg.name = bhg.name +"O";
+        if (state == 1 && njG.name.size() < 3) {
+            njG.name = njG.name +"O";
 #ifdef UNIT_TEST
             cout << "Inserting O" << endl;
 #endif
@@ -634,8 +636,8 @@ int MenuGS::procKeyInput(int key)
         break;
         case XK_p:
         case XK_P:
-        if (state == 1 && bhg.name.size() < 3) {
-            bhg.name = bhg.name +"P";
+        if (state == 1 && njG.name.size() < 3) {
+            njG.name = njG.name +"P";
 #ifdef UNIT_TEST
             cout << "Inserting P" << endl;
 #endif
@@ -643,8 +645,8 @@ int MenuGS::procKeyInput(int key)
         break;
         case XK_q:
         case XK_Q:
-        if (state == 1 && bhg.name.size() < 3) {
-            bhg.name = bhg.name +"Q";
+        if (state == 1 && njG.name.size() < 3) {
+            njG.name = njG.name +"Q";
 #ifdef UNIT_TEST
             cout << "Inserting Q" << endl;
 #endif
@@ -652,8 +654,8 @@ int MenuGS::procKeyInput(int key)
         break;
         case XK_r:
         case XK_R:
-        if (state == 1 && bhg.name.size() < 3) {
-            bhg.name = bhg.name +"R";
+        if (state == 1 && njG.name.size() < 3) {
+            njG.name = njG.name +"R";
 #ifdef UNIT_TEST
             cout << "Inserting R" << endl;
 #endif
@@ -661,8 +663,8 @@ int MenuGS::procKeyInput(int key)
         break;
         case XK_s:
         case XK_S:
-        if (state == 1 && bhg.name.size() < 3) {
-            bhg.name = bhg.name +"S";
+        if (state == 1 && njG.name.size() < 3) {
+            njG.name = njG.name +"S";
 #ifdef UNIT_TEST
             cout << "Inserting S" << endl;
 #endif
@@ -670,8 +672,8 @@ int MenuGS::procKeyInput(int key)
         break;
         case XK_t:
         case XK_T:
-        if (state == 1 && bhg.name.size() < 3) {
-            bhg.name = bhg.name +"T";
+        if (state == 1 && njG.name.size() < 3) {
+            njG.name = njG.name +"T";
 #ifdef UNIT_TEST
             cout << "Inserting T" << endl;
 #endif
@@ -679,8 +681,8 @@ int MenuGS::procKeyInput(int key)
         break;
         case XK_u:
         case XK_U:
-        if (state == 1 && bhg.name.size() < 3) {
-            bhg.name = bhg.name +"U";
+        if (state == 1 && njG.name.size() < 3) {
+            njG.name = njG.name +"U";
 #ifdef UNIT_TEST
             cout << "Inserting U" << endl;
 #endif
@@ -688,8 +690,8 @@ int MenuGS::procKeyInput(int key)
         break;
         case XK_v:
         case XK_V:
-        if (state == 1 && bhg.name.size() < 3) {
-            bhg.name = bhg.name +"V";
+        if (state == 1 && njG.name.size() < 3) {
+            njG.name = njG.name +"V";
 #ifdef UNIT_TEST
             cout << "Inserting V" << endl;
 #endif
@@ -697,8 +699,8 @@ int MenuGS::procKeyInput(int key)
         break;
         case XK_w:
         case XK_W:
-        if (state == 1 && bhg.name.size() < 3) {
-            bhg.name = bhg.name +"W";
+        if (state == 1 && njG.name.size() < 3) {
+            njG.name = njG.name +"W";
 #ifdef UNIT_TEST
             cout << "Inserting W" << endl;
 #endif
@@ -706,8 +708,8 @@ int MenuGS::procKeyInput(int key)
         break;
         case XK_x:
         case XK_X:
-        if (state == 1 && bhg.name.size() < 3) {
-            bhg.name = bhg.name +"X";
+        if (state == 1 && njG.name.size() < 3) {
+            njG.name = njG.name +"X";
 #ifdef UNIT_TEST
             cout << "Inserting X" << endl;
 #endif
@@ -715,8 +717,8 @@ int MenuGS::procKeyInput(int key)
         break;
         case XK_y:
         case XK_Y:
-        if (state == 1 && bhg.name.size() < 3) {
-            bhg.name = bhg.name +"Y";
+        if (state == 1 && njG.name.size() < 3) {
+            njG.name = njG.name +"Y";
 #ifdef UNIT_TEST
             cout << "Inserting Y" << endl;
 #endif
@@ -724,16 +726,16 @@ int MenuGS::procKeyInput(int key)
         break;
         case XK_z:
         case XK_Z:
-        if (state == 1 && bhg.name.size() < 3) {
-            bhg.name = bhg.name +"Z";
+        if (state == 1 && njG.name.size() < 3) {
+            njG.name = njG.name +"Z";
 #ifdef UNIT_TEST
             cout << "Inserting Z" << endl;
 #endif
         }
         break;
         case XK_BackSpace:
-        if (state == 1 && bhg.name.size() > 0) {
-            bhg.name.pop_back();
+        if (state == 1 && njG.name.size() > 0) {
+            njG.name.pop_back();
 
         }
         break;
@@ -761,6 +763,9 @@ void MenuGS::drawGameState()
     glEnd();
     glBindTexture(GL_TEXTURE_2D, 0);
     glColor3f(1.0f, 1.0f, 1.0f);
+
+    
+
     for (int i=0; i<size; i++) {
         //Draw Buttons
         Button *s;
@@ -783,7 +788,7 @@ void MenuGS::drawGameState()
         int yres = 600;
         Rect r;
         //r.bot = yres - (170 +(i*60));
-        r.bot = yres/.95 - (i+1)*60;
+        r.bot = yres/1.155 - (i+1)*60;
         r.left = xres/2 ;
         ggprint16(&r, 16, 0xFFFFFFFF, buttons[state][i].name.c_str());
         //buttons[j][i].center.x = xres/2;
@@ -791,11 +796,11 @@ void MenuGS::drawGameState()
     }
     if(state == 1) {
         Rect r;
-        r.bot = yres/1.25;
+        r.bot = yres/1.7;
         r.left = xres/2;
         ggprint16(&r, 16, 0xFFFFFFFF, "Name:");
-        r.bot = yres/1.3;
-        ggprint16(&r, 16, 0xFFFFFFFF, bhg.name.c_str());
+        r.bot = yres/1.8;
+        ggprint16(&r, 16, 0xFFFFFFFF, njG.name.c_str());
     } 
 }
 
@@ -935,13 +940,15 @@ void TitleGS::drawGameState()
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    Rect r;
-    r.bot = yres/2+100;
-    r.left = xres/2;
-    ggprint16(&r, 16, 0xFFFFFFFF, "Fate: The Shadow Wizard: Kingdom of Darkness: Revived: 2: The Second One");
-    r.bot = yres/2;
-    r.left = xres/2;
-    ggprint16(&r, 16, 0xFFFFFFFF, "Press any key");
+    glBindTexture(GL_TEXTURE_2D, bhg.logo);
+    glBegin(GL_QUADS);
+        glTexCoord2f(0.0f, 0.0f);glVertex2i(0, 0);
+	    glTexCoord2f(0.0f, 1.0f);glVertex2i(0, 900);
+	    glTexCoord2f(1.0f, 1.0f);glVertex2i( 1200, 900);
+    	glTexCoord2f(1.0f, 0.0f);glVertex2i( 1200, 0);
+    glEnd();
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glColor3f(1.0f, 1.0f, 1.0f);
 
     //swap to 3d
     glMatrixMode(GL_PROJECTION); glLoadIdentity();
@@ -957,11 +964,24 @@ void TitleGS::drawGameState()
 	glDepthFunc(GL_LEQUAL);//The type of depth test to do
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);//??makes the perspective view better??
     glClear(GL_DEPTH_BUFFER_BIT);
-    pModel[0].drawTitleModel(-3.0f, -1.0f, -15.0f, yawR);
-    pModel[1].drawTitleModel(3.0f, -1.0f, -15.0f, yawL);
+    pModel[0].drawTitleModel(-3.0f, -2.0f, -15.0f, yawR);
+    pModel[1].drawTitleModel(3.0f, -2.0f, -15.0f, yawL);
     yawL += 0.65f;
     yawR -= 0.65f;
-
+    
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(0,xres,0,yres,-1,1);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+     
+    Rect r;   
+    r.bot = yres/4;
+    r.left = xres/2;
+    bhg.count++;
+    cout << bhg.count << endl;
+    if((bhg.count%20) > 10)
+        ggprint16(&r, 16, 0xFFFFFFFF, "Press any key");
 }
 
 //=================================================//
@@ -1167,6 +1187,7 @@ void Game::procKeyInput(int key)
             states.push(new MenuGS(5, bhg.menus,  xres, yres));
             break;
         case 8:
+            sendScore(njG.name, njG.player->score);
             states.push(new CreditGS(xres, yres));
             break;
     }
@@ -1174,7 +1195,7 @@ void Game::procKeyInput(int key)
 
 void Game::drawGameState()
 {
-    if(states.size() > 0)
+    if (states.size() > 0)
         states.top()->drawGameState();
 }
 

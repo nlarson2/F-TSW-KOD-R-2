@@ -243,7 +243,7 @@ void uiboxes::drawBoxes() {
     Player *player = Player::getInstance(); 
     r.bot = 78;
     r.left = 110;
-    const char* pname = bhg.name.c_str();
+    const char* pname = njG.name.c_str();
     ggprint16(&r, 16, 0xffffffff, pname);
     
     r.bot = 53;

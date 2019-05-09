@@ -15,6 +15,7 @@ NJordGlobal::NJordGlobal()
 #ifdef PROFILE
 	loadSoundTime = 0.0;
 #endif
+	name = "";
 }
 
 void NJordGlobal::spawnEnemies(int amount)
@@ -74,6 +75,7 @@ void NJordGlobal::saveEntities(int save_number)
 		printf("Could not locate file specified\n");
 #endif
 	}
+	file << name << endl;
 	file.close();
 	return;
 }
@@ -93,6 +95,9 @@ bool NJordGlobal::loadEntities(int save_number)
 #endif
 		return false;
 	}
+	string line;
+	getline(file, line);
+	name = line.c_str();
 	file.close();
 	return true;
 }
