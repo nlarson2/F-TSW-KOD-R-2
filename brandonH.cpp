@@ -90,6 +90,10 @@ BHglobal::BHglobal()
         Button("Save Game", SAVE_GAME),
         Button("Rest", REST),
     };
+    //static Button ebtn[2] = { 
+        //Button("Continue?", CONTINUE),
+        //Button("Main Menu", EMAIN_MENU),
+    //};
     // Derived Menu from PauseMenu. Select which save file to override
     // Needs implementation
     static Button pbtn2[5] = {
@@ -108,6 +112,9 @@ BHglobal::BHglobal()
         pmenu[i] = pbtn[i];
         bmenu[i] = bbtn[i];
         tmenu[i] = tbtn[i];
+    }
+    for (int i=0; i<2; i++) {
+        //emenu[i] = ebtn[i];
     }
 
     ctrls = false;
@@ -364,6 +371,7 @@ int MenuGS::procMouseInput(int x, int y)
             return -3;
             break;
         case ARCHER:
+            if(njG.name.size() == 3)
             {
 #ifdef SOUND
                 alSourcePlay(njG.sound.menuSound);
@@ -383,6 +391,7 @@ int MenuGS::procMouseInput(int x, int y)
             }
             break;
         case SOLDIER:
+            if(njG.name.size() == 3)
             {
 #ifdef SOUND
                 alSourcePlay(njG.sound.menuSound); 
@@ -402,6 +411,7 @@ int MenuGS::procMouseInput(int x, int y)
             }
             break;
         case TANK:
+            if(njG.name.size() == 3)
             {
 #ifdef SOUND
                 alSourcePlay(njG.sound.menuSound); 
@@ -421,6 +431,7 @@ int MenuGS::procMouseInput(int x, int y)
             }
             break;
         case NICK:
+            if(njG.name.size() == 3)
             {
 #ifdef SOUND
                 alSourcePlay(njG.sound.menuSound); 
@@ -807,7 +818,7 @@ void MenuGS::drawGameState()
         Rect r;
         r.bot = yres/1.7;
         r.left = xres/2;
-        ggprint16(&r, 16, 0xFFFFFFFF, "Name:");
+        ggprint16(&r, 16, 0xFFFFFFFF, "Enter Name:");
         r.bot = yres/1.8;
         ggprint16(&r, 16, 0xFFFFFFFF, njG.name.c_str());
     } 

@@ -320,6 +320,7 @@ int check_keys(XEvent *e)
 
 void render()
 {
+    // ONE LINE RENDER!!!!
 	game.drawGameState();
     // Placeholder control display while in testing
     extern BHglobal bhg;
