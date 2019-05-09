@@ -965,8 +965,8 @@ void TitleGS::drawGameState()
 	glDepthFunc(GL_LEQUAL);//The type of depth test to do
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);//??makes the perspective view better??
     glClear(GL_DEPTH_BUFFER_BIT);
-    pModel[0].drawTitleModel(-3.0f, -1.0f, -15.0f, yawR);
-    pModel[1].drawTitleModel(3.0f, -1.0f, -15.0f, yawL);
+    pModel[0].drawTitleModel(-3.0f, -2.0f, -15.0f, yawR);
+    pModel[1].drawTitleModel(3.0f, -2.0f, -15.0f, yawL);
     yawL += 0.65f;
     yawR -= 0.65f;
 

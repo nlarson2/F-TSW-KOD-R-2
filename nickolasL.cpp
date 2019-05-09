@@ -481,11 +481,11 @@ void draw_nickLCredit(int x, int y, GLuint texture)
 
 
 	glTranslatef(wid,0,0);
-	//unsigned int c = 0x00000000;
+	unsigned int c = 0xffffffff;
 	r.bot = 0;
 	r.left = 10;
 	r.center = 0;
-	ggprint8b(&r, 16, 0x00000000, "Nickolas Larson");
+	ggprint8b(&r, 16, c, "Nickolas Larson");
 
 
 	glPopMatrix();
