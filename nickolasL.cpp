@@ -1149,7 +1149,7 @@ void WorldGS::drawGameState()
 	glBegin(GL_QUADS);
 		glColor3f(1.0f, 0, 0);
 		glTexCoord2f(1, 1);
-		glVertex3f(pickPos.x+1, 0.5f , pickPos.z+1);	
+		glVertex3f(pickPos.x+1, 0.5f , pickPos.z+1);
 		glTexCoord2f(1, 0);
 		glVertex3f(pickPos.x+1, 0.5f , pickPos.z-1);
 		glTexCoord2f(0, 0);
@@ -1313,7 +1313,7 @@ int BattleGS::procKeyInput(int key)
 			break;
 		case XK_e:
 			//camera.rotate(4.0f);
-			if(njG.player->current_health <= 0) {
+			if(njG.player->current_health <= 0) {	
 			    njG.player->resetInstance();
     			njG.resetAllies();
     			njG.resetEnemies();	
@@ -1326,13 +1326,13 @@ int BattleGS::procKeyInput(int key)
                 njG.enemies[enemy][0].wPos.z = 0;
                 njG.player->score += 100;
                 if (njG.allEnemiesAreDead()) {
-                    njG.player->score += 500;
-                    //sendScore(njG.name, njG.player->score);
-                    return 8;
+                	njG.player->score += 500;
+                	//sendScore(njG.name, njG.player->score);
+                	return 8;
             	}
             #ifdef SOUND
-                alSourceStop(njG.sound.battleSound);
-                alSourcePlay(njG.sound.ambientSound);    
+        		alSourceStop(njG.sound.battleSound);
+            	alSourcePlay(njG.sound.ambientSound);
             #endif
                 return -1;
             }
@@ -1413,10 +1413,10 @@ void BattleGS::drawGameState()
 #ifdef UNIT_TEST
 	drawPath();
 #endif
-    njG.player = Player::getInstance();
-    if (njG.player->count != 0) {
-        count == 0 ? glColor4f(0, 0, 0.75, 0.1) : glColor3f(255, 255, 255);
-        njG.player->drawBattle();
+	njG.player = Player::getInstance();
+	if (njG.player->count != 0) {
+		count == 0 ? glColor4f(0, 0, 0.75, 0.1) : glColor3f(255, 255, 255);
+		njG.player->drawBattle();
     }
     for (int i = 0; i < njG.allies->count; i++) {
 		if (njG.allies[i].current_health > 0) {
@@ -1523,7 +1523,7 @@ void sendScore(string name, int score)
 #ifdef UNIT_TEST
 	printf("\n%s\n",request);
 #endif
-	system(request);	
+	system(request);
 }
 
 /*=======================================*/
