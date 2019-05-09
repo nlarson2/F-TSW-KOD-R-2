@@ -82,11 +82,12 @@ using namespace std;
 #ifdef SOUND
 class Sound {
     public:
-        ALuint alBuffer[15];
+        ALuint alBuffer[16];
         ALuint menuSound;
         ALuint moveSound;
         ALuint ambientSound;
         ALuint battleSound;
+        ALuint menuMusic;
         ALuint hitSound;
         ALuint gruntSound[10];
         Sound();

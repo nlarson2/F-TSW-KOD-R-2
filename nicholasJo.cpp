@@ -276,7 +276,12 @@ void NJordGlobal::controlTurns(Entity *target, int dest_x, int dest_z,
 		if (target->moveRange <= 0) {
 			return;
 		}
-		if (abs(target->bPos.x - dest_x) == 1 && abs(target->bPos.z - dest_z) == 1) {
+		if ((abs(target->bPos.x - dest_x) == 1 &&
+			abs(target->bPos.z - dest_z) == 1) ||
+			(abs(target->bPos.x - dest_x) == 1 &&
+			abs(target->bPos.z - dest_z) == 0) ||
+			(abs(target->bPos.x - dest_x) == 0 &&
+			abs(target->bPos.z - dest_z) == 1)) {
 			target->moveRange--;
 		} else {
 			target->moveRange -= amount-1;
@@ -405,6 +410,7 @@ void Sound::clearSounds()
 	alDeleteBuffers(1, &alBuffer[12]);
 	alDeleteBuffers(1, &alBuffer[13]);
 	alDeleteBuffers(1, &alBuffer[14]);
+	alDeleteBuffers(1, &alBuffer[15]);
 
 	ALCcontext *Context = alcGetCurrentContext();
 	ALCdevice *Device = alcGetContextsDevice(Context);
@@ -614,6 +620,15 @@ void Sound::loadSounds()
 	alBufferData(alBuffer[14], format15, &bufferData15[0],
 			static_cast<ALsizei>(bufferData15.size()), freq15);
 
+	alGenBuffers(1, &alBuffer[15]);
+	char filename16[] = "./sounds/menu_music.ogg";
+	vector<char> bufferData16;
+	ALenum format16;
+	ALsizei freq16;
+	loadOGG(filename16, bufferData16, format16, freq16);
+	alBufferData(alBuffer[15], format16, &bufferData16[0],
+			static_cast<ALsizei>(bufferData16.size()), freq16);
+
 	if (alGetError() == AL_INVALID_VALUE) {
 #ifdef UNIT
 		printf("ERROR3: setting menu sound\n");
@@ -635,6 +650,7 @@ void Sound::loadSounds()
 	alGenSources(1, &gruntSound[7]);
 	alGenSources(1, &gruntSound[8]);
 	alGenSources(1, &gruntSound[9]);
+	alGenSources(1, &menuMusic);
 
 	alSourcei(menuSound, AL_BUFFER, alBuffer[0]);
 	alSourcei(moveSound, AL_BUFFER, alBuffer[1]);
@@ -651,6 +667,7 @@ void Sound::loadSounds()
 	alSourcei(gruntSound[7], AL_BUFFER, alBuffer[12]);
 	alSourcei(gruntSound[8], AL_BUFFER, alBuffer[13]);
 	alSourcei(gruntSound[9], AL_BUFFER, alBuffer[14]);
+	alSourcei(menuMusic, AL_BUFFER, alBuffer[15]);
 
 	alSourcef(menuSound, AL_GAIN, 0.5f);
 	alSourcef(moveSound, AL_GAIN, 0.5f);
@@ -667,6 +684,7 @@ void Sound::loadSounds()
 	alSourcef(gruntSound[7], AL_GAIN, 1.0f);
 	alSourcef(gruntSound[8], AL_GAIN, 1.0f);
 	alSourcef(gruntSound[9], AL_GAIN, 1.0f);
+	alSourcef(menuMusic, AL_GAIN, 0.5f);
 
 	alSourcef(menuSound, AL_PITCH, 1.0f);
 	alSourcef(moveSound, AL_PITCH, 1.0f);
@@ -683,6 +701,7 @@ void Sound::loadSounds()
 	alSourcef(gruntSound[7], AL_PITCH, 1.0f);
 	alSourcef(gruntSound[8], AL_PITCH, 1.0f);
 	alSourcef(gruntSound[9], AL_PITCH, 1.0f);
+	alSourcef(menuMusic, AL_PITCH, 1.0f);
 
 	alSourcei(menuSound, AL_LOOPING, AL_FALSE);
 	alSourcei(moveSound, AL_LOOPING, AL_FALSE);
@@ -699,6 +718,7 @@ void Sound::loadSounds()
 	alSourcei(gruntSound[7], AL_LOOPING, AL_FALSE);
 	alSourcei(gruntSound[8], AL_LOOPING, AL_FALSE);
 	alSourcei(gruntSound[9], AL_LOOPING, AL_FALSE);
+	alSourcei(menuMusic, AL_LOOPING, AL_TRUE);
 #ifdef PROFILE
 	timeGet(&tend);
 	njG.loadSoundTime += timeDiff(&tstart, &tend);
@@ -1485,7 +1505,7 @@ void Display_NicholasJordan(int x, int y, GLuint textid)
 	r.bot = 0;
 	r.left = 10;
 	r.center = 0;
-	ggprint8b(&r, 16, 0x00000000, "Nicholas Jordan");
+	ggprint8b(&r, 16, 0xffffffff, "Nicholas Jordan");
 	glPopMatrix();
 }
 #endif

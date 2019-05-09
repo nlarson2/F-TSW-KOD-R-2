@@ -43,7 +43,14 @@ Model("models/characters/Spearman.obj","models/characters/ModelTextureEnemy.png"
 
 BHglobal::BHglobal() 
 {
+    
     GenerateGLTexture(MMTex, "images/title2.png", true);
+    GenerateGLTexture(BHTex, "images/brandonH.png", false);
+    GenerateGLTexture(NLTex, "images/nickLCreditPic.jpg", false);
+    GenerateGLTexture(NJTex, "images/nicholasJo.png", false);
+    GenerateGLTexture(MJTex, "images/marbienJPicture.png", false);
+    GenerateGLTexture(AOTex, "images/aopic.png", false);
+    
     GenerateGLTexture(logo, "images/FTSWKODR2_logo.png", true);
     static Button btn[5] = {
         Button("New Game", NEW_GAME),
@@ -104,7 +111,7 @@ BHglobal::BHglobal()
     }
 
     ctrls = false;
-
+    count = 0;
 } BHglobal bhg;
 
 //=================================================//
@@ -189,6 +196,7 @@ int PauseGS::procMouseInput(int x, int y)
             break;
         case PMAIN_MENU:
 #ifdef SOUND
+            alSourcePlay(njG.sound.menuMusic);
             alSourceStop(njG.sound.ambientSound);
             alSourcePlay(njG.sound.menuSound); 
 #endif
@@ -283,7 +291,7 @@ MenuGS::MenuGS(int s, Button b[5][5], int xres, int yres)
             buttons[j][i].width = 100;
             buttons[j][i].height = 20;
             buttons[j][i].center.x = xres/2;
-            buttons[j][i].center.y = yres/1.4 - (i+1)*60;
+            buttons[j][i].center.y = yres/1.7 - (i+1)*60;
         }
     }
 }
@@ -358,7 +366,8 @@ int MenuGS::procMouseInput(int x, int y)
         case ARCHER:
             {
 #ifdef SOUND
-                alSourcePlay(njG.sound.menuSound); 
+                alSourcePlay(njG.sound.menuSound);
+                alSourceStop(njG.sound.menuMusic);
                 alSourcePlay(njG.sound.ambientSound);
 #endif
                 if (Player::count != 0) {
@@ -377,6 +386,7 @@ int MenuGS::procMouseInput(int x, int y)
             {
 #ifdef SOUND
                 alSourcePlay(njG.sound.menuSound); 
+                alSourceStop(njG.sound.menuMusic);
                 alSourcePlay(njG.sound.ambientSound);
 #endif
                 if (Player::count != 0) {
@@ -395,6 +405,7 @@ int MenuGS::procMouseInput(int x, int y)
             {
 #ifdef SOUND
                 alSourcePlay(njG.sound.menuSound); 
+                alSourceStop(njG.sound.menuMusic);
                 alSourcePlay(njG.sound.ambientSound);
 #endif
                 if (Player::count != 0) {
@@ -413,6 +424,7 @@ int MenuGS::procMouseInput(int x, int y)
             {
 #ifdef SOUND
                 alSourcePlay(njG.sound.menuSound); 
+                alSourceStop(njG.sound.menuMusic);
                 alSourcePlay(njG.sound.ambientSound);
 #endif
                 if (Player::count != 0) {
@@ -431,6 +443,7 @@ int MenuGS::procMouseInput(int x, int y)
             {
 #ifdef SOUND
                 alSourcePlay(njG.sound.menuSound); 
+                alSourceStop(njG.sound.menuMusic);
                 alSourcePlay(njG.sound.ambientSound);
 #endif
                 if (njG.loadEntities(1)) {
@@ -444,6 +457,7 @@ int MenuGS::procMouseInput(int x, int y)
             {
 #ifdef SOUND
                 alSourcePlay(njG.sound.menuSound); 
+                alSourceStop(njG.sound.menuMusic);
                 alSourcePlay(njG.sound.ambientSound);
 #endif
                 if (njG.loadEntities(2)) {
@@ -457,6 +471,7 @@ int MenuGS::procMouseInput(int x, int y)
             {
 #ifdef SOUND
                 alSourcePlay(njG.sound.menuSound); 
+                alSourceStop(njG.sound.menuMusic);
                 alSourcePlay(njG.sound.ambientSound);
 #endif
                 if (njG.loadEntities(3)) {
@@ -470,6 +485,7 @@ int MenuGS::procMouseInput(int x, int y)
             {
 #ifdef SOUND
                 alSourcePlay(njG.sound.menuSound); 
+                alSourceStop(njG.sound.menuMusic);
                 alSourcePlay(njG.sound.ambientSound);
 #endif
                 if (njG.loadEntities(4)) {
@@ -781,7 +797,7 @@ void MenuGS::drawGameState()
         int yres = 600;
         Rect r;
         //r.bot = yres - (170 +(i*60));
-        r.bot = yres/.95 - (i+1)*60;
+        r.bot = yres/1.155 - (i+1)*60;
         r.left = xres/2 ;
         ggprint16(&r, 16, 0xFFFFFFFF, buttons[state][i].name.c_str());
         //buttons[j][i].center.x = xres/2;
@@ -789,10 +805,10 @@ void MenuGS::drawGameState()
     }
     if(state == 1) {
         Rect r;
-        r.bot = yres/1.25;
+        r.bot = yres/1.7;
         r.left = xres/2;
         ggprint16(&r, 16, 0xFFFFFFFF, "Name:");
-        r.bot = yres/1.3;
+        r.bot = yres/1.8;
         ggprint16(&r, 16, 0xFFFFFFFF, njG.name.c_str());
     } 
 }
@@ -933,14 +949,6 @@ void TitleGS::drawGameState()
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    Rect r;
-    r.bot = yres/2+100;
-    r.left = xres/2;
-    ggprint16(&r, 16, 0xFFFFFFFF, "Fate: The Shadow Wizard: Kingdom of Darkness: Revived: 2: The Second One");
-    r.bot = yres/2;
-    r.left = xres/2;
-    ggprint16(&r, 16, 0xFFFFFFFF, "Press any key");
-
     glBindTexture(GL_TEXTURE_2D, bhg.logo);
     glBegin(GL_QUADS);
         glTexCoord2f(0.0f, 0.0f);glVertex2i(0, 0);
@@ -969,7 +977,20 @@ void TitleGS::drawGameState()
     pModel[1].drawTitleModel(3.0f, -2.0f, -15.0f, yawL);
     yawL += 0.65f;
     yawR -= 0.65f;
-
+    
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(0,xres,0,yres,-1,1);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+     
+    Rect r;   
+    r.bot = yres/4;
+    r.left = xres/2;
+    bhg.count++;
+    cout << bhg.count << endl;
+    if((bhg.count%20) > 10)
+        ggprint16(&r, 16, 0xFFFFFFFF, "Press any key");
 }
 
 //=================================================//
@@ -1006,19 +1027,28 @@ void CreditGS::drawGameState()
     glOrtho(0,xres,0,yres,-1,1);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-
+    extern void Display_NicholasJordan(int,int,GLuint);
+    extern void draw_nickLCredit(int,int,GLuint);
+    extern void showAdamPicture(int,int, GLuint);
+    extern void showMarbienPicture(int,int,GLuint);
     // SHOW PICTURE FUNCTIONS
+    brandonHCredit(xres/2, yres-100, bhg.BHTex);
+    Display_NicholasJordan(xres/2,yres-250, bhg.NJTex);
+    showAdamPicture(xres/2,yres-400, bhg.AOTex);
+    draw_nickLCredit(xres/2,yres-550,bhg.NLTex);
+    showMarbienPicture(xres/2,yres-700,bhg.MJTex);
 }
 
 
 //=================================================//
 //--------------- START OF ShowPic ----------------//
 //=================================================//
-void draw_brandonHCredit(int x, int y, GLuint texture)
+void brandonHCredit(int x, int y, GLuint texture)
 {
     Rect r;
     float wid = 50;
     glPushMatrix();
+    glTranslatef(x,y,0);
     glColor3f(1.0f,1.0f,1.0f);
     glBindTexture(GL_TEXTURE_2D, texture);
     glBegin(GL_QUADS);
@@ -1032,7 +1062,7 @@ void draw_brandonHCredit(int x, int y, GLuint texture)
     r.bot = 0;
     r.left = 10;
     r.center = 0;
-    ggprint8b(&r, 16, 0x00000000, "Brandon Hernandez");
+    ggprint8b(&r, 16, 0xFFFFFFFF, "Brandon Hernandez");
     glPopMatrix();
 }
 
@@ -1174,7 +1204,7 @@ void Game::procKeyInput(int key)
 
 void Game::drawGameState()
 {
-    if(states.size() > 0)
+    if (states.size() > 0)
         states.top()->drawGameState();
 }
 

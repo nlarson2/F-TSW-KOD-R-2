@@ -53,8 +53,14 @@ struct BHglobal
     Button bmenu[3];
     Button tmenu[3];
     bool ctrls;
+    int count;
     GLuint logo;
     GLuint MMTex;
+    GLuint BHTex;
+    GLuint NLTex;
+    GLuint NJTex;
+    GLuint MJTex;
+    GLuint AOTex;
     BHglobal();
 };
 
@@ -138,5 +144,5 @@ class CreditGS : public GameState {
         int procKeyInput(int);
         void drawGameState();
 };
-void draw_brandonHCredits(int,int,GLuint);
+void brandonHCredit(int,int,GLuint);
 #endif
