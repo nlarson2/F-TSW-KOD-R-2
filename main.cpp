@@ -180,7 +180,6 @@ extern NJordGlobal njG;
 //=====================================
 int main()
 {
-    	sendScore("Nickolas",15);
 	logOpen();
 	Log("main()\n");
 	game.init(); 

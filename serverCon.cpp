@@ -94,9 +94,7 @@ int main(int argc, char *argv[])
     strcpy(hostname, argv[1]);
   }
   if (argc > 2) {
-    //strcpy(pagename, argv[2]);
-	
-    printf("%s\n", argv[2]);
+    strcpy(pagename, argv[2]);
   }
   //
   //Setup the SSL BIO
