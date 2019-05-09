@@ -1190,53 +1190,58 @@ BattleGS::BattleGS(int ** mapArr,int sizex,int sizey,
 }
 
 int BattleGS::procMouseInput(int x, int y)
-{ 
+{   
     if (count % turns == 0) {
         if (njG.player->moveRange > 0) {
-	        glMatrixMode(GL_MODELVIEW);
-	        pkr.update(projMatrix, camera, xres, yres, x, y);
-	        pick(pkr.getCurrentRay());
-	        vec2 chkPath = map.checkCollision(pickPos.x, pickPos.z);
-            pair<int,int> size(10, 10);
-	        if ( chkPath.x > -1 && chkPath.y > -1) {
-                    for (int i = 0; i < njG.enemyArrayCount; i++) {
-                        for (int j = 0; j < njG.enemyCount; j++) {
-                        if (chkPath.x == njG.enemies[i][j].bPos.x &&
-                            chkPath.y == njG.enemies[i][j].bPos.z) {
-                            if (njG.player->inBattleRange(&njG.enemies[i][j])) {
-                                njG.player->dealDamage(&njG.enemies[i][j], map.tile);
-                                njG.player->moveRange--;
-                            #ifdef SOUND
-                                njG.sound.playRandomGrunt();
-                            #endif
-                                return 0;
-                            }
-                        }
-                    }
-                }
-		        stack<pair<int,int>> pathStack = 
-                    Movement(size, map.tile, njG.player->bPos.x, 
-                            njG.player->bPos.z, chkPath);
-		        path.clear();
-		        while (!pathStack.empty()) {
-			        //pair<int,int> temp = pathStack.pop();
-			        path.push_back(pathStack.top());
-			        pathStack.pop();
-                }
-                while ((int)path.size()-1 > njG.player->moveRange) {
-                    path.pop_back();
-                }
-                if (njG.checkBattleCollision(path.back().first,
-                    path.back().second, 0, enemy, 0)) {
-                    njG.controlTurns(njG.player,
-                                    path.back().first, path.back().second,
-                                    (int)path.size(), map.tile);
-                #ifdef SOUND
-                    alSourcePlay(njG.sound.moveSound);
-                #endif
-                }
-	        }
-        }
+			if (njG.player->current_health > 0) {
+				glMatrixMode(GL_MODELVIEW);
+				pkr.update(projMatrix, camera, xres, yres, x, y);
+				pick(pkr.getCurrentRay());
+				vec2 chkPath = map.checkCollision(pickPos.x, pickPos.z);
+				pair<int,int> size(10, 10);
+				if ( chkPath.x > -1 && chkPath.y > -1) {
+						for (int i = 0; i < njG.enemyArrayCount; i++) {
+							for (int j = 0; j < njG.enemyCount; j++) {
+							if (chkPath.x == njG.enemies[i][j].bPos.x &&
+								chkPath.y == njG.enemies[i][j].bPos.z) {
+								if (njG.player->inBattleRange(&njG.enemies[i][j])) {
+									njG.player->dealDamage(&njG.enemies[i][j], map.tile);
+									njG.player->moveRange--;
+								#ifdef SOUND
+									njG.sound.playRandomGrunt();
+								#endif
+									return 0;
+								}
+							}
+						}
+					}
+					stack<pair<int,int>> pathStack = 
+						Movement(size, map.tile, njG.player->bPos.x, 
+								njG.player->bPos.z, chkPath);
+					path.clear();
+					while (!pathStack.empty()) {
+						//pair<int,int> temp = pathStack.pop();
+						path.push_back(pathStack.top());
+						pathStack.pop();
+					}
+					while ((int)path.size()-1 > njG.player->moveRange) {
+						path.pop_back();
+					}
+					if (njG.checkBattleCollision(path.back().first,
+						path.back().second, 0, enemy, 0)) {
+						njG.controlTurns(njG.player, 
+										path.back().first, path.back().second, 
+										(int)path.size(), map.tile);
+					#ifdef SOUND
+						alSourcePlay(njG.sound.moveSound);
+					#endif
+					}
+				}
+			}
+			else {
+				
+			}
+		}
     } else {
         if (njG.allies[count-1].moveRange > 0) {
 	        glMatrixMode(GL_MODELVIEW);
